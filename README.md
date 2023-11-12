@@ -5,31 +5,29 @@
 **Note:** Works exclusively with Python 3.11.4
 
 ## 👾 Features
-- Accept-Rules
-- Avatar-Changer
-- Bio-Changer
-- Button-Click
-- Call-Spammer
-- Change-Nick
-- DCounter-Spam
 - Fully request-based Raider
-- Guild-Check
 - HTTP & HTTPS proxy support
-- Inviter
+- Multi-Threading support
 - Joiner
 - Leaver
-- Massping
-- Multi-Threading support
-- Onboarding-Bypass
-- Onliner
 - Spammer
-- Thread-Spammer
-- Token-Checker
-- Token-Formatter
-- Typer
-- Voice-Joiner
-- Voice-Raper
+- Token Checker
 - Reactor
+- Voice Raper
+- Token Formatter
+- Button Click
+- Accept Rules
+- Guild Check
+- Bio Changer
+- Onliner
+- Voice Joiner
+- Change Nickname
+- Thread Spammer
+- Friender
+- Typer
+- Onboarding Bypass
+- Call Spammer
+- Inviter
 
 ## 📝 Licensing
 You are free to distribute and modify this program under the [GPL V2 License](https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt). Please ensure proper credit is given to our project.
