@@ -29,6 +29,7 @@
 - Typer
 - Voice-Joiner
 - Voice-Raper
+- Reactor
 
 ## 📝 Licensing
 You are free to distribute and modify this program under the [GPL V2 License](https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt). Please ensure proper credit is given to our project.
