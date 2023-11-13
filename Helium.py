@@ -677,7 +677,6 @@ class Raider:
             match response.status_code:
                 case 200:
                     console.log("Sent", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
-                    time.sleep(0.01)
                 case 429:
                     retry_after = response.json().get("retry_after")
                     console.log("RATELIMIT", Fore.LIGHTYELLOW_EX, f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after}s",)
@@ -1044,21 +1043,23 @@ class Raider:
 
     def call_spammer(self, token, user_id):
         try:
-            channel_id = self.open_dm(token, user_id)
+            while True:
+                channel_id = self.open_dm(token, user_id)
 
-            response = session.get(
-                f"https://discord.com/api/v9/channels/{channel_id}/call",
-                headers=self.headers(token),
-            )
+                response = session.get(
+                    f"https://discord.com/api/v9/channels/{channel_id}/call",
+                    headers=self.headers(token),
+                )
 
-            match response.status_code:
-                case 200:
-                    console.log("Called", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", user_id)
-                    ws = websocket.WebSocket()
-                    self.voice_spammer(token, ws, None, channel_id, True)
-                case _:
-                    console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
-                    return
+                match response.status_code:
+                    case 200:
+                        console.log("Called", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", user_id)
+                        ws = websocket.WebSocket()
+                        self.voice_spammer(token, ws, None, channel_id, True)
+                    case _:
+                        console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
+                        return
+                time.sleep(5)
         except Exception as e:
             console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
@@ -1548,6 +1549,8 @@ class Menu:
         user_id = input(console.prompt("User ID"))
         if user_id == "":
             Menu().main_menu()
+        Clear()
+        console.render_ascii()
         for token in tokens:
             threading.Thread(target=self.raider.call_spammer, args=(token, user_id)).start()
 
@@ -1745,8 +1748,7 @@ class Menu:
             else:
                 args = [(token, channel_id, message) for token in tokens]
                 self.run(self.raider.spammer, args)
-     
-    @wrapper
+
     def checker(self):
         os.system('title Helium - Checker')
         self.raider.token_checker()
@@ -1767,7 +1769,6 @@ class Menu:
         console.render_ascii()
         self.raider.reactor_main(channel_id, message_id)
 
-    @wrapper
     def formatter(self):
         os.system('title Helium - Formatter')
         self.run(self.raider.format_tokens, [()])
