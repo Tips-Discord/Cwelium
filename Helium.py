@@ -71,7 +71,7 @@ C = {
 def wrapper(func):
     def wrapper(*args, **kwargs):
         Clear()
-        print(banner)
+        console.render_ascii()
         result = func(*args, **kwargs)
         return result
     return wrapper
@@ -153,8 +153,6 @@ class Render:
 {'██╔══██║██╔══╝  ██║     ██║██║   ██║██║╚██╔╝██║'.center(self.size)}
 {'██║  ██║███████╗███████╗██║╚██████╔╝██║ ╚═╝ ██║'.center(self.size)}
 {'╚═╝  ╚═╝╚══════╝╚══════╝╚═╝ ╚═════╝ ╚═╝     ╚═╝'.center(self.size)}
-
-{f'                      {Fore.RESET} Loaded ‹{Fore.LIGHTCYAN_EX}{len(tokens)}{Fore.RESET}› tokens | Loaded ‹{Fore.LIGHTCYAN_EX}{len(proxies)}{Fore.RESET}> proxies'.center(self.size)}
 """
         for edge in edges:
             title = title.replace(edge, f"{C['light_blue']}{edge}{C['white']}")
@@ -162,7 +160,8 @@ class Render:
 
     def raider_options(self):
         edges = ["─", "╭", "│", "╰", "╯", "╮", "»", "«"]
-        title = f"""
+        title = f"""{f"{' '*12}"}{f'{Fore.RESET} Loaded ‹{Fore.LIGHTCYAN_EX}{len(tokens)}{Fore.RESET}› tokens | Loaded ‹{Fore.LIGHTCYAN_EX}{len(proxies)}{Fore.RESET}> proxies'.center(self.size)}
+
 {'╭─────────────────────────────────────────────────────────────────────────────────────────────╮'.center(self.size)}
 {'│ «01» Joiner            «07» Token Formatter    «13» Voice Joiner      «19» Call Spammer     │'.center(self.size)}
 {'│ «02» Leaver            «08» Button Click       «14» Change Nickname   «20» DCounter Spam    │'.center(self.size)}
@@ -181,7 +180,7 @@ class Render:
         ([option] for option in options)
 
     def log(self, text=None, color=None, token=None, log=None):
-        response = f"[{C['gray']}{datetime.now().strftime('%H:%M:%S')}{C['white']}] "
+        response = f"{Fore.RESET}[{datetime.now().strftime(f'{Fore.LIGHTBLACK_EX}%H:%M:%S{Fore.RESET}')}] "
         if text:
             response += f"[{color}{text}{C['white']}] "
         if token:
@@ -678,6 +677,7 @@ class Raider:
             match response.status_code:
                 case 200:
                     console.log("Sent", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
+                    time.sleep(0.01)
                 case 429:
                     retry_after = response.json().get("retry_after")
                     console.log("RATELIMIT", Fore.LIGHTYELLOW_EX, f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after}s",)
@@ -902,7 +902,7 @@ class Raider:
                 "limit": 50
             }
             Clear()
-            print(banner)
+            console.render_ascii()
 
             for token in tokens:
                 response = session.get(
@@ -1467,7 +1467,7 @@ class Menu:
     def run(self, func, args):
         threads = []
         Clear()
-        print(banner)
+        console.render_ascii()
         for arg in args:
             thread = threading.Thread(target=func, args=arg)
             threads.append(thread)
@@ -1479,8 +1479,6 @@ class Menu:
 
     @wrapper
     def soundbord(self):
-        Clear()
-        print(banner)
         os.system('title Helium - Soundboard Spam')
         Link = input(console.prompt("Channel LINK"))
         if Link == "":
@@ -1492,7 +1490,7 @@ class Menu:
         channel = Link.split("/")[5]
         guild = Link.split("/")[4]
         Clear()
-        print(banner)
+        console.render_ascii()
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
         tokenq = random.choice(tokens)
@@ -1505,8 +1503,6 @@ class Menu:
     def inviter(self):
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
-        Clear()
-        print(banner)
         os.system('title Helium - inviter')
         Link = input(console.prompt("Channel LINK"))
         if Link == "":
@@ -1517,7 +1513,7 @@ class Menu:
             Menu().main_menu()
         channel = Link.split("/")[5]
         Clear()
-        print(banner)
+        console.render_ascii()
         args = [
             (token, channel) for token in tokens
         ]
@@ -1527,8 +1523,6 @@ class Menu:
     def double(self):
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
-        Clear()
-        print(banner)
         os.system('title Helium - masspanel')
         Link = input(console.prompt("Channel LINK"))
         if Link == "":
@@ -1538,7 +1532,7 @@ class Menu:
         else:
             Menu().main_menu()
         Clear()
-        print(banner)
+        console.render_ascii()
         guild = Link.split("/")[4]
         channel = Link.split("/")[5]
         args = [
@@ -1550,8 +1544,6 @@ class Menu:
     def caller(self):
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
-        Clear()
-        print(banner)
         os.system('title Helium - Caller')
         user_id = input(console.prompt("User ID"))
         if user_id == "":
@@ -1564,8 +1556,6 @@ class Menu:
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
         os.system('title Helium - Onliner')
-        Clear()
-        print(banner)
         for token in tokens:
             print(f"{Fore.RESET}[{datetime.now().strftime(f'{Fore.LIGHTBLACK_EX}%H:%M:%S{Fore.RESET}')}] {Fore.RESET}[{Fore.GREEN}Onlined{Fore.RESET}] {Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
             threading.Thread(target=self.raider.onliner, args=(token, websocket.WebSocket())).start()
@@ -1577,8 +1567,6 @@ class Menu:
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
         os.system('title Helium - Typer')
-        Clear()
-        print(banner)
         Link = input(console.prompt(f"Channel LINK"))
         if Link == "":
             Menu().main_menu()
@@ -1588,7 +1576,7 @@ class Menu:
             Menu().main_menu()
         channelid = Link.split("/")[5]
         Clear()
-        print(banner)
+        console.render_ascii()
         args = [
             (token, channelid) for token in tokens
         ]
@@ -1599,13 +1587,11 @@ class Menu:
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
         os.system('title Helium - Friender')
-        os.system('cls')
-        print(banner)
         nickname = input(console.prompt("Nick"))
         if nickname == "":
             Menu().main_menu()
         Clear()
-        print(banner)
+        console.render_ascii()
         args = [
             (token, nickname) for token in tokens
         ]
@@ -1616,18 +1602,16 @@ class Menu:
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
         os.system('title Helium - Nickname Changer')
-        Clear()
-        print(banner)
         nick = input(console.prompt("Nick"))
         if nick == "":
             Menu().main_menu()
         Clear()
-        print(banner)
+        console.render_ascii()
         guild = input(console.prompt("Guild ID"))
         if guild == "":
             Menu().main_menu()
         Clear()
-        print(banner)
+        console.render_ascii()
         args = [
             (token, guild, nick) for token in tokens
         ]
@@ -1638,8 +1622,6 @@ class Menu:
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
         os.system('title Helium - Voice Joiner')
-        Clear()
-        print(banner)
         Link = input(console.prompt("Channel LINK"))
         if Link == "":
             Menu().main_menu()
@@ -1650,7 +1632,7 @@ class Menu:
         guild = Link.split("/")[4]
         channel = Link.split("/")[5]
         Clear()
-        print(banner)
+        console.render_ascii()
         args = [
             (token, guild, channel, websocket.WebSocket()) for token in tokens
         ]
@@ -1661,13 +1643,11 @@ class Menu:
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
         os.system('title Helium - Thread Spammer')
-        Clear()
-        print(banner)
         name = input(console.prompt("Name"))
         if name == "":
             Menu().main_menu()
         Clear()
-        print(banner)
+        console.render_ascii()
         Link = input(console.prompt("Channel LINK"))
         if Link == "":
             Menu().main_menu()
@@ -1677,7 +1657,7 @@ class Menu:
             Menu().main_menu()
         channel_id = Link.split("/")[5]
         Clear()
-        print(banner)
+        console.render_ascii()
         args = [
             (token, channel_id, name) for token in tokens
         ]
@@ -1688,14 +1668,12 @@ class Menu:
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
         os.system('title Helium - Joiner')
-        Clear()
-        print(banner)
         invite = input(console.prompt(f"Invite"))
         if invite == "":
             Menu().main_menu()
         invite = invite.replace("https://discord.gg/", "").replace("https://discord.com/invite/", "").replace("discord.gg/", "").replace("https://discord.com/invite/", "").replace(".gg/", "")
         Clear()
-        print(banner)
+        console.render_ascii()
         args = [
             (token, invite) for token in tokens
         ]
@@ -1706,13 +1684,11 @@ class Menu:
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
         os.system('title Helium - Leaver')
-        Clear()
-        print(banner)
         guild = input(console.prompt("Guild ID"))
         if guild == "":
             Menu().main_menu()
         Clear()
-        print(banner)
+        console.render_ascii()
         args = [(token, guild) for token in tokens]
         self.run(self.raider.leaver, args)
 
@@ -1721,8 +1697,6 @@ class Menu:
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
         os.system('title Helium - Spammer')
-        Clear()
-        print(banner)
         Link = input(console.prompt("Channel LINK"))
         if Link.startswith("https://"):
             pass
@@ -1731,37 +1705,37 @@ class Menu:
         guild_id = Link.split("/")[4]
         channel_id = Link.split("/")[5]
         Clear()
-        print(banner)
+        console.render_ascii()
         emoiyspam = input(console.prompt("Server Crasher", True))
         Clear()
-        print(banner)
+        console.render_ascii()
         if "y" in emoiyspam:
             args = [(token, channel_id, None, None, None, None, True) for token in tokens]
             self.run(self.raider.spammer, args)
         else:
             massping = input(console.prompt("Massping", True))
             Clear()
-            print(banner)
+            console.render_ascii()
             message = input(console.prompt("Message"))
             Clear()
-            print(banner)
+            console.render_ascii()
             if message == "":
                 Menu().main_menu()
             if "y" in massping:
                 Clear()
-                print(banner)
+                console.render_ascii()
                 print(f"{Fore.LIGHTWHITE_EX}Scraping users (this may take a while)...")
                 self.raider.member_scrape(guild_id, channel_id)
                 Clear()
-                print(banner)
+                console.render_ascii()
                 count = input(console.prompt("Pings Amount"))
                 if count == "":
                     Menu().main_menu()
                 Clear()
-                print(banner)
+                console.render_ascii()
                 dyno = input(console.prompt("Dyno Tag", True))
                 Clear()
-                print(banner)
+                console.render_ascii()
                 if "y" in dyno:
                     args = [(token, guild_id, channel_id, message, count) for token in tokens]
                     self.run(self.raider.dyno_massping, args)
@@ -1775,15 +1749,11 @@ class Menu:
     @wrapper
     def checker(self):
         os.system('title Helium - Checker')
-        Clear()
-        print(banner)
         self.raider.token_checker()
 
     @wrapper
     def reactor(self):
         os.system('title Helium - Reactor')
-        Clear()
-        print(banner)
         message = input(console.prompt("Message Link"))
         if message == "":
             Menu().main_menu()
@@ -1794,14 +1764,12 @@ class Menu:
         channel_id = message.split("/")[5]
         message_id = message.split("/")[6]
         Clear()
-        print(banner)
+        console.render_ascii()
         self.raider.reactor_main(channel_id, message_id)
 
     @wrapper
     def formatter(self):
         os.system('title Helium - Formatter')
-        Clear()
-        print(banner)
         self.run(self.raider.format_tokens, [()])
 
     @wrapper
@@ -1809,8 +1777,6 @@ class Menu:
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
         os.system('title Helium - Clicker')
-        Clear()
-        print(banner)
         message = input(console.prompt("Message Link"))
         if message == "":
             Menu().main_menu()
@@ -1822,13 +1788,13 @@ class Menu:
         channel_id = message.split("/")[5]
         message_id = message.split("/")[6]
         Clear()
-        print(banner)
+        console.render_ascii()
         print(f"{Fore.RESET}If there's 1 button {Fore.LIGHTCYAN_EX}press Enter{Fore.RESET}, if you want to click a second button, just type 1 or more.")
         optionbutton = input(f"{Fore.RESET}[{Fore.LIGHTCYAN_EX}Button Option{Fore.RESET}] → ")
         if optionbutton == "":
             optionbutton = 0
         Clear()
-        print(banner)
+        console.render_ascii()
         args = [
             (token, message_id, channel_id, guild_id, optionbutton) for token in tokens
         ]
@@ -1837,25 +1803,21 @@ class Menu:
     @wrapper
     def accept(self):
         os.system('title Helium - Accept Rules')
-        Clear()
-        print(banner)
         guild_id = input(console.prompt("Guild ID"))
         if guild_id == "":
             Menu().main_menu()
         Clear()
-        print(banner)
+        console.render_ascii()
         self.raider.accept_rules(guild_id)
 
     @wrapper
     def guild(self):
         os.system('title Helium - Guild Checker')
-        Clear()
-        print(banner)
         guild_id = input(console.prompt("Guild ID"))
         if guild_id == "":
             Menu().main_menu()
         Clear()
-        print(banner)
+        console.render_ascii()
         self.raider.guild_checker(guild_id)
 
     @wrapper
@@ -1863,13 +1825,11 @@ class Menu:
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
         os.system('title Helium - Bio Changer')
-        Clear()
-        print(banner)
         bio = input(console.prompt("Bio"))
         if bio == "":
             Menu().main_menu()
         Clear()
-        print(banner)
+        console.render_ascii()
         args = [
             (token, bio) for token in tokens
         ]
@@ -1878,36 +1838,19 @@ class Menu:
     @wrapper
     def onboard(self):
         os.system('title Helium - Onboarding Bypass')
-        Clear()
-        print(banner)
         guild_id = input(console.prompt("Guild ID"))
         if guild_id == "":
             Menu().main_menu()
         Clear()
-        print(banner)
+        console.render_ascii()
         self.raider.onboard_bypass(guild_id)
 
     @wrapper
     def exit(self):
         os.system('title Helium - Exit')
-        Clear()
-        print(banner)
         print(f"{Fore.RED}Exiting...")
         time.sleep(2)
         os._exit(0)
-
-banner = f"""
-{'██╗  ██╗███████╗██╗     ██╗██╗   ██╗███╗   ███╗'.center(os.get_terminal_size().columns)}
-{'██║  ██║██╔════╝██║     ██║██║   ██║████╗ ████║'.center(os.get_terminal_size().columns)}
-{'███████║█████╗  ██║     ██║██║   ██║██╔████╔██║'.center(os.get_terminal_size().columns)}
-{'██╔══██║██╔══╝  ██║     ██║██║   ██║██║╚██╔╝██║'.center(os.get_terminal_size().columns)}
-{'██║  ██║███████╗███████╗██║╚██████╔╝██║ ╚═╝ ██║'.center(os.get_terminal_size().columns)}
-{'╚═╝  ╚═╝╚══════╝╚══════╝╚═╝ ╚═════╝ ╚═╝     ╚═╝'.center(os.get_terminal_size().columns)}
-"""
-
-eggs = ["╗", "║", "╚", "╝", "═", "╔"]
-for edn in eggs:
-    banner = banner.replace(edn, f"{C['light_blue']}{edn}{C['white']}")
 
 if __name__ == "__main__":
     Menu().main_menu()
