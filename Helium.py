@@ -1,3 +1,5 @@
+import os
+
 try:
     from colorama import Fore
     from colorist import ColorHex as h
@@ -5,7 +7,6 @@ try:
     from os.path import isfile, join
     import base64
     import json
-    import os
     import random
     import requests
     import string
@@ -17,27 +18,14 @@ try:
 except ModuleNotFoundError:
     os.system('title Helium - Installing dependencies')
     i = 0
-    imports = ['requests', 'colorama', 'websocket', 'websocket-client', 'threading', 'pathlib', 'uuid', 'datetime', 'tls_client', 'time', 'colorist']
-    if os.name == 'nt':
-        for _import in imports:
-            i += 1
-            os.system('cls')
-            print(f"Installing dependencies... ({i}/11)")
-            print(f"installing {_import}")
-            os.system(f'pip install {_import} > nul')
-        print('Finishing up...')
-    if os.name == 'posix':
-        for _import in imports:
-            i += 1
-            os.system('clear')
-            print(f"Installing dependencies... ({i}/11)")
-            print(f"Installing {_import}")
-            os.system(f"pip3 install {_import}")
-        print('Finishing up...')
-    else:
-        print("This program is intended for Linux and Windows. Your operating system is not supported.")
-        input("Press Enter to exit...")
-        os._exit(0)
+    imports = ['requests', 'colorama', 'websocket', 'websocket-client', 'threading', 'uuid', 'datetime', 'tls_client', 'time', 'colorist']
+    for _import in imports:
+        i += 1
+        os.system('cls')
+        print(f"Installing dependencies... ({i}/11)")
+        print(f"installing {_import}")
+        os.system(f'pip install {_import} > nul')
+    print('Finishing up...')
     from colorama import Fore
     from colorist import ColorHex as h
     from datetime import datetime
@@ -55,14 +43,7 @@ except ModuleNotFoundError:
     import websocket
 
 def Clear():
-    if os.name == 'posix':
-        os.system('clear')
-    elif os.name == 'nt':
-        os.system('cls')
-    else:
-        print("This program is intended for Linux and Windows. Your operating system is not supported.")
-        input("Press Enter to exit...")
-        os._exit(0)
+    os.system('cls')
 
 Clear()
 os.system('title Helium')
