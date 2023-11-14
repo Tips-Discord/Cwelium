@@ -48,12 +48,20 @@ def Clear():
 Clear()
 os.system('title Helium')
 
-session = tls_client.Session(client_identifier="chrome_119",random_tls_extension_order=True)
+session = tls_client.Session("okhttp4_android_13",random_tls_extension_order=True)
 
 def get_random_str(length: int) -> str:
     return "".join(
         random.choice(string.ascii_letters + string.digits) for _ in range(length)
     )
+
+def wrapper(func):
+    def wrapper(*args, **kwargs):
+        Clear()
+        console.render_ascii()
+        result = func(*args, **kwargs)
+        return result
+    return wrapper
 
 C = {
     "green": h("#65fb07"),
@@ -68,34 +76,30 @@ C = {
     "light_blue": h("#07f0ec"),
 }
 
-def wrapper(func):
-    def wrapper(*args, **kwargs):
-        Clear()
-        console.render_ascii()
-        result = func(*args, **kwargs)
-        return result
-    return wrapper
 
 class Files:
     @staticmethod
     def write_config():
         try:
             if not os.path.exists("config.json"):
-                data = {"proxies": False}
+                data = {
+                    "proxies": False,
+                    "color" : "blue"
+                }
                 with open("config.json", "w") as f:
                     json.dump(data, f, indent=4)
         except Exception as e:
-            console.log("Failed", C["red"], "Failed to Write Config", e)
+            console.log("FAILED", C["red"], "Failed to Write Config", e)
 
     @staticmethod
     def write_folders():
-        folders = ["data", "scraped", "avatars"]
+        folders = ["data", "scraped"]
         for folder in folders:
             try:
                 if not os.path.exists(folder):
                     os.mkdir(folder)
             except Exception as e:
-                console.log("Failed", C["red"], "Failed to Write Folders", e)
+                console.log("FAILED", C["red"], "Failed to Write Folders", e)
 
     @staticmethod
     def write_files():
@@ -106,7 +110,7 @@ class Files:
                     with open(f"data/{file}", "a") as f:
                         f.close()
             except Exception as e:
-                console.log("Failed", C["red"], "Failed to Write Files", e)
+                console.log("FAILED", C["red"], "Failed to Write Files", e)
 
     @staticmethod
     def run_tasks():
@@ -116,16 +120,17 @@ class Files:
 
 Files.run_tasks()
 
-with open("data/tokens.txt", "r") as f:
-    tokens = f.read().splitlines()
-
 with open("data/proxies.txt") as f:
     proxies = f.read().splitlines()
 
 with open("config.json") as f:
     config = json.load(f)
 
+with open("data/tokens.txt", "r") as f:
+    tokens = f.read().splitlines()
+
 proxy = config["proxies"]
+color = config["color"]
 
 if proxy:
     session.proxies = {
@@ -136,6 +141,10 @@ if proxy:
 class Render:
     def __init__(self):
         self.size = os.get_terminal_size().columns
+        if not color:
+            self.background = C['light_blue']
+        else:
+            self.background = C[color]
 
     def render_ascii(self):
         Clear()
@@ -155,12 +164,12 @@ class Render:
 {'╚═╝  ╚═╝╚══════╝╚══════╝╚═╝ ╚═════╝ ╚═╝     ╚═╝'.center(self.size)}
 """
         for edge in edges:
-            title = title.replace(edge, f"{C['light_blue']}{edge}{C['white']}")
+            title = title.replace(edge, f"{self.background}{edge}{C['white']}")
         print(title)
 
     def raider_options(self):
         edges = ["─", "╭", "│", "╰", "╯", "╮", "»", "«"]
-        title = f"""{f"{' '*12}"}{f'{Fore.RESET} Loaded ‹{Fore.LIGHTCYAN_EX}{len(tokens)}{Fore.RESET}› tokens | Loaded ‹{Fore.LIGHTCYAN_EX}{len(proxies)}{Fore.RESET}> proxies'.center(self.size)}
+        title = f"""{' '*44}{Fore.RESET} Loaded ‹{Fore.LIGHTCYAN_EX}{len(tokens)}{Fore.RESET}› tokens | Loaded ‹{Fore.LIGHTCYAN_EX}{len(proxies)}{Fore.RESET}> proxies
 
 {'╭─────────────────────────────────────────────────────────────────────────────────────────────╮'.center(self.size)}
 {'│ «01» Joiner            «07» Token Formatter    «13» Voice Joiner      «19» Call Spammer     │'.center(self.size)}
@@ -172,7 +181,7 @@ class Render:
 {'╰─────────────────────────────────────────────────────────────────────────────────────────────╯'.center(self.size)}
 """
         for edge in edges:
-            title = title.replace(edge, f"{C['light_blue']}{edge}{C['white']}")
+            title = title.replace(edge, f"{self.background}{edge}{C['white']}")
         print(title)
 
     def run(self):
@@ -478,7 +487,7 @@ class Raider:
             }
 
             response = session.post(
-                f"https://discord.com/api/v9/invites/{invite}",
+                f"https://canary.discord.com/api/v9/invites/{invite}",
                 headers=self.headers(token),
                 json=payload,
             )
@@ -501,7 +510,7 @@ class Raider:
                 in_guild = []
                 for token in tokens:
                     response = session.get(
-                        f"https://discord.com/api/v9/guilds/{guild}",
+                        f"https://canary.discord.com/api/v9/guilds/{guild}",
                         headers=self.headers(token),
                     )
 
@@ -521,7 +530,7 @@ class Raider:
             }
 
             response = session.delete(
-                f"https://discord.com/api/v9/users/@me/guilds/{guild}",
+                f"https://canary.discord.com/api/v9/users/@me/guilds/{guild}",
                 json=payload,
                 headers=self.headers(token),
             )
@@ -555,7 +564,7 @@ class Raider:
             }
 
             response = session.patch(
-                f"https://discord.com/api/v9/users/@me", 
+                f"https://canary.discord.com/api/v9/users/@me", 
                 headers=self.headers(token), 
                 json=payload
             )
@@ -622,7 +631,7 @@ class Raider:
             if not os.path.exists(f"scraped/{guild_id}.txt"):
                 for token in tokens:
                     response = session.get(
-                        f"https://discord.com/api/v9/guilds/{guild_id}",
+                        f"https://canary.discord.com/api/v9/guilds/{guild_id}",
                         headers=self.headers(token),
                     )
                     match response.status_code:
@@ -669,7 +678,7 @@ class Raider:
                 }
             
             response = session.post(
-                f"https://discord.com/api/v9/channels/{channel}/messages",
+                f"https://canary.discord.com/api/v9/channels/{channel}/messages",
                 headers=self.headers(token),
                 json=payload,
             )
@@ -704,7 +713,7 @@ class Raider:
                 )
 
                 response = session.post(
-                    "https://discord.com/api/v9/interactions",
+                    "https://canary.discord.com/api/v9/interactions",
                     headers=headers,
                     data=data,
                 )
@@ -731,7 +740,7 @@ class Raider:
                 )
 
                 response = session.post(
-                    "https://discord.com/api/v9/interactions",
+                    "https://canary.discord.com/api/v9/interactions",
                     headers=headers,
                     data=data,
                 )
@@ -767,7 +776,7 @@ class Raider:
                 time.sleep(3)
 
                 response = session.post(
-                    "https://discord.com/api/v9/interactions",
+                    "https://canary.discord.com/api/v9/interactions",
                     headers=headers,
                     data=data,
                 )
@@ -789,7 +798,7 @@ class Raider:
 
         def check_for_guild(token):
             response = session.get(
-                f'https://discord.com/api/v9/guilds/{guild_id}', headers=self.headers(token)
+                f'https://canary.discord.com/api/v9/guilds/{guild_id}', headers=self.headers(token)
             )
             match response.status_code:
                 case 200:
@@ -800,7 +809,7 @@ class Raider:
         def check_for_channel(token):
             if check_for_guild(token):
                 response = session.get(
-                    f'https://discord.com/api/v9/channels/{channel_id}', headers=self.headers(token)
+                    f'https://canary.discord.com/api/v9/channels/{channel_id}', headers=self.headers(token)
                 )
                 match response.status_code:
                     case 200:
@@ -860,31 +869,38 @@ class Raider:
     def token_checker(self):
         valid = []
 
-        with open("data/tokens.txt", "r") as f:
-            tokens = f.read().splitlines()
-
         def main(token):
-            try:
-                response = session.get(
-                    "https://canary.discordapp.com/api/v9/users/@me/library",
-                    headers=self.headers(token),
-                )
-
-                match response.status_code:
-                    case 200:
-                        console.log("Valid", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
-                        valid.append(token)
-                    case 429:
-                        console.log("Ratelimited, retry later", C["cyan"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
-                        valid.append(token)
-                    case _:
-                        console.log("Invalid", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
-                
-                with open("data/tokens.txt", "w") as f:
-                    f.write("\n".join(valid))
-                
-            except Exception as e:
-                console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
+            while True:
+                try:
+                    response = session.get(
+                        "https://canary.discord.com/api/v9/users/@me/billing/payment-sources",
+                        headers=self.headers(token),
+                    )
+                    match response.status_code:
+                        case 200:
+                            console.log("VALID", C["green"], token[:25])
+                            valid.append(token)
+                            break
+                        case 403:
+                            console.log("LOCKED", C["yellow"], token[:25])
+                            break
+                        case 429:
+                            retry_after = response.json().get('retry_after')
+                            console.log("RATELIMITED", C["pink"], token[:25], f"{retry_after}s")
+                            time.sleep(retry_after)
+                        case _:
+                            console.log(
+                                "INVALID",
+                                C["red"],
+                                token[:25],
+                                response.json().get("message"),
+                            )
+                            break
+                    with open("data/tokens.txt", "w") as f:
+                        f.write("\n".join(valid))
+                except Exception as e:
+                    console.log("FAILED", C["red"], token[:25], e)
+                    break
 
         args = [
             (token, ) for token in tokens
@@ -905,7 +921,7 @@ class Raider:
 
             for token in tokens:
                 response = session.get(
-                    f"https://discord.com/api/v9/channels/{channel_id}/messages",
+                    f"https://canary.discord.com/api/v9/channels/{channel_id}/messages",
                     headers=self.headers(token),
                     params=params,
                 )
@@ -944,7 +960,7 @@ class Raider:
 
             def add_reaction(token):
                 try:
-                    url = f"https://discord.com/api/v9/channels/{channel_id}/messages/{message_id}/reactions/{selected}/@me"
+                    url = f"https://canary.discord.com/api/v9/channels/{channel_id}/messages/{message_id}/reactions/{selected}/@me"
 
                     if emoji_id is None:
                         url += "?location=Message&type=0"
@@ -969,7 +985,7 @@ class Raider:
 
             def add_reaction(token):
                 try:
-                    url = f"https://discord.com/api/v9/channels/{channel_id}/messages/{message_id}/reactions/{selected}/@me"
+                    url = f"https://canary.discord.com/api/v9/channels/{channel_id}/messages/{message_id}/reactions/{selected}/@me"
 
                     if emoji_id is None:
                         url += "?location=Message&type=0"
@@ -1003,7 +1019,7 @@ class Raider:
                 }
 
                 response = session.post(
-                    f'https://discord.com/api/v9/channels/{channel}/send-soundboard-sound', 
+                    f'https://canary.discord.com/api/v9/channels/{channel}/send-soundboard-sound', 
                     headers=self.headers(token), 
                     json=json_data,
                 )
@@ -1027,7 +1043,7 @@ class Raider:
             }
 
             response = session.post(
-                "https://discord.com/api/v9/users/@me/channels",
+                "https://canary.discord.com/api/v9/users/@me/channels",
                 headers=self.headers(token),
                 json=payload,
             )
@@ -1047,7 +1063,7 @@ class Raider:
                 channel_id = self.open_dm(token, user_id)
 
                 response = session.get(
-                    f"https://discord.com/api/v9/channels/{channel_id}/call",
+                    f"https://canary.discord.com/api/v9/channels/{channel_id}/call",
                     headers=self.headers(token),
                 )
 
@@ -1098,7 +1114,7 @@ class Raider:
             }
 
             response = session.get(
-                f'https://discord.com/api/v9/channels/{channel_id}/messages',
+                f'https://canary.discord.com/api/v9/channels/{channel_id}/messages',
                 params=payload,
                 headers=self.headers(token),
             )
@@ -1130,7 +1146,7 @@ class Raider:
             }
 
             responseq = session.post(
-                'https://discord.com/api/v9/interactions',
+                'https://canary.discord.com/api/v9/interactions',
                 headers=self.headers(token),
                 json=data,
             )
@@ -1148,7 +1164,7 @@ class Raider:
             valid = []
             for token in tokens:
                 value = session.get(
-                    f"https://discord.com/api/v9/guilds/{guild_id}/member-verification",
+                    f"https://canary.discord.com/api/v9/guilds/{guild_id}/member-verification",
                     headers=self.headers(token),
                 )
 
@@ -1168,7 +1184,7 @@ class Raider:
         def run_main(token):
             try:
                 response = session.put(
-                    f"https://discord.com/api/v9/guilds/{guild_id}/requests/@me",
+                    f"https://canary.discord.com/api/v9/guilds/{guild_id}/requests/@me",
                     headers=self.headers(token),
                     json=payload,
                 )
@@ -1370,10 +1386,9 @@ class Raider:
 
             for _token in tokens:
                 response = session.get(
-                    f"https://discord.com/api/v9/guilds/{guild_id}/onboarding",
+                    f"https://canary.discord.com/api/v9/guilds/{guild_id}/onboarding",
                     headers=self.headers(_token),
                 )
-
                 match response.status_code:
                     case 200:
                         in_guild.append(_token)
@@ -1395,12 +1410,46 @@ class Raider:
                         if prompt:
                             onboarding_responses_seen[prompt["id"]] = now
                         else:
-                            console.log("FAILED", C["red"], "No onboarding in This Server",)
+                            console.log(
+                                "FAILED",
+                                C["red"],
+                                "No onboarding in This Server",
+                            )
                             Menu().main_menu(True)
 
         except Exception as e:
             console.log("FAILED", C["red"], "Failed to Pass Onboard", e)
             Menu().main_menu(True)
+
+        def run_task(token):
+            try:
+                json_data = {
+                    "onboarding_responses": onboarding_responses,
+                    "onboarding_prompts_seen": onboarding_prompts_seen,
+                    "onboarding_responses_seen": onboarding_responses_seen,
+                }
+                response = session.post(
+                    f"https://discord.com/api/v9/guilds/{guild_id}/onboarding-responses",
+                    headers=self.headers(token),
+                    json=json_data,
+                )
+                match response.status_code:
+                    case 200:
+                        console.log("ACCEPTED", C["green"], token[:25])
+                    case _:
+                        console.log(
+                            "FAILED",
+                            C["red"],
+                            token[:25],
+                            response.json().get("message"),
+                        )
+            except Exception as e:
+                console.log("FAILED", C["red"], token[:25], e)
+
+        args = [
+            (token,) for token in tokens
+        ]
+        Menu().run(run_task, args)
 
         def run_task(token):
             try:
@@ -1459,11 +1508,14 @@ class Menu:
         if _input:
             input()
         console.run()
-        choice = input(f"{Fore.LIGHTBLUE_EX}[Root@{os.getlogin()}] →  {Fore.RESET}")
+        choice = input(f"{' '*4}{Fore.LIGHTCYAN_EX}> ")
+        
         if choice in self.options:
+            console.render_ascii()
             self.options[choice]()
         else:
             self.main_menu()
+
 
     def run(self, func, args):
         threads = []
@@ -1772,7 +1824,7 @@ class Menu:
     def formatter(self):
         os.system('title Helium - Formatter')
         self.run(self.raider.format_tokens, [()])
-
+    
     @wrapper
     def button(self):
         with open("data/tokens.txt", "r") as f:
