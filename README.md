@@ -23,7 +23,6 @@
 - Voice Joiner
 - Change Nickname
 - Thread Spammer
-- Friender
 - Typer
 - Onboarding Bypass
 - Call Spammer
