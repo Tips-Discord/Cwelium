@@ -3,7 +3,7 @@ import os
 if os.name == "nt":
     pass
 else:
-    os._exit(0)
+    exit()
 
 try:
     from colorama import Fore
@@ -153,8 +153,6 @@ class Render:
 
     def render_ascii(self):
         Clear()
-        with open("data/proxies.txt") as f:
-            proxies = f.read().splitlines()
         os.system(f"title Helium - Connected as {os.getlogin()}")
         edges = ["╗", "║", "╚", "╝", "═", "╔"]
         title = f"""
@@ -172,7 +170,12 @@ class Render:
     def raider_options(self):
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
+
+        with open("data/proxies.txt") as f:
+            proxies = f.read().splitlines()
+
         edges = ["─", "╭", "│", "╰", "╯", "╮", "»", "«"]
+
         title = f"""{' '*44}{Fore.RESET} Loaded ‹{Fore.LIGHTCYAN_EX}{len(tokens)}{Fore.RESET}› tokens | Loaded ‹{Fore.LIGHTCYAN_EX}{len(proxies)}{Fore.RESET}> proxies
 
 {'╭─────────────────────────────────────────────────────────────────────────────────────────────╮'.center(self.size)}
@@ -433,7 +436,7 @@ class Raider:
 
     def get_discord_cookies(self):
         try:
-            response = requests.get("https://discord.com")
+            response = requests.get("https://canary.discord.com")
             match response.status_code:
                 case 200:
                     return "; ".join(
@@ -890,11 +893,13 @@ class Raider:
                             console.log("Valid", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
                             valid.append(token)
                             break
+                        case 403:
+                            console.log("LOCKED", C["yellow"], token[:25])
+                            break
                         case 429:
                             retry_after = response.json().get('retry_after')
                             console.log("RATELIMITED", C["pink"], token[:25], f"{retry_after}s")
                             time.sleep(retry_after)
-                            break
                         case _:
                             console.log("Invalid", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
                             break
@@ -1034,6 +1039,7 @@ class Raider:
                         time.sleep(float(retry_after))
                     case _:
                         print(f"{Fore.RESET}[{datetime.now().strftime(f'{Fore.LIGHTBLACK_EX}%H:%M:%S{Fore.RESET}')}] {Fore.RED}Failed to play sound {Fore.YELLOW}{name} {Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
+                time.sleep(0.84)
         except Exception as e:
             console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
@@ -1211,7 +1217,7 @@ class Raider:
         def main_checker(token):
             try:
                 response = session.get(
-                    f"https://discord.com/api/v9/guilds/{guild_id}",
+                    f"https://canary.discord.com/api/v9/guilds/{guild_id}",
                     headers=self.headers(token),
                 )
 
@@ -1242,7 +1248,7 @@ class Raider:
             }
 
             response = session.patch(
-                "https://discord.com/api/v9/users/@me/profile",
+                "https://canary.discord.com/api/v9/users/@me/profile",
                 headers=self.headers(token),
                 json=payload,
             )
@@ -1266,7 +1272,7 @@ class Raider:
             }
 
             response = session.patch(
-                f"https://discord.com/api/v9/guilds/{guild}/members/@me", 
+                f"https://canary.discord.com/api/v9/guilds/{guild}/members/@me", 
                 json=payload, 
                 headers=self.headers(token)
             )
@@ -1294,7 +1300,7 @@ class Raider:
 
             while True:
                 response = session.post(
-                    f"https://discord.com/api/v9/channels/{channel_id}/threads",
+                    f"https://canary.discord.com/api/v9/channels/{channel_id}/threads",
                     headers=self.headers(token),
                     json=payload,
                 )
@@ -1321,7 +1327,7 @@ class Raider:
 
             while True:
                 response = session.post(
-                    f"https://discord.com/api/v9/channels/{channel_id}/invites",
+                    f"https://canary.discord.com/api/v9/channels/{channel_id}/invites",
                     headers=self.headers(token),
                     json=data
                 )
@@ -1344,7 +1350,7 @@ class Raider:
         try:
             while True:
                 response = session.post(
-                    f"https://discord.com/api/v9/channels/{channelid}/typing", 
+                    f"https://canary.discord.com/api/v9/channels/{channelid}/typing", 
                     headers=self.headers(token)
                 )
 
@@ -1410,7 +1416,7 @@ class Raider:
                     "onboarding_responses_seen": onboarding_responses_seen,
                 }
                 response = session.post(
-                    f"https://discord.com/api/v9/guilds/{guild_id}/onboarding-responses",
+                    f"https://canary.discord.com/api/v9/guilds/{guild_id}/onboarding-responses",
                     headers=self.headers(token),
                     json=json_data,
                 )
@@ -1668,7 +1674,7 @@ class Menu:
         invite = input(console.prompt(f"Invite"))
         if invite == "":
             Menu().main_menu()
-        invite = invite.replace("https://discord.gg/", "").replace("https://discord.com/invite/", "").replace("discord.gg/", "").replace("https://discord.com/invite/", "").replace(".gg/", "")
+        invite = invite.replace("https://discord.gg/", "").replace("https://discord.com/invite/", "").replace("discord.gg/", "").replace("https://discord.com/invite/", "").replace(".gg/", "").replace("https://canary.", "")
         Clear()
         console.render_ascii()
         args = [
