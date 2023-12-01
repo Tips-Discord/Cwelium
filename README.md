@@ -1,6 +1,4 @@
 # Helium Raider Source Release
-discord raider
-discord raid tool
 
 ⭐ **Leave a star, please!**
 
