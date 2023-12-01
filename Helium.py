@@ -485,8 +485,8 @@ class Raider:
         }
 
     def soundboard_sounds(self, token):
-        return session.get("https://discord.com/api/v9/soundboard-default-sounds", headers=self.headers(token)).json()
-
+        return session.get("https://canary.discord.com/api/v9/soundboard-default-sounds", headers=self.headers(token)).json()
+    
     def joiner(self, token, invite):
         try:
             payload = {
@@ -1039,7 +1039,8 @@ class Raider:
                         time.sleep(float(retry_after))
                     case _:
                         print(f"{Fore.RESET}[{datetime.now().strftime(f'{Fore.LIGHTBLACK_EX}%H:%M:%S{Fore.RESET}')}] {Fore.RED}Failed to play sound {Fore.YELLOW}{name} {Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
-                time.sleep(0.84)
+                sleep_duration = random.uniform(0.56, 0.75)
+                time.sleep(sleep_duration)
         except Exception as e:
             console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
@@ -1139,7 +1140,6 @@ class Raider:
 
             data = {
                 'type': 3,
-                'nonce': '',
                 'guild_id': guild_id,
                 'channel_id': channel_id,
                 'message_flags': 0,
@@ -1447,7 +1447,7 @@ class Raider:
                 }
 
                 response = session.post(
-                    f"https://discord.com/api/v9/guilds/{guild_id}/onboarding-responses",
+                    f"https://canary.discord.com/api/v9/guilds/{guild_id}/onboarding-responses",
                     headers=self.headers(token),
                     json=json_data,
                 )
@@ -1674,7 +1674,7 @@ class Menu:
         invite = input(console.prompt(f"Invite"))
         if invite == "":
             Menu().main_menu()
-        invite = invite.replace("https://discord.gg/", "").replace("https://discord.com/invite/", "").replace("discord.gg/", "").replace("https://discord.com/invite/", "").replace(".gg/", "").replace("https://canary.", "")
+        invite = invite.replace("https://discord.gg/", "").replace("https://discord.com/invite/", "").replace("discord.gg/", "").replace("https://discord.com/invite/", "").replace(".gg/", "").replace("https://canary.", "").replace("canary.", "")
         Clear()
         console.render_ascii()
         args = [
