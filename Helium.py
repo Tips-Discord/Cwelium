@@ -179,12 +179,12 @@ class Render:
         title = f"""{' '*44}{Fore.RESET} Loaded ‹{Fore.LIGHTCYAN_EX}{len(tokens)}{Fore.RESET}› tokens | Loaded ‹{Fore.LIGHTCYAN_EX}{len(proxies)}{Fore.RESET}> proxies
 
 {'╭─────────────────────────────────────────────────────────────────────────────────────────────╮'.center(self.size)}
-{'│ «01» Joiner            «07» Token Formatter    «13» Voice Joiner      «19» Inviter          │'.center(self.size)}
-{'│ «02» Leaver            «08» Button Click       «14» Change Nickname   «20» ???              │'.center(self.size)}
+{'│ «01» Joiner            «07» Token Formatter    «13» Voice Joiner      «19» Call Spammer     │'.center(self.size)}
+{'│ «02» Leaver            «08» Button Click       «14» Change Nickname   «20» Inviter          │'.center(self.size)}
 {'│ «03» Spammer           «09» Accept Rules       «15» Thread Spammer    «21» ???              |'.center(self.size)}
-{'│ «04» Token Checker     «10» Guild Check        «16» Typer             «22» ???              |'.center(self.size)}
-{'│ «05» Reactor           «11» Bio Changer        «17» Onboarding Bypass «23» ???              │'.center(self.size)}
-{'│ «06» Voice Raper       «12» Onliner            «18» Call Spammer      «24» Exit             │'.center(self.size)}
+{'│ «04» Token Checker     «10» Guild Check        «16» Friender          «22» ???              │'.center(self.size)}
+{'│ «05» Reactor           «11» Bio Changer        «17» Typer             «23» ???              │'.center(self.size)}
+{'│ «06» Voice Raper       «12» Onliner            «18» Onboarding Bypass «24» Exit             │'.center(self.size)}
 {'╰─────────────────────────────────────────────────────────────────────────────────────────────╯'.center(self.size)}
 """
         for edge in edges:
@@ -1364,6 +1364,29 @@ class Raider:
         except Exception as e:
             console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
+    def friender(self, token, nickname):
+        try:
+            payload = {
+                'username': nickname,
+                'discriminator': None,
+            }
+
+            response = session.post(
+                f"https://discord.com/api/v9/users/@me/relationships", 
+                headers=self.headers(token), 
+                json=payload
+            )
+
+            match response.status_code:
+                case 204:
+                    print(f"{datetime.now().strftime(f'{Fore.LIGHTBLACK_EX}%H:%M:%S')}{Fore.RESET} {Fore.RESET}[{Fore.GREEN}Success{Fore.RESET}] {Fore.LIGHTBLACK_EX}-> {Fore.RESET}Sent friend {Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
+                case 400:
+                    console.log("CAPTCHA", C["yellow"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json())
+                case _:
+                    console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json())
+        except Exception as e:
+            console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
+
     def onboard_bypass(self, guild_id):
         try:
             onboarding_responses_seen = {}
@@ -1482,10 +1505,11 @@ class Menu:
             "13": self.voicejoiner,
             "14": self.nick_chang,
             "15": self.thad,
-            "16": self.typierq,
-            "17": self.onboard,
-            "18": self.caller,
-            "19": self.inviter,
+            "16": self.friend,
+            "17": self.typierq,
+            "18": self.onboard,
+            "19": self.caller,
+            "20": self.inviter,
             "24": self.exit,
         }
 
@@ -1535,6 +1559,21 @@ class Menu:
         for token in tokens:
             threading.Thread(target=self.raider.vc_joiner, args=(token, guild, channel, websocket.WebSocket())).start()
             threading.Thread(target=self.raider.soundbord, args=(token, channel, sounds)).start()
+
+    @wrapper
+    def friend(self):
+        with open("data/tokens.txt", "r") as f:
+            tokens = f.read().splitlines()
+        os.system('title Helium - Friender')
+        nickname = input(console.prompt("Nick"))
+        if nickname == "":
+            Menu().main_menu()
+        Clear()
+        console.render_ascii()
+        args = [
+            (token, nickname) for token in tokens
+        ]
+        self.run(self.raider.friender, args)
 
     @wrapper
     def inviter(self):
