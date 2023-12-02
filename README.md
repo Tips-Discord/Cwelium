@@ -32,8 +32,9 @@
 You are free to distribute and modify this program under the [GPL V2 License](https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt). Please ensure proper credit is given to our project.
 
 ## ✍️ Usage
-1. Run Helium.py
-2. *(Optional)* Add proxy in proxies.txt file in `ip:port` format
+<p align="center">
+  <img src="https://cdn.discordapp.com/attachments/1138871436568694858/1180463452859400324/image.png" alt="Helium Screenshot" width="1000">
+</p>
 
 ## ⚠️ Disclaimer
 **DISCLAIMER:** This GitHub repository is intended for **EDUCATIONAL PURPOSES ONLY**. We take no responsibility if problems occur. (You acknowledge this, and we appreciate that.)
