@@ -2,7 +2,7 @@
 
 ⭐ **Leave a star, please!**
 
-**Note:** Works exclusively with Python 3.11.4
+**Note:** Works exclusively with [Python 3.11.4](https://www.python.org/ftp/python/3.11.4/python-3.11.4-amd64.exe)
 
 ## 👾 Features
 - Fully request-based Raider
@@ -30,6 +30,11 @@
 
 ## 📝 Licensing
 You are free to distribute and modify this program under the [GPL V2 License](https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt). Please ensure proper credit is given to our project.
+
+# Installation
+### Requirements
+A [Brain](https://www.cancer.gov/publications/dictionaries/cancer-terms/def/brain)
+[Python 3.11](https://www.python.org/downloads/release/python-3113/)
 
 ## ✍️ Usage
 <p align="center">
