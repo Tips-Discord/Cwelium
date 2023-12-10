@@ -453,15 +453,15 @@ class Raider:
                 "os": "Windows",
                 "browser": "Discord Client",
                 "release_channel": "stable",
-                "client_version": "1.0.9025",
+                "client_version": "1.0.9026",
                 "os_version": "10.0.19045",
                 "os_arch":"x64",
                 "app_arch":"ia32",
                 "system_locale": "en",
-                "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9025 Chrome/108.0.5359.215 Electron/22.3.26 Safari/537.36",
+                "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9026 Chrome/108.0.5359.215 Electron/22.3.26 Safari/537.36",
                 "browser_version": "22.3.26",
-                "client_build_number": 249740,
-                "native_build_number": 40353,
+                "client_build_number": 252471,
+                "native_build_number": 40844,
                 "client_event_source": None,
                 "design_id": 0,
             }
@@ -478,7 +478,7 @@ class Raider:
             "authorization": token,
             "cookie": self.cookies,
             "content-type": "application/json",
-            "user-agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9025 Chrome/108.0.5359.215 Electron/22.3.26 Safari/537.36",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9026 Chrome/108.0.5359.215 Electron/22.3.26 Safari/537.36",
             "x-discord-locale": "en-US",
             'x-debug-options': 'bugReporterEnabled',
             "x-super-properties": self.props,
@@ -498,14 +498,13 @@ class Raider:
                 headers=self.headers(token),
                 json=payload,
             )
-
             match response.status_code:
                 case 200:
-                    console.log("JOINED", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f".gg/{invite}")
+                    console.log("JOINED", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"{response.json()['guild']['name']}")
                 case 400:
-                    console.log("CAPTCHA", C["yellow"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f".gg/{invite}")
+                    console.log("CAPTCHA", C["yellow"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"discord.gg/{invite}")
                 case 429:
-                    console.log("CLOUDFARE", C["magenta"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f".gg/{invite}")
+                    console.log("CLOUDFARE", C["magenta"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"discord.gg/{invite}")
                 case _:
                     console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
         except Exception as e:
@@ -551,13 +550,9 @@ class Raider:
             console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
     def emojis():
-        emos = list("😀😃😄😁😆😅😂🤣😊😇🙂🙃😉😌😍🥰😘😗😙😚😋😛😝😜🤪🤨🧐🤓😎🤩🥳😏😒😞😔😟😕🙁☹️😣😖😫😩🥺😢😭😮‍💨😤😠😡🤬🤯😳🥵🥶😱😨😰😥😓🤗🤔🤭🤫🤥😶😶‍🌫️😐😑😬🙄😯😦😧😮😲🥱😴🤤😪😵😵‍💫🤐🥴🤢🤮🤧😷🤒🤕🤑🤠😈👿👹👺🤡💩👻💀☠️👽👾🤖🎃😺😸😹😻😼😽🙀😿😾😀😃😄😁😆😅😂🤣😊😇🙂🙃😉😌😍🥰😘😗😙😚😋😛😝😜🤪🤨🧐🤓😎🤩🥳😏😒😞😔😟😕🙁☹️😣😖😫😩🥺😢😭😮‍💨😤😠😡🤬🤯😳🥵🥶😱😨😰😥😓🤗🤔🤭🤫🤥😶😶‍🌫️😐😑")
+        emos = list("😀😃😄😁😆😅😂🤣😊😇🙂🙃😉😌😍🥰😘😗😙😚😋😛😝😜🤪🤨🧐🤓😎🤩🥳😏😒😞😔😟😕🙁☹️😣😖😫😩🥺😢😭😮‍💨😤😠😡🤬🤯😳🥵🥶😱😨😰😥😓🤗🤔🤭🤫🤥😶😶‍🌫️😐😑😬🙄😯😦😧😮😲🥱😴🤤😪😵😵‍💫🤐🥴🤢🤮🤧😷🤒🤕🤑🤠😈👿👹👺🤡💩👻💀☠️👽👾🤖🎃😺😸😹😻😼😽🙀😿😾")
         random.shuffle(emos)
-        emojis=""
-        for emoji in emos:
-            emojis+=emoji
-        emojis = random.shuffle(emos)
-        return emojis
+        return ''.join(emos)
 
     def avatar_changer(self, token):
         try:
@@ -1039,8 +1034,7 @@ class Raider:
                         time.sleep(float(retry_after))
                     case _:
                         print(f"{Fore.RESET}[{datetime.now().strftime(f'{Fore.LIGHTBLACK_EX}%H:%M:%S{Fore.RESET}')}] {Fore.RED}Failed to play sound {Fore.YELLOW}{name} {Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
-                sleep_duration = random.uniform(0.56, 0.75)
-                time.sleep(sleep_duration)
+                time.sleep(random.uniform(0.56, 0.75))
         except Exception as e:
             console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
@@ -1501,12 +1495,12 @@ class Menu:
             "9": self.accept,
             "10": self.guild,
             "11": self.bio,
-            "12": self.onlinq,
+            "12": self.online,
             "13": self.voicejoiner,
-            "14": self.nick_chang,
+            "14": self.nick_changer,
             "15": self.thad,
             "16": self.friend,
-            "17": self.typierq,
+            "17": self.typier,
             "18": self.onboard,
             "19": self.caller,
             "20": self.inviter,
@@ -1517,6 +1511,7 @@ class Menu:
         if _input:
             input()
         console.run()
+        print(Raider.emojis())
         choice = input(f"{' '*4}{Fore.LIGHTCYAN_EX}> {Fore.RESET}")
         if choice in self.options:
             console.render_ascii()
@@ -1609,7 +1604,7 @@ class Menu:
             threading.Thread(target=self.raider.call_spammer, args=(token, user_id)).start()
 
     @wrapper
-    def onlinq(self):
+    def online(self):
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
         os.system('title Helium - Onliner')
@@ -1620,7 +1615,7 @@ class Menu:
         self.main_menu()
 
     @wrapper
-    def typierq(self):
+    def typier(self):
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
         os.system('title Helium - Typer')
@@ -1640,7 +1635,7 @@ class Menu:
         self.run(self.raider.typier, args)
 
     @wrapper
-    def nick_chang(self):
+    def nick_changer(self):
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
         os.system('title Helium - Nickname Changer')
@@ -1740,6 +1735,8 @@ class Menu:
             tokens = f.read().splitlines()
         os.system('title Helium - Spammer')
         Link = input(console.prompt("Channel LINK"))
+        if Link == "":
+            Menu().main_menu()
         if Link.startswith("https://"):
             pass
         else:
@@ -1800,15 +1797,15 @@ class Menu:
     @wrapper
     def reactor(self):
         os.system('title Helium - Reactor')
-        message = input(console.prompt("Message Link"))
-        if message == "":
+        Link = input(console.prompt("Message Link"))
+        if Link == "":
             Menu().main_menu()
-        if message.startswith("https://"):
+        if Link.startswith("https://"):
             pass
         else:
             Menu().main_menu()
-        channel_id = message.split("/")[5]
-        message_id = message.split("/")[6]
+        channel_id = Link.split("/")[5]
+        message_id = Link.split("/")[6]
         Clear()
         console.render_ascii()
         self.raider.reactor_main(channel_id, message_id)
