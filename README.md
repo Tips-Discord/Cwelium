@@ -26,7 +26,6 @@
 - Typer
 - Onboarding Bypass
 - Call Spammer
-- Inviter
 
 ## 📝 Licensing
 You are free to distribute and modify this program under the [GPL V2 License](https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt). Please ensure proper credit is given to our project.
@@ -34,11 +33,11 @@ You are free to distribute and modify this program under the [GPL V2 License](ht
 # Installation
 ### Requirements
 A [Brain](https://www.cancer.gov/publications/dictionaries/cancer-terms/def/brain)
-[Python 3.11](https://www.python.org/downloads/release/python-3113/)
+And [Python 3.11](https://www.python.org/downloads/release/python-3113/)
 
 ## ✍️ Usage
 <p align="center">
-  <img src="https://cdn.discordapp.com/attachments/1138871436568694858/1180463452859400324/image.png" alt="Helium Screenshot" width="1000">
+  <img src="https://cdn.discordapp.com/attachments/1159154741918564474/1184566370428534904/image.png" alt="Helium" width="1000">
 </p>
 
 ## ⚠️ Disclaimer
