@@ -163,7 +163,7 @@ class Render:
             tokens = f.read().splitlines()
         with open("data/proxies.txt") as f:
             proxies = f.read().splitlines()
-        edges = ["─", "╭", "│", "╰", "╯", "╮", "»", "«"]
+        edges = ["─", "╭", "│", "╰", "╯", "╮", "»", "«", "|"]
         title = f"""{' '*44}{Fore.RESET} Loaded ‹{Fore.LIGHTCYAN_EX}{len(tokens)}{Fore.RESET}› tokens | Loaded ‹{Fore.LIGHTCYAN_EX}{len(proxies)}{Fore.RESET}> proxies
 
 {'╭─────────────────────────────────────────────────────────────────────────────────────────────╮'.center(self.size)}
@@ -440,17 +440,14 @@ class Raider:
                 "os": "Windows",
                 "browser": "Discord Client",
                 "release_channel": "stable",
-                "client_version": "1.0.9026",
+                "client_version": "1.0.9027",
                 "os_version": "10.0.19045",
-                "os_arch":"x64",
-                "app_arch":"ia32",
                 "system_locale": "en",
-                "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9026 Chrome/108.0.5359.215 Electron/22.3.26 Safari/537.36",
+                "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9027 Chrome/108.0.5359.215 Electron/22.3.26 Safari/537.36",
                 "browser_version": "22.3.26",
-                "client_build_number": 252471,
-                "native_build_number": 40844,
+                "client_build_number": 253927,
+                "native_build_number": 41465,
                 "client_event_source": None,
-                "design_id": 0,
             }
             properties = base64.b64encode(json.dumps(payload).encode()).decode()
             return properties
@@ -465,7 +462,7 @@ class Raider:
             "authorization": token,
             "cookie": self.cookies,
             "content-type": "application/json",
-            "user-agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9026 Chrome/108.0.5359.215 Electron/22.3.26 Safari/537.36",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9027 Chrome/108.0.5359.215 Electron/22.3.26 Safari/537.36",
             "x-discord-locale": "en-US",
             'x-debug-options': 'bugReporterEnabled',
             "x-super-properties": self.props,
@@ -786,10 +783,6 @@ class Raider:
 
     def token_checker(self):
         valid = []
-        
-        with open("data/tokens.txt", "r") as f:
-            tokens = f.read().splitlines()
-
         def main(token):
             try:
                 while True:
@@ -804,11 +797,11 @@ class Raider:
                             valid.append(token)
                             break
                         case 403:
-                            console.log("LOCKED", C["yellow"], token[:25])
+                            console.log("LOCKED", C["yellow"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
                             break
                         case 429:
                             retry_after = response.json().get('retry_after')
-                            console.log("RATELIMITED", C["pink"], token[:25], f"{retry_after}s")
+                            console.log("RATELIMITED", C["pink"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"{retry_after}s")
                             time.sleep(retry_after)
                         case _:
                             console.log("Invalid", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
@@ -998,9 +991,6 @@ class Raider:
             console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
     def format_tokens(self):
-        with open("data/tokens.txt", "r") as f:
-            tokens = f.read().splitlines()
-
         try:
             formatted = []
 
@@ -1118,12 +1108,7 @@ class Raider:
         Menu().run(run_main, args)
 
     def guild_checker(self, guild_id):
-
-        with open("data/tokens.txt", "r") as f:
-            tokens = f.read().splitlines()
-        
         in_guild = []
-
         def main_checker(token):
             try:
                 response = session.get(
@@ -1323,16 +1308,16 @@ class Raider:
                 )
                 match response.status_code:
                     case 200:
-                        console.log("ACCEPTED", C["green"], token[:25])
+                        console.log("ACCEPTED", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
                     case _:
                         console.log(
                             "FAILED",
                             C["red"],
-                            token[:25],
+                            f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**",
                             response.json().get("message"),
                         )
             except Exception as e:
-                console.log("FAILED", C["red"], token[:25], e)
+                console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
         args = [
             (token,) for token in tokens
@@ -1428,16 +1413,12 @@ class Menu:
         guild = Link.split("/")[4]
         os.system('cls')
         console.render_ascii()
-        with open("data/tokens.txt", "r") as f:
-            tokens = f.read().splitlines()
         for token in tokens:
             threading.Thread(target=self.raider.vc_joiner, args=(token, guild, channel, websocket.WebSocket())).start()
             threading.Thread(target=self.raider.soundbord, args=(token, channel)).start()
 
     @wrapper
     def friender(self):
-        with open("data/tokens.txt", "r") as f:
-            tokens = f.read().splitlines()
         os.system('title Helium - Friender')
         nickname = input(console.prompt("Nick"))
         if nickname == "":
@@ -1451,8 +1432,6 @@ class Menu:
 
     @wrapper
     def caller(self):
-        with open("data/tokens.txt", "r") as f:
-            tokens = f.read().splitlines()
         os.system('title Helium - Caller')
         user_id = input(console.prompt("User ID"))
         if user_id == "":
@@ -1464,8 +1443,6 @@ class Menu:
 
     @wrapper
     def onliner(self):
-        with open("data/tokens.txt", "r") as f:
-            tokens = f.read().splitlines()
         os.system('title Helium - Onliner')
         for token in tokens:
             threading.Thread(target=self.raider.onliner, args=(token, websocket.WebSocket())).start()
@@ -1474,8 +1451,6 @@ class Menu:
 
     @wrapper
     def typier(self):
-        with open("data/tokens.txt", "r") as f:
-            tokens = f.read().splitlines()
         os.system('title Helium - Typer')
         Link = input(console.prompt(f"Channel LINK"))
         if Link == "":
@@ -1494,8 +1469,6 @@ class Menu:
 
     @wrapper
     def nick_changer(self):
-        with open("data/tokens.txt", "r") as f:
-            tokens = f.read().splitlines()
         os.system('title Helium - Nickname Changer')
         nick = input(console.prompt("Nick"))
         if nick == "":
@@ -1514,8 +1487,6 @@ class Menu:
 
     @wrapper
     def voice_joiner(self):
-        with open("data/tokens.txt", "r") as f:
-            tokens = f.read().splitlines()
         os.system('title Helium - Voice Joiner')
         Link = input(console.prompt("Channel LINK"))
         if Link == "":
@@ -1535,8 +1506,6 @@ class Menu:
 
     @wrapper
     def Thread_Spammer(self):
-        with open("data/tokens.txt", "r") as f:
-            tokens = f.read().splitlines()
         os.system('title Helium - Thread Spammer')
         name = input(console.prompt("Name"))
         if name == "":
@@ -1560,8 +1529,6 @@ class Menu:
 
     @wrapper
     def joiner(self):
-        with open("data/tokens.txt", "r") as f:
-            tokens = f.read().splitlines()
         os.system('title Helium - Joiner')
         invite = input(console.prompt(f"Invite"))
         if invite == "":
@@ -1576,8 +1543,6 @@ class Menu:
 
     @wrapper 
     def leaver(self):
-        with open("data/tokens.txt", "r") as f:
-            tokens = f.read().splitlines()
         os.system('title Helium - Leaver')
         guild = input(console.prompt("Guild ID"))
         if guild == "":
@@ -1591,8 +1556,6 @@ class Menu:
 
     @wrapper
     def spammer(self):
-        with open("data/tokens.txt", "r") as f:
-            tokens = f.read().splitlines()
         os.system('title Helium - Spammer')
         Link = input(console.prompt("Channel LINK"))
         if Link == "":
@@ -1667,8 +1630,6 @@ class Menu:
     
     @wrapper
     def button(self):
-        with open("data/tokens.txt", "r") as f:
-            tokens = f.read().splitlines()
         os.system('title Helium - Clicker')
         message = input(console.prompt("Message Link"))
         if message == "":
@@ -1715,8 +1676,6 @@ class Menu:
 
     @wrapper
     def bio_changer(self):
-        with open("data/tokens.txt", "r") as f:
-            tokens = f.read().splitlines()
         os.system('title Helium - Bio Changer')
         bio = input(console.prompt("Bio"))
         if bio == "":
