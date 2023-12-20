@@ -3,7 +3,6 @@ try:
     from colorama import Fore
     from colorist import ColorHex as h
     from datetime import datetime
-    from os.path import isfile, join
     import base64
     import json
     import random
@@ -17,21 +16,31 @@ try:
 except ModuleNotFoundError:
     os.system('title Helium - Installing dependencies')
     i = 0
-    imports = ['requests', 'colorama', 'websocket', 'websocket-client', 'threading', 'uuid', 'datetime', 'tls_client', 'colorist']
+    imports = [
+        'requests', 
+        'colorama', 
+        'websocket', 
+        'websocket-client', 
+        'threading', 
+        'uuid', 
+        'datetime', 
+        'tls_client', 
+        'colorist'
+    ]
+
     for _import in imports:
         i += 1
         os.system('cls')
-        print(f"Installing dependencies... ({i}/11)")
+        print(f"Installing dependencies... ({i}/9)")
         print(f"installing {_import}")
         os.system(f'pip install {_import} > nul')
     print('Finishing up...')
+    import os
     from colorama import Fore
     from colorist import ColorHex as h
     from datetime import datetime
-    from os.path import isfile, join
     import base64
     import json
-    import os
     import random
     import requests
     import string
@@ -44,7 +53,7 @@ except ModuleNotFoundError:
 os.system('cls')
 os.system('title Helium')
 
-session = tls_client.Session(client_identifier="chrome_119",random_tls_extension_order=True)
+session = tls_client.Session(client_identifier="chrome_120",random_tls_extension_order=True)
 
 def get_random_str(length: int) -> str:
     return "".join(
@@ -89,7 +98,10 @@ class Files:
 
     @staticmethod
     def write_folders():
-        folders = ["data", "scraped"]
+        folders = [
+            "data", 
+            "scraped"
+        ]
         for folder in folders:
             try:
                 if not os.path.exists(folder):
@@ -99,7 +111,10 @@ class Files:
 
     @staticmethod
     def write_files():
-        files = ["tokens.txt", "proxies.txt"]
+        files = [
+            "tokens.txt", 
+            "proxies.txt"
+        ]
         for file in files:
             try:
                 if not os.path.exists(file):
@@ -145,6 +160,7 @@ class Render:
     def render_ascii(self):
         os.system('cls')
         os.system(f"title Helium - Connected as {os.getlogin()}")
+
         edges = ["╗", "║", "╚", "╝", "═", "╔"]
         title = f"""
 {'██╗  ██╗███████╗██╗     ██╗██╗   ██╗███╗   ███╗'.center(self.size)}
@@ -163,13 +179,13 @@ class Render:
             tokens = f.read().splitlines()
         with open("data/proxies.txt") as f:
             proxies = f.read().splitlines()
-        edges = ["─", "╭", "│", "╰", "╯", "╮", "»", "«", "|"]
+        edges = ["─", "╭", "│", "╰", "╯", "╮", "»", "«"]
         title = f"""{' '*44}{Fore.RESET} Loaded ‹{Fore.LIGHTCYAN_EX}{len(tokens)}{Fore.RESET}› tokens | Loaded ‹{Fore.LIGHTCYAN_EX}{len(proxies)}{Fore.RESET}> proxies
 
 {'╭─────────────────────────────────────────────────────────────────────────────────────────────╮'.center(self.size)}
 {'│ «01» Joiner            «06» Token Formatter    «11» Voice Joiner      «16» Call Spammer     │'.center(self.size)}
 {'│ «02» Leaver            «07» Button Click       «12» Change Nickname   «17» Voice Raper      │'.center(self.size)}
-{'│ «03» Spammer           «08» Accept Rules       «13» Thread Spammer    «18» Onboarding Bypass|'.center(self.size)}
+{'│ «03» Spammer           «08» Accept Rules       «13» Thread Spammer    «18» Onboard Bypass   │'.center(self.size)}
 {'│ «04» Token Checker     «09» Guild Check        «14» Friender          «19» Onliner          │'.center(self.size)}
 {'│ «05» Reactor           «10» Bio Changer        «15» Typer             «20» ???              │'.center(self.size)}
 {'╰─────────────────────────────────────────────────────────────────────────────────────────────╯'.center(self.size)}
@@ -258,7 +274,7 @@ class DiscordSocket(websocket.WebSocketApp):
             "Cache-Control": "no-cache",
             "Pragma": "no-cache",
             "Sec-WebSocket-Extensions": "permessage-deflate; client_max_window_bits",
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0",
         }
 
         super().__init__(
@@ -445,7 +461,7 @@ class Raider:
                 "system_locale": "en",
                 "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9027 Chrome/108.0.5359.215 Electron/22.3.26 Safari/537.36",
                 "browser_version": "22.3.26",
-                "client_build_number": 253927,
+                "client_build_number": 254888,
                 "native_build_number": 41465,
                 "client_event_source": None,
             }
@@ -477,8 +493,9 @@ class Raider:
             response = session.post(
                 f"https://canary.discord.com/api/v9/invites/{invite}",
                 headers=self.headers(token),
-                json=payload,
+                json=payload
             )
+
             match response.status_code:
                 case 200:
                     console.log("JOINED", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"{response.json()['guild']['name']}")
@@ -498,7 +515,7 @@ class Raider:
                 for token in tokens:
                     response = session.get(
                         f"https://canary.discord.com/api/v9/guilds/{guild}",
-                        headers=self.headers(token),
+                        headers=self.headers(token)
                     )
 
                     match response.status_code:
@@ -519,7 +536,7 @@ class Raider:
             response = session.delete(
                 f"https://canary.discord.com/api/v9/users/@me/guilds/{guild}",
                 json=payload,
-                headers=self.headers(token),
+                headers=self.headers(token)
             )
 
             match response.status_code:
@@ -588,6 +605,7 @@ class Raider:
                         f"https://canary.discord.com/api/v9/guilds/{guild_id}",
                         headers=self.headers(token),
                     )
+
                     match response.status_code:
                         case 200:
                             in_guild.append(token)
@@ -614,35 +632,38 @@ class Raider:
             console.log("FAILED", C["red"], 'Failed to get Random Members', e)
 
     def spammer(self, token, channel, message=None, guild=None, massping=None, pings=None, emoiyspam=None):
-        while True:
-            if massping:
-                msg = self.get_random_members(guild, int(pings))
-                payload = {
-                    "content": f"{message} {msg}"
-                }
+        try:
+            while True:
+                if massping:
+                    msg = self.get_random_members(guild, int(pings))
+                    payload = {
+                        "content": f"{message} {msg}"
+                    }
+                    
+                else:
+                    payload = {
+                        "content": message
+                    }
                 
-            else:
-                payload = {
-                    "content": message
-                }
-            
-            response = session.post(
-                f"https://canary.discord.com/api/v9/channels/{channel}/messages",
-                headers=self.headers(token),
-                json=payload,
-            )
+                response = session.post(
+                    f"https://canary.discord.com/api/v9/channels/{channel}/messages",
+                    headers=self.headers(token),
+                    json=payload
+                )
 
-            match response.status_code:
-                case 200:
-                    console.log("Sent", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
-                case 429:
-                    retry_after = response.json().get("retry_after")
-                    console.log("RATELIMIT", Fore.LIGHTYELLOW_EX, f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after}s",)
-                    time.sleep(float(retry_after))
-                case _:
-                    console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
-                    return
-                    break
+                match response.status_code:
+                    case 200:
+                        console.log("Sent", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
+                    case 429:
+                        retry_after = response.json().get("retry_after")
+                        console.log("RATELIMIT", Fore.LIGHTYELLOW_EX, f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after}s",)
+                        time.sleep(float(retry_after))
+                    case _:
+                        console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
+                        return
+                        break
+        except Exception as e:
+            console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
     def dyno_massping(self, token, guild, channel, message, count):
         try:
@@ -664,7 +685,7 @@ class Raider:
                 response = session.post(
                     "https://canary.discord.com/api/v9/interactions",
                     headers=headers,
-                    data=data,
+                    data=data
                 )
 
                 match response.status_code:
@@ -691,7 +712,7 @@ class Raider:
                 response = session.post(
                     "https://canary.discord.com/api/v9/interactions",
                     headers=headers,
-                    data=data,
+                    data=data
                 )
 
                 match response.status_code:
@@ -713,7 +734,8 @@ class Raider:
 
         def check_for_guild(token):
             response = session.get(
-                f'https://canary.discord.com/api/v9/guilds/{guild_id}', headers=self.headers(token)
+                f'https://canary.discord.com/api/v9/guilds/{guild_id}', 
+                headers=self.headers(token)
             )
             match response.status_code:
                 case 200:
@@ -724,8 +746,10 @@ class Raider:
         def check_for_channel(token):
             if check_for_guild(token):
                 response = session.get(
-                    f'https://canary.discord.com/api/v9/channels/{channel_id}', headers=self.headers(token)
+                    f'https://canary.discord.com/api/v9/channels/{channel_id}', 
+                    headers=self.headers(token)
                 )
+
                 match response.status_code:
                     case 200:
                         return True
@@ -788,7 +812,7 @@ class Raider:
                 while True:
                     response = session.get(
                         "https://canary.discordapp.com/api/v9/users/@me/library",
-                        headers=self.headers(token),
+                        headers=self.headers(token)
                     )
 
                     match response.status_code:
@@ -825,14 +849,12 @@ class Raider:
                 "around": message_id, 
                 "limit": 50
             }
-            os.system('cls')
-            console.render_ascii()
 
             for token in tokens:
                 response = session.get(
                     f"https://canary.discord.com/api/v9/channels/{channel_id}/messages",
                     headers=self.headers(token),
-                    params=params,
+                    params=params
                 )
 
                 match response.status_code:
@@ -869,11 +891,13 @@ class Raider:
 
             def add_reaction(token):
                 try:
-                    url = f"https://canary.discord.com/api/v9/channels/{channel_id}/messages/{message_id}/reactions/{selected}/@me"
-
                     if emoji_id is None:
                         url += "?location=Message&type=0"
-                    response = session.put(url, headers=self.headers(token))
+
+                    response = session.put(
+                        f"https://canary.discord.com/api/v9/channels/{channel_id}/messages/{message_id}/reactions/{selected}/@me", 
+                        headers=self.headers(token)
+                    )
 
                     match response.status_code:
                         case 204:
@@ -915,8 +939,13 @@ class Raider:
 
     def soundbord(self, token, channel):
         try:
-            sounds = session.get("https://canary.discord.com/api/v9/soundboard-default-sounds", headers=self.headers(token)).json()
+            sounds = session.get(
+                "https://canary.discord.com/api/v9/soundboard-default-sounds",
+                headers=self.headers(token)
+            ).json()
+
             time.sleep(1)
+
             while True:
                 sound = random.choice(sounds)
 
@@ -956,7 +985,7 @@ class Raider:
             response = session.post(
                 "https://canary.discord.com/api/v9/users/@me/channels",
                 headers=self.headers(token),
-                json=payload,
+                json=payload
             )
 
             match response.status_code:
@@ -975,7 +1004,7 @@ class Raider:
 
                 response = session.get(
                     f"https://canary.discord.com/api/v9/channels/{channel_id}/call",
-                    headers=self.headers(token),
+                    headers=self.headers(token)
                 )
 
                 match response.status_code:
@@ -1024,7 +1053,7 @@ class Raider:
             response1 = session.get(
                 f'https://canary.discord.com/api/v9/channels/{channel_id}/messages',
                 params=payload,
-                headers=self.headers(token),
+                headers=self.headers(token)
             )
 
             messages = response1.json()
@@ -1055,7 +1084,7 @@ class Raider:
             response2 = session.post(
                 'https://canary.discord.com/api/v9/interactions',
                 headers=self.headers(token),
-                json=data,
+                json=data
             )
 
             match response2.status_code:
@@ -1072,7 +1101,7 @@ class Raider:
             for token in tokens:
                 value = session.get(
                     f"https://canary.discord.com/api/v9/guilds/{guild_id}/member-verification",
-                    headers=self.headers(token),
+                    headers=self.headers(token)
                 )
 
                 match value.status_code:
@@ -1093,7 +1122,7 @@ class Raider:
                 response = session.put(
                     f"https://canary.discord.com/api/v9/guilds/{guild_id}/requests/@me",
                     headers=self.headers(token),
-                    json=payload,
+                    json=payload
                 )
                 
                 match response.status_code:
@@ -1113,7 +1142,7 @@ class Raider:
             try:
                 response = session.get(
                     f"https://canary.discord.com/api/v9/guilds/{guild_id}",
-                    headers=self.headers(token),
+                    headers=self.headers(token)
                 )
 
                 match response.status_code:
@@ -1145,7 +1174,7 @@ class Raider:
             response = session.patch(
                 "https://canary.discord.com/api/v9/users/@me/profile",
                 headers=self.headers(token),
-                json=payload,
+                json=payload
             )
 
             match response.status_code:
@@ -1168,8 +1197,8 @@ class Raider:
 
             response = session.patch(
                 f"https://canary.discord.com/api/v9/guilds/{guild}/members/@me", 
-                json=payload, 
-                headers=self.headers(token)
+                headers=self.headers(token),
+                json=payload
             )
 
             match response.status_code:
@@ -1193,7 +1222,7 @@ class Raider:
                 response = session.post(
                     f"https://canary.discord.com/api/v9/channels/{channel_id}/threads",
                     headers=self.headers(token),
-                    json=payload,
+                    json=payload
                 )
 
                 match response.status_code:
@@ -1260,7 +1289,7 @@ class Raider:
             for _token in tokens:
                 response = session.get(
                     f"https://canary.discord.com/api/v9/guilds/{guild_id}/onboarding",
-                    headers=self.headers(_token),
+                    headers=self.headers(_token)
                 )
                 match response.status_code:
                     case 200:
@@ -1301,11 +1330,13 @@ class Raider:
                     "onboarding_prompts_seen": onboarding_prompts_seen,
                     "onboarding_responses_seen": onboarding_responses_seen,
                 }
+
                 response = session.post(
                     f"https://canary.discord.com/api/v9/guilds/{guild_id}/onboarding-responses",
                     headers=self.headers(token),
-                    json=json_data,
+                    json=json_data
                 )
+
                 match response.status_code:
                     case 200:
                         console.log("ACCEPTED", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
@@ -1335,7 +1366,7 @@ class Raider:
                 response = session.post(
                     f"https://canary.discord.com/api/v9/guilds/{guild_id}/onboarding-responses",
                     headers=self.headers(token),
-                    json=json_data,
+                    json=json_data
                 )
 
                 match response.status_code:
@@ -1441,13 +1472,12 @@ class Menu:
         for token in tokens:
             threading.Thread(target=self.raider.call_spammer, args=(token, user_id)).start()
 
-    @wrapper
     def onliner(self):
         os.system('title Helium - Onliner')
-        for token in tokens:
-            threading.Thread(target=self.raider.onliner, args=(token, websocket.WebSocket())).start()
-        input()
-        self.main_menu()
+        args = [
+            (token, websocket.WebSocket()) for token in tokens
+        ]
+        self.run(self.raider.onliner, args)
 
     @wrapper
     def typier(self):
@@ -1566,6 +1596,7 @@ class Menu:
             Menu().main_menu()
         guild_id = Link.split("/")[4]
         channel_id = Link.split("/")[5]
+        os.system('cls')
         console.render_ascii()
         massping = input(console.prompt("Massping", True))
         os.system('cls')
