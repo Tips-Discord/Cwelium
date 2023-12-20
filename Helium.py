@@ -158,6 +158,8 @@ class Render:
             self.background = C[color]
 
     def render_ascii(self):
+        with open("data/tokens.txt", "r") as f:
+            tokens = f.read().splitlines()
         os.system('cls')
         os.system(f"title Helium - Connected as {os.getlogin()}")
 
@@ -175,10 +177,10 @@ class Render:
         print(title)
 
     def raider_options(self):
-        with open("data/tokens.txt", "r") as f:
-            tokens = f.read().splitlines()
         with open("data/proxies.txt") as f:
             proxies = f.read().splitlines()
+        with open("data/tokens.txt", "r") as f:
+            tokens = f.read().splitlines()
         edges = ["─", "╭", "│", "╰", "╯", "╮", "»", "«"]
         title = f"""{' '*44}{Fore.RESET} Loaded ‹{Fore.LIGHTCYAN_EX}{len(tokens)}{Fore.RESET}› tokens | Loaded ‹{Fore.LIGHTCYAN_EX}{len(proxies)}{Fore.RESET}> proxies
 
@@ -849,6 +851,8 @@ class Raider:
                 "around": message_id, 
                 "limit": 50
             }
+            os.system('cls')
+            console.render_ascii()
 
             for token in tokens:
                 response = session.get(
@@ -891,13 +895,11 @@ class Raider:
 
             def add_reaction(token):
                 try:
+                    url = f"https://canary.discord.com/api/v9/channels/{channel_id}/messages/{message_id}/reactions/{selected}/@me"
+
                     if emoji_id is None:
                         url += "?location=Message&type=0"
-
-                    response = session.put(
-                        f"https://canary.discord.com/api/v9/channels/{channel_id}/messages/{message_id}/reactions/{selected}/@me", 
-                        headers=self.headers(token)
-                    )
+                    response = session.put(url, headers=self.headers(token))
 
                     match response.status_code:
                         case 204:
@@ -1140,21 +1142,24 @@ class Raider:
         in_guild = []
         def main_checker(token):
             try:
-                response = session.get(
-                    f"https://canary.discord.com/api/v9/guilds/{guild_id}",
-                    headers=self.headers(token)
-                )
+                while True:
+                    response = session.get(
+                        f"https://canary.discord.com/api/v9/guilds/{guild_id}",
+                        headers=self.headers(token)
+                    )
 
-                match response.status_code:
-                    case 200:
-                        console.log("Found", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", guild_id)
-                        in_guild.append(token)
-                    case 429:
-                        retry_after = response.json().get("retry_after")
-                        console.log("RATELIMIT", Fore.LIGHTYELLOW_EX, f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after}s",)
-                        time.sleep(float(retry_after))
-                    case _:
-                        console.log("Not Found", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", guild_id)
+                    match response.status_code:
+                        case 200:
+                            console.log("Found", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", guild_id)
+                            in_guild.append(token)
+                            break
+                        case 429:
+                            retry_after = response.json().get("retry_after")
+                            console.log("RATELIMIT", Fore.LIGHTYELLOW_EX, f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after}s",)
+                            time.sleep(float(retry_after))
+                        case _:
+                            console.log("Not Found", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", guild_id)
+                            break
                 with open("data/tokens.txt", "w") as f:
                     f.write("\n".join(in_guild))
             except Exception as e:
