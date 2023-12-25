@@ -21,7 +21,6 @@ except ModuleNotFoundError:
         'colorama', 
         'websocket', 
         'websocket-client', 
-        'threading', 
         'uuid', 
         'datetime', 
         'tls_client', 
@@ -31,7 +30,7 @@ except ModuleNotFoundError:
     for _import in imports:
         i += 1
         os.system('cls')
-        print(f"Installing dependencies... ({i}/9)")
+        print(f"Installing dependencies... ({i}/8)")
         print(f"installing {_import}")
         os.system(f'pip install {_import} > nul')
     print('Finishing up...')
@@ -437,6 +436,7 @@ class Raider:
     def __init__(self):
         self.cookies = self.get_discord_cookies()
         self.props = self.super_properties()
+        self.non = self.nonce()
         self.ws = websocket.WebSocket()
 
     def get_discord_cookies(self):
@@ -471,6 +471,9 @@ class Raider:
             return properties
         except Exception as e:
             print(f"(ERR): {e} (get_super_properties)")
+
+    def nonce(self):
+        return str((int(time.mktime(datetime.now().timetuple())) * 1000 - 1420070400000) * 4194304)
 
     def headers(self, token):
         return {
@@ -535,17 +538,24 @@ class Raider:
                 "lurking": False,
             }
 
-            response = session.delete(
-                f"https://canary.discord.com/api/v9/users/@me/guilds/{guild}",
-                json=payload,
-                headers=self.headers(token)
-            )
+            while True:
+                response = session.delete(
+                    f"https://canary.discord.com/api/v9/users/@me/guilds/{guild}",
+                    json=payload,
+                    headers=self.headers(token)
+                )
 
-            match response.status_code:
-                case 204:
-                    console.log("LEFT", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", self.guild)
-                case _:
-                    console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
+                match response.status_code:
+                    case 204:
+                        console.log("LEFT", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", self.guild)
+                        break
+                    case 429:
+                        retry_after = response.json().get("retry_after")
+                        console.log("RATELIMIT", Fore.LIGHTYELLOW_EX, f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after}s",)
+                        time.sleep(float(retry_after))
+                    case _:
+                        console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
+                        break
         except Exception as e:
             console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
@@ -639,12 +649,20 @@ class Raider:
                 if massping:
                     msg = self.get_random_members(guild, int(pings))
                     payload = {
-                        "content": f"{message} {msg}"
+                        "content": f"{message} {msg}",
+                        "flags": 0,
+                        "mobile_network_type": "unknown",
+                        "nonce": self.nonce(),
+                        "tts": False,
                     }
                     
                 else:
                     payload = {
-                        "content": message
+                        "content": message,
+                        "flags": 0,
+                        "mobile_network_type": "unknown",
+                        "nonce": self.nonce(),
+                        "tts": False,
                     }
                 
                 response = session.post(
@@ -851,8 +869,6 @@ class Raider:
                 "around": message_id, 
                 "limit": 50
             }
-            os.system('cls')
-            console.render_ascii()
 
             for token in tokens:
                 response = session.get(
@@ -1048,8 +1064,8 @@ class Raider:
     def button_bypass(self, token, message_id, channel_id, guild_id, optionbutton):
         try:
             payload = {
-                'limit': '50',
-                'around': message_id,
+                "limit": "50",
+                "around": message_id,
             }
 
             response1 = session.get(
@@ -1070,16 +1086,17 @@ class Raider:
                 buttons.append(x["components"][0])
 
             data = {
-                'type': 3,
-                'guild_id': guild_id,
-                'channel_id': channel_id,
-                'message_flags': 0,
-                'message_id': message_id,
-                'application_id': messagebottoclick["author"]["id"],
-                'session_id': uuid.uuid4().hex,
-                'data': {
-                    'component_type': 2,
-                    'custom_id': buttons[int(optionbutton)]["custom_id"],
+                "type": 3,
+                "guild_id": guild_id,
+                "channel_id": channel_id,
+                "message_flags": 0,
+                "message_id": message_id,
+                "application_id": messagebottoclick["author"]["id"],
+                "nonce": self.nonce(),
+                "session_id": uuid.uuid4().hex,
+                "data": {
+                    "component_type": 2,
+                    "custom_id": buttons[int(optionbutton)]["custom_id"],
                 },
             }
 
@@ -1175,22 +1192,24 @@ class Raider:
             payload = {
                 "bio": bio
             }
+            while True:
+                response = session.patch(
+                    "https://canary.discord.com/api/v9/users/@me/profile",
+                    headers=self.headers(token),
+                    json=payload
+                )
 
-            response = session.patch(
-                "https://canary.discord.com/api/v9/users/@me/profile",
-                headers=self.headers(token),
-                json=payload
-            )
-
-            match response.status_code:
-                case 200:
-                    console.log("Changed", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", bio)
-                case 429:
-                    retry_after = response.json().get("retry_after")
-                    console.log("RATELIMIT", Fore.LIGHTYELLOW_EX, f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after}s",)
-                    time.sleep(float(retry_after))
-                case _:
-                    console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
+                match response.status_code:
+                    case 200:
+                        console.log("Changed", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", bio)
+                        break
+                    case 429:
+                        retry_after = response.json().get("retry_after")
+                        console.log("RATELIMIT", Fore.LIGHTYELLOW_EX, f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after}s",)
+                        time.sleep(float(retry_after))
+                    case _:
+                        console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
+                        break
         except Exception as e:
             console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
@@ -1200,17 +1219,24 @@ class Raider:
                 'nick' : nick
             }
 
-            response = session.patch(
-                f"https://canary.discord.com/api/v9/guilds/{guild}/members/@me", 
-                headers=self.headers(token),
-                json=payload
-            )
+            while True:
+                response = session.patch(
+                    f"https://canary.discord.com/api/v9/guilds/{guild}/members/@me", 
+                    headers=self.headers(token),
+                    json=payload
+                )
 
-            match response.status_code:
-                case 200:
-                    print(f"{Fore.RESET}[{datetime.now().strftime(f'{Fore.LIGHTBLACK_EX}%H:%M:%S{Fore.RESET}')}] {Fore.RESET}[{Fore.LIGHTCYAN_EX}Success{Fore.RESET}] {Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
-                case _:
-                    console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
+                match response.status_code:
+                    case 200:
+                        print(f"{Fore.RESET}[{datetime.now().strftime(f'{Fore.LIGHTBLACK_EX}%H:%M:%S{Fore.RESET}')}] {Fore.RESET}[{Fore.LIGHTCYAN_EX}Success{Fore.RESET}] {Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
+                        break
+                    case 429:
+                        retry_after = response.json().get("retry_after")
+                        console.log("RATELIMIT", Fore.LIGHTYELLOW_EX, f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after}s",)
+                        time.sleep(float(retry_after))
+                    case _:
+                        console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
+                        break
         except Exception as e:
             console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
@@ -1255,6 +1281,10 @@ class Raider:
                     case 204:
                         print(f"{datetime.now().strftime(f'{Fore.LIGHTBLACK_EX}%H:%M:%S')}{Fore.RESET}    {Fore.RESET}[{Fore.GREEN}Success{Fore.RESET}]   {Fore.LIGHTBLACK_EX}->   {Fore.RESET}Typing {Fore.CYAN}{token[:25]}{Fore.LIGHTBLACK_EX}****{Fore.RESET}")
                         time.sleep(9)
+                    case 429:
+                        retry_after = response.json().get("retry_after")
+                        console.log("RATELIMIT", Fore.LIGHTYELLOW_EX, f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after}s",)
+                        time.sleep(float(retry_after))
                     case _:
                         console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
                         break
