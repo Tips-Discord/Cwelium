@@ -33,7 +33,7 @@ You are free to distribute and modify this program under the [GPL V2 License](ht
 # Installation
 ### Requirements
 A [Brain](https://www.cancer.gov/publications/dictionaries/cancer-terms/def/brain)
-And [Python 3.11](https://www.python.org/downloads/release/python-3113/)
+And [Python 3.11](https://www.python.org/downloads/release/python-3114/)
 
 ## ✍️ Usage
 <p align="center">
