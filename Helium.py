@@ -26,7 +26,6 @@ except ModuleNotFoundError:
         'tls_client', 
         'colorist'
     ]
-
     for _import in imports:
         i += 1
         os.system('cls')
@@ -34,7 +33,6 @@ except ModuleNotFoundError:
         print(f"installing {_import}")
         os.system(f'pip install {_import} > nul')
     print('Finishing up...')
-    import os
     from colorama import Fore
     from colorist import ColorHex as h
     from datetime import datetime
@@ -134,13 +132,13 @@ with open("data/proxies.txt") as f:
     proxies = f.read().splitlines()
 
 with open("config.json") as f:
-    config = json.load(f)
+    Config = json.load(f)
 
 with open("data/tokens.txt", "r") as f:
     tokens = f.read().splitlines()
 
-proxy = config["Proxies"]
-color = config["Color"]
+proxy = Config["Proxies"]
+color = Config["Color"]
 
 if proxy:
     session.proxies = {
@@ -181,11 +179,11 @@ class Render:
         title = f"""{' '*44}{Fore.RESET} Loaded ‹{Fore.LIGHTCYAN_EX}{len(tokens)}{Fore.RESET}› tokens | Loaded ‹{Fore.LIGHTCYAN_EX}{len(proxies)}{Fore.RESET}> proxies
 
 {'╭─────────────────────────────────────────────────────────────────────────────────────────────╮'.center(self.size)}
-{'│ «01» Joiner            «06» Token Formatter    «11» Voice Joiner      «16» Call Spammer     │'.center(self.size)}
-{'│ «02» Leaver            «07» Button Click       «12» Change Nickname   «17» Voice Raper      │'.center(self.size)}
-{'│ «03» Spammer           «08» Accept Rules       «13» Thread Spammer    «18» Onboard Bypass   │'.center(self.size)}
-{'│ «04» Token Checker     «09» Guild Check        «14» Friender          «19» Onliner          │'.center(self.size)}
-{'│ «05» Reactor           «10» Bio Changer        «15» Typer             «20» ???              │'.center(self.size)}
+{'│ «01» Joiner            «06» Token Formatter    «11» Onliner           «16» Call Spammer     │'.center(self.size)}
+{'│ «02» Leaver            «07» Button Click       «12» Voice Raper       «17» Bio Change       │'.center(self.size)}
+{'│ «03» Spammer           «08» Accept Rules       «13» Change Nick       «18» Voice Joiner     │'.center(self.size)}
+{'│ «04» Token Checker     «09» Guild Check        «14» Thread Spammer    «19» Onboard Bypass   │'.center(self.size)}
+{'│ «05» Emoji Reaction    «10» Friend Spam        «15» Typer             «20» ???              │'.center(self.size)}
 {'╰─────────────────────────────────────────────────────────────────────────────────────────────╯'.center(self.size)}
 """
         for edge in edges:
@@ -207,7 +205,7 @@ class Render:
         print(response)
 
     def prompt(self, text, ask=None):
-        response = f"[{C['light_blue']}{text}{C['white']}"
+        response = f"[{C[f'{color}']}{text}{C['white']}"
         if ask:
             response += f"? {C['gray']}(y/n){C['white']}]: "
         else:
@@ -272,7 +270,7 @@ class DiscordSocket(websocket.WebSocketApp):
             "Cache-Control": "no-cache",
             "Pragma": "no-cache",
             "Sec-WebSocket-Extensions": "permessage-deflate; client_max_window_bits",
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
         }
 
         super().__init__(
@@ -314,7 +312,7 @@ class DiscordSocket(websocket.WebSocketApp):
         self.send(
             '{"op":2,"d":{"token":"'
             + self.token
-            + '","capabilities":125,"properties":{"os":"Windows NT","browser":"Chrome","device":"","system_locale":"it-IT","browser_user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36","browser_version":"119.0","os_version":"10","referrer":"","referring_domain":"","referrer_current":"","referring_domain_current":"","release_channel":"stable","client_build_number":103981,"client_event_source":null},"presence":{"status":"online","since":0,"activities":[],"afk":false},"compress":false,"client_state":{"guild_hashes":{},"highest_last_message_id":"0","read_state_version":0,"user_guild_settings_version":-1,"user_settings_version":-1}}}'
+            + '","capabilities":125,"properties":{"os":"Windows NT","browser":"Chrome","device":"","system_locale":"it-IT","browser_user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36","browser_version":"119.0","os_version":"10","referrer":"","referring_domain":"","referrer_current":"","referring_domain_current":"","release_channel":"stable","client_build_number":103981,"client_event_source":null},"presence":{"status":"online","since":0,"activities":[],"afk":false},"compress":false,"client_state":{"guild_hashes":{},"highest_last_message_id":"0","read_state_version":0,"user_guild_settings_version":-1,"user_settings_version":-1}}}'
         )
 
     def heartbeatThread(self, interval):
@@ -499,7 +497,7 @@ class Raider:
 
             match response.status_code:
                 case 200:
-                    console.log("JOINED", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"{response.json()['guild']['name']}")
+                    console.log(f"JOINED", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"{response.json()['guild']['name']}")
                 case 400:
                     console.log("CAPTCHA", C["yellow"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"discord.gg/{invite}")
                 case 429:
@@ -1295,7 +1293,7 @@ class Raider:
             }
 
             response = session.post(
-                f"https://discord.com/api/v9/users/@me/relationships", 
+                f"https://canary.discord.com/api/v9/users/@me/relationships", 
                 headers=self.headers(token), 
                 json=payload
             )
@@ -1420,15 +1418,15 @@ class Menu:
             "8": self.accept,
             "9": self.guild,
             "10": self.bio_changer,
-            "11": self.voice_joiner,
-            "12": self.nick_changer,
-            "13": self.Thread_Spammer,
-            "14": self.friender,
+            "11": self.onliner,
+            "12": self.soundbord,
+            "13": self.nick_changer,
+            "14": self.Thread_Spammer,
             "15": self.typier,
             "16": self.caller,
-            "17": self.soundbord,
-            "18": self.onboard,
-            "19": self.onliner,
+            "17": self.bio_changer,
+            "18": self.voice_joiner,
+            "19": self.onboard,
         }
 
     def main_menu(self, _input=None):
@@ -1441,7 +1439,6 @@ class Menu:
             self.options[choice]()
         else:
             self.main_menu()
-
 
     def run(self, func, args):
         threads = []
@@ -1613,7 +1610,7 @@ class Menu:
     @wrapper
     def spammer(self):
         os.system('title Helium - Spammer')
-        Link = input(console.prompt("Channel LINK"))
+        Link = input(console.prompt(f"Channel LINK"))
         if Link == "":
             Menu().main_menu()
         if Link.startswith("https://"):
@@ -1700,7 +1697,7 @@ class Menu:
         message_id = message.split("/")[6]
         os.system('cls')
         console.render_ascii()
-        print(f"{Fore.RESET}If there's 1 button {Fore.LIGHTCYAN_EX}press Enter{Fore.RESET}, if you want to click a second button, just type 1 or more.")
+        print(f"{Fore.RESET}If there's 1 button {Fore.LIGHTCYAN_EX}press Enter{Fore.RESET}")
         optionbutton = input(f"{Fore.RESET}[{Fore.LIGHTCYAN_EX}Button Option{Fore.RESET}] → ")
         if optionbutton == "":
             optionbutton = 0
