@@ -90,7 +90,7 @@ class Files:
                 with open("config.json", "w") as f:
                     json.dump(data, f, indent=4)
         except Exception as e:
-            console.log("FAILED", C["red"], "Failed to Write Config", e)
+            print("FAILED", C["red"], "Failed to Write Config", e)
 
     @staticmethod
     def write_folders():
@@ -103,7 +103,7 @@ class Files:
                 if not os.path.exists(folder):
                     os.mkdir(folder)
             except Exception as e:
-                console.log("FAILED", C["red"], "Failed to Write Folders", e)
+                print("FAILED", C["red"], "Failed to Write Folders", e)
 
     @staticmethod
     def write_files():
@@ -117,7 +117,7 @@ class Files:
                     with open(f"data/{file}", "a") as f:
                         f.close()
             except Exception as e:
-                console.log("FAILED", C["red"], "Failed to Write Files", e)
+                print("FAILED", C["red"], "Failed to Write Files", e)
 
     @staticmethod
     def run_tasks():
@@ -442,7 +442,7 @@ class Raider:
                 case _:
                     return "__dcfduid=4e0a8d504a4411eeb88f7f88fbb5d20a; __sdcfduid=4e0a8d514a4411eeb88f7f88fbb5d20ac488cd4896dae6574aaa7fbfb35f5b22b405bbd931fdcb72c21f85b263f61400; __cfruid=f6965e2d30c244553ff3d4203a1bfdabfcf351bd-1699536665; _cfuvid=rNaPQ7x_qcBwEhO_jNgXapOMoUIV2N8FA_8lzPV89oM-1699536665234-0-604800000; locale=en-US"
         except Exception as e:
-            console.log(C["red"], "(ERR)", e, "(get_discord_cookies)")
+            print(C["red"], "(ERR)", e, "(get_discord_cookies)")
 
     def super_properties(self):
         try:
@@ -462,7 +462,7 @@ class Raider:
             properties = base64.b64encode(json.dumps(payload).encode()).decode()
             return properties
         except Exception as e:
-            console.log(C["red"], "(ERR)", e, "(get_super_properties)")
+            print(C["red"], "(ERR)", e, "(get_super_properties)")
 
     def headers(self, token):
         return {
@@ -495,15 +495,15 @@ class Raider:
 
             match response.status_code:
                 case 200:
-                    console.log(f"JOINED", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"{response.json()['guild']['name']}")
+                    print(f"JOINED", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"{response.json()['guild']['name']}")
                 case 400:
-                    console.log("CAPTCHA", C["yellow"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"discord.gg/{invite}")
+                    print("CAPTCHA", C["yellow"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"discord.gg/{invite}")
                 case 429:
-                    console.log("CLOUDFARE", C["magenta"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"discord.gg/{invite}")
+                    print("CLOUDFARE", C["magenta"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"discord.gg/{invite}")
                 case _:
-                    console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
+                    print("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
         except Exception as e:
-            console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
+            print("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
     def leaver(self, token, guild):
         try:
@@ -539,17 +539,17 @@ class Raider:
 
                 match response.status_code:
                     case 204:
-                        console.log("LEFT", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", self.guild)
+                        print("LEFT", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", self.guild)
                         break
                     case 429:
                         retry_after = response.json().get("retry_after")
-                        console.log("RATELIMIT", Fore.LIGHTYELLOW_EX, f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after}s",)
+                        print("RATELIMIT", Fore.LIGHTYELLOW_EX, f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after}s",)
                         time.sleep(float(retry_after))
                     case _:
-                        console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
+                        print("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
                         break
         except Exception as e:
-            console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
+            print("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
     def vc_joiner(self, token, guild, channel, ws):
         try:
@@ -575,9 +575,9 @@ class Raider:
                         "self_deaf": False
                     }
                 }))
-                console.log(C["light_blue"], "Joined", f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
+                print(C["light_blue"], "Joined", f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
         except Exception as e:
-            console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
+            print("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
     def onliner(self, token, ws):
         try:
@@ -595,9 +595,9 @@ class Raider:
                     }
                 )
             )
-            console.log(C["light_blue"], "Onlined", f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
+            print(C["light_blue"], "Onlined", f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
         except Exception as e:
-            console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
+            print("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
     def member_scrape(self, guild_id, channel_id):
         try:
@@ -616,13 +616,13 @@ class Raider:
                             break
 
                 if not in_guild:
-                    console.log("Failed", C["red"], "Missing Access")
+                    print("Failed", C["red"], "Missing Access")
                 token = random.choice(in_guild)
                 members = scrape(token, guild_id, channel_id)
                 with open(f"scraped/{guild_id}.txt", "a") as f:
                     f.write("\n".join(members))
         except Exception as e:
-            console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
+            print("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
     def get_random_members(self, guild_id, count):
         try:
@@ -633,7 +633,7 @@ class Raider:
                 message += f"<@!{random.choice(members)}>"
             return message
         except Exception as e:
-            console.log("FAILED", C["red"], 'Failed to get Random Members', e)
+            print("FAILED", C["red"], 'Failed to get Random Members', e)
 
     def spammer(self, token, channel, message=None, guild=None, massping=None, pings=None):
         try:
@@ -665,17 +665,17 @@ class Raider:
 
                 match response.status_code:
                     case 200:
-                        console.log("Sent", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
+                        print("Sent", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
                     case 429:
                         retry_after = response.json().get("retry_after")
-                        console.log("RATELIMIT", Fore.LIGHTYELLOW_EX, f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after}s",)
+                        print("RATELIMIT", Fore.LIGHTYELLOW_EX, f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after}s",)
                         time.sleep(float(retry_after))
                     case _:
-                        console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
+                        print("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
                         return
                         break
         except Exception as e:
-            console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
+            print("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
     def dyno_massping(self, token, guild, channel, message, count):
         try:
@@ -702,13 +702,13 @@ class Raider:
 
                 match response.status_code:
                     case 204:
-                        console.log("TAG", C["magenta"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", tag)
+                        print("TAG", C["magenta"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", tag)
                     case 429:
                         retry_after = response.json().get("retry_after")
-                        console.log("RATELIMIT", Fore.LIGHTYELLOW_EX, f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after}s",)
+                        print("RATELIMIT", Fore.LIGHTYELLOW_EX, f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after}s",)
                         time.sleep(float(retry_after))
                     case _:
-                        console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
+                        print("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
                         return
                 time.sleep(5)
 
@@ -729,17 +729,17 @@ class Raider:
 
                 match response.status_code:
                     case 204:
-                        console.log("SENT", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", tag)
+                        print("SENT", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", tag)
                     case 429:
                         retry_after = response.json().get("retry_after")
-                        console.log("RATELIMIT", Fore.LIGHTYELLOW_EX, f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after}s",)
+                        print("RATELIMIT", Fore.LIGHTYELLOW_EX, f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after}s",)
                         time.sleep(float(retry_after))
                     case _:
-                        console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
+                        print("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
                         return
                 time.sleep(5)
         except Exception as e:
-            console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
+            print("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
     def join_voice_channel(self, guild_id, channel_id):
         ws = websocket.WebSocket()
@@ -753,7 +753,7 @@ class Raider:
                 case 200:
                     return True
                 case _:
-                    console.log("Failed", C["red"], "Missing Access")
+                    print("Failed", C["red"], "Missing Access")
 
         def check_for_channel(token):
             if check_for_guild(token):
@@ -770,10 +770,10 @@ class Raider:
 
         def run(token):
             if check_for_channel(token):
-                console.log('Joined', C['green'], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", channel_id)
+                print('Joined', C['green'], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", channel_id)
                 self.voice_spammer(token, ws, guild_id, channel_id, True)
             else:
-                console.log('Failed', C['red'], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", channel_id)
+                print('Failed', C['red'], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", channel_id)
 
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
@@ -817,7 +817,7 @@ class Raider:
             if close:
                 ws.close()
         except Exception as e:
-            console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
+            print("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
     def token_checker(self):
         valid = []
@@ -831,23 +831,23 @@ class Raider:
 
                     match response.status_code:
                         case 200:
-                            console.log("Valid", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
+                            print("Valid", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
                             valid.append(token)
                             break
                         case 403:
-                            console.log("LOCKED", C["yellow"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
+                            print("LOCKED", C["yellow"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
                             break
                         case 429:
                             retry_after = response.json().get('retry_after')
-                            console.log("RATELIMITED", C["pink"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"{retry_after}s")
+                            print("RATELIMITED", C["pink"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"{retry_after}s")
                             time.sleep(retry_after)
                         case _:
-                            console.log("Invalid", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
+                            print("Invalid", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
                             break
                 with open("data/tokens.txt", "w") as f:
                     f.write("\n".join(valid))
             except Exception as e:
-                console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
+                print("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
@@ -881,7 +881,7 @@ class Raider:
                         break
 
             if not access_token:
-                console.log("Failed", C["red"], "Missing Permissions")
+                print("Failed", C["red"], "Missing Permissions")
                 Menu().main_menu(True)
             else:
                 data = response.json()
@@ -898,7 +898,7 @@ class Raider:
                                 else:
                                     emojis.append(f"{emoji_name}:{emoji_id}")
                             else:
-                                console.log("Failed", C["red"], "No reactions Found in this message",)
+                                print("Failed", C["red"], "No reactions Found in this message",)
                                 Menu().main_menu(True)
 
                 for i, emoji in enumerate(emojis, start=1):
@@ -917,11 +917,11 @@ class Raider:
 
                     match response.status_code:
                         case 204:
-                            console.log("Reacted", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", selected)
+                            print("Reacted", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", selected)
                         case _:
-                            console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
+                            print("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
                 except Exception as e:
-                    console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
+                    print("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
             with open("data/tokens.txt", "r") as f:
                 tokens = f.read().splitlines()
@@ -931,7 +931,7 @@ class Raider:
             Menu().run(add_reaction, args)
 
         except Exception as e:
-            console.log("FAILED", C["red"], "Failed to get emojis", e)
+            print("FAILED", C["red"], "Failed to get emojis", e)
             Menu().main_menu(True)
 
             def add_reaction(token):
@@ -944,11 +944,11 @@ class Raider:
 
                     match response.status_code:
                         case 204:
-                            console.log("REACTED", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", selected)
+                            print("REACTED", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", selected)
                         case _:
-                            console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
+                            print("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
                 except Exception as e:
-                    console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
+                    print("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
             with open("data/tokens.txt", "r") as f:
                 tokens = f.read().splitlines()
@@ -985,16 +985,16 @@ class Raider:
 
                 match response.status_code:
                     case 204:
-                        console.log(C["light_blue"], f"Successfully played sound {Fore.YELLOW}{name}", f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
+                        print(C["light_blue"], f"Successfully played sound {Fore.YELLOW}{name}", f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
                     case 429:
                         retry_after = response.json().get("retry_after")
-                        console.log("RATELIMIT", Fore.LIGHTYELLOW_EX, f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after}s",)
+                        print("RATELIMIT", Fore.LIGHTYELLOW_EX, f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after}s",)
                         time.sleep(float(retry_after))
                     case _:
-                        console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
+                        print("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
                 time.sleep(random.uniform(0.56, 0.75))
         except Exception as e:
-            console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
+            print("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
     def open_dm(self, token, user_id):
         try:
@@ -1012,10 +1012,10 @@ class Raider:
                 case 200:
                     return response.json()["id"]
                 case _:
-                    console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
+                    print("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
                     return
         except Exception as e:
-            console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
+            print("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
     def call_spammer(self, token, user_id):
         try:
@@ -1029,15 +1029,15 @@ class Raider:
 
                 match response.status_code:
                     case 200:
-                        console.log("Called", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", user_id)
+                        print("Called", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", user_id)
                         ws = websocket.WebSocket()
                         self.voice_spammer(token, ws, None, channel_id, True)
                     case _:
-                        console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
+                        print("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
                         return
                 time.sleep(5)
         except Exception as e:
-            console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
+            print("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
     def format_tokens(self):
         try:
@@ -1054,14 +1054,14 @@ class Raider:
                     else:
                         formatted.append(token)
 
-            console.log("SUCCESS", C["green"], f"Formatted {len(formatted)} tokens")
+            print("SUCCESS", C["green"], f"Formatted {len(formatted)} tokens")
 
             with open("data/tokens.txt", "w") as f:
                 for token in formatted:
                     f.write(f"{token}\n")
             Menu().main_menu()
         except Exception as e:
-            console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
+            print("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
     def button_bypass(self, token, message_id, channel_id, guild_id, optionbutton):
         try:
@@ -1110,11 +1110,11 @@ class Raider:
 
             match respons.status_code:
                 case 204:
-                    console.log("SUCCESS", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
+                    print("SUCCESS", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
                 case _:
-                    console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", respons.json().get("message"))
+                    print("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", respons.json().get("message"))
         except Exception as e:
-            console.log("FAILED", C["red"], "Failed to Click Button", e)
+            print("FAILED", C["red"], "Failed to Click Button", e)
 
     def accept_rules(self, guild_id):
         try:
@@ -1134,11 +1134,11 @@ class Raider:
                         break
 
             if not valid:
-                console.log("FAILED", C["red"], "All tokens are Invalid")
+                print("FAILED", C["red"], "All tokens are Invalid")
                 Menu().main_menu(True)
 
         except Exception as e:
-            console.log("FAILED", C["red"], "Failed to Accept Rules", e)
+            print("FAILED", C["red"], "Failed to Accept Rules", e)
 
         def run_main(token):
             try:
@@ -1150,11 +1150,11 @@ class Raider:
                 
                 match response.status_code:
                     case 201:
-                        console.log("ACCEPTED", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", guild_id)
+                        print("ACCEPTED", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", guild_id)
                     case _:
-                        console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
+                        print("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
             except Exception as e:
-                console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
+                print("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
@@ -1175,20 +1175,20 @@ class Raider:
 
                     match response.status_code:
                         case 200:
-                            console.log("Found", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", guild_id)
+                            print("Found", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", guild_id)
                             in_guild.append(token)
                             break
                         case 429:
                             retry_after = response.json().get("retry_after")
-                            console.log("RATELIMIT", Fore.LIGHTYELLOW_EX, f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after}s",)
+                            print("RATELIMIT", Fore.LIGHTYELLOW_EX, f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after}s",)
                             time.sleep(float(retry_after))
                         case _:
-                            console.log("Not Found", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", guild_id)
+                            print("Not Found", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", guild_id)
                             break
                 with open("data/tokens.txt", "w") as f:
                     f.write("\n".join(in_guild))
             except Exception as e:
-                console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
+                print("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
@@ -1211,17 +1211,17 @@ class Raider:
 
                 match response.status_code:
                     case 200:
-                        console.log("Changed", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", bio)
+                        print("Changed", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", bio)
                         break
                     case 429:
                         retry_after = response.json().get("retry_after")
-                        console.log("RATELIMIT", Fore.LIGHTYELLOW_EX, f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after}s",)
+                        print("RATELIMIT", Fore.LIGHTYELLOW_EX, f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after}s",)
                         time.sleep(float(retry_after))
                     case _:
-                        console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
+                        print("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
                         break
         except Exception as e:
-            console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
+            print("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
     def mass_nick(self, token, guild, nick):
         try:
@@ -1238,17 +1238,17 @@ class Raider:
 
                 match response.status_code:
                     case 200:
-                        console.log("SUCCESS", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
+                        print("SUCCESS", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
                         break
                     case 429:
                         retry_after = response.json().get("retry_after")
-                        console.log("RATELIMIT", Fore.LIGHTYELLOW_EX, f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after}s",)
+                        print("RATELIMIT", Fore.LIGHTYELLOW_EX, f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after}s",)
                         time.sleep(float(retry_after))
                     case _:
-                        console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
+                        print("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
                         break
         except Exception as e:
-            console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
+            print("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
     def thread_spammer(self, token, channel_id, name):
         try:
@@ -1268,16 +1268,16 @@ class Raider:
 
                 match response.status_code:
                     case 201:
-                        console.log("CREATED", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", name)
+                        print("CREATED", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", name)
                     case 429:
                         retry_after = response.json().get("retry_after")
-                        console.log("RATELIMIT", Fore.LIGHTYELLOW_EX, f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after}s",)
+                        print("RATELIMIT", Fore.LIGHTYELLOW_EX, f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after}s",)
                         time.sleep(float(retry_after))
                     case _:
-                        console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
+                        print("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
                         break
         except Exception as e:
-            console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
+            print("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
     def typier(self, token, channelid):
         try:
@@ -1289,17 +1289,17 @@ class Raider:
 
                 match response.status_code: 
                     case 204:
-                        console.log("SUCCESS", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
+                        print("SUCCESS", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
                         time.sleep(9)
                     case 429:
                         retry_after = response.json().get("retry_after")
-                        console.log("RATELIMIT", Fore.LIGHTYELLOW_EX, f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after}s",)
+                        print("RATELIMIT", Fore.LIGHTYELLOW_EX, f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after}s",)
                         time.sleep(float(retry_after))
                     case _:
-                        console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
+                        print("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
                         break
         except Exception as e:
-            console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
+            print("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
     def friender(self, token, nickname):
         try:
@@ -1315,13 +1315,13 @@ class Raider:
 
             match response.status_code:
                 case 204:
-                    console.log(f"SUCCESS -> added {nickname}", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
+                    print(f"SUCCESS -> added {nickname}", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
                 case 400:
-                    console.log("CAPTCHA", C["yellow"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json())
+                    print("CAPTCHA", C["yellow"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json())
                 case _:
-                    console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json())
+                    print("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json())
         except Exception as e:
-            console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
+            print("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
     def onboard_bypass(self, guild_id):
         try:
@@ -1341,7 +1341,7 @@ class Raider:
                         break
 
             if not in_guild:
-                console.log("FAILED", C["red"], "Missing Access")
+                print("FAILED", C["red"], "Missing Access")
                 Menu().main_menu(True)
             else:
                 data = response.json()
@@ -1356,7 +1356,7 @@ class Raider:
                         if prompt:
                             onboarding_responses_seen[prompt["id"]] = now
                         else:
-                            console.log(
+                            print(
                                 "FAILED",
                                 C["red"],
                                 "No onboarding in This Server",
@@ -1364,7 +1364,7 @@ class Raider:
                             Menu().main_menu(True)
 
         except Exception as e:
-            console.log("FAILED", C["red"], "Failed to Pass Onboard", e)
+            print("FAILED", C["red"], "Failed to Pass Onboard", e)
             Menu().main_menu(True)
 
         def run_task(token):
@@ -1383,11 +1383,11 @@ class Raider:
 
                 match response.status_code:
                     case 200:
-                        console.log("ACCEPTED", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
+                        print("ACCEPTED", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
                     case _:
-                        console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
+                        print("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
             except Exception as e:
-                console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
+                print("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
@@ -1412,11 +1412,11 @@ class Raider:
 
                 match response.status_code:
                     case 200:
-                        console.log("ACCEPTED", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
+                        print("ACCEPTED", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
                     case _:
-                        console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
+                        print("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
             except Exception as e:
-                console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
+                print("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
