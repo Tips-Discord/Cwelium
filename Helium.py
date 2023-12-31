@@ -14,7 +14,7 @@ try:
     import uuid
     import websocket
 except ModuleNotFoundError:
-    os.system('title Helium - Installing dependencies')
+    print('Helium - Installing dependencies')
     i = 0
     imports = [
         'requests', 
