@@ -637,7 +637,7 @@ class Raider:
         except Exception as e:
             console.log("FAILED", C["red"], 'Failed to get Random Members', e)
 
-    def spammer(self, token, channel, message=None, guild=None, massping=None, pings=None, emoiyspam=None):
+    def spammer(self, token, channel, message=None, guild=None, massping=None, pings=None):
         try:
             while True:
                 if massping:
@@ -777,6 +777,8 @@ class Raider:
             else:
                 console.log('Failed', C['red'], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", channel_id)
 
+        with open("data/tokens.txt", "r") as f:
+            tokens = f.read().splitlines()
         args = [
             (token, ) for token in tokens
         ]
@@ -849,6 +851,8 @@ class Raider:
             except Exception as e:
                 console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
+        with open("data/tokens.txt", "r") as f:
+            tokens = f.read().splitlines()
         args = [
             (token, ) for token in tokens
         ]
@@ -858,6 +862,8 @@ class Raider:
         try:
             access_token = []
             emojis = []
+            with open("data/tokens.txt", "r") as f:
+                tokens = f.read().splitlines()
 
             params = {
                 "around": message_id, 
@@ -919,6 +925,8 @@ class Raider:
                 except Exception as e:
                     console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
+            with open("data/tokens.txt", "r") as f:
+                tokens = f.read().splitlines()
             args = [
                 (token,) for token in tokens
             ]
@@ -944,6 +952,8 @@ class Raider:
                 except Exception as e:
                     console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
+            with open("data/tokens.txt", "r") as f:
+                tokens = f.read().splitlines()
             args = [
                 (token) for token in tokens
             ]
@@ -1111,6 +1121,8 @@ class Raider:
     def accept_rules(self, guild_id):
         try:
             valid = []
+            with open("data/tokens.txt", "r") as f:
+                tokens = f.read().splitlines()
             for token in tokens:
                 value = session.get(
                     f"https://canary.discord.com/api/v9/guilds/{guild_id}/member-verification",
@@ -1146,7 +1158,11 @@ class Raider:
             except Exception as e:
                 console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
-        args = [(token, ) for token in tokens]
+        with open("data/tokens.txt", "r") as f:
+            tokens = f.read().splitlines()
+        args = [
+            (token, ) for token in tokens
+        ]
         Menu().run(run_main, args)
 
     def guild_checker(self, guild_id):
@@ -1176,6 +1192,8 @@ class Raider:
             except Exception as e:
                 console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
+        with open("data/tokens.txt", "r") as f:
+            tokens = f.read().splitlines()
         args = [
             (token, ) for token in tokens
         ]
@@ -1289,7 +1307,6 @@ class Raider:
         try:
             payload = {
                 'username': nickname,
-                'discriminator': None,
             }
 
             response = session.post(
@@ -1374,6 +1391,8 @@ class Raider:
             except Exception as e:
                 console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
+        with open("data/tokens.txt", "r") as f:
+            tokens = f.read().splitlines()
         args = [
             (token,) for token in tokens
         ]
@@ -1401,7 +1420,11 @@ class Raider:
             except Exception as e:
                 console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
-        args = [(token,) for token in tokens]
+        with open("data/tokens.txt", "r") as f:
+            tokens = f.read().splitlines()
+        args = [
+            (token,) for token in tokens
+        ]
         Menu().run(run_task, args)
 
 class Menu:
@@ -1417,7 +1440,7 @@ class Menu:
             "7": self.button,
             "8": self.accept,
             "9": self.guild,
-            "10": self.bio_changer,
+            "10": self.friender,
             "11": self.onliner,
             "12": self.soundbord,
             "13": self.nick_changer,
@@ -1467,6 +1490,8 @@ class Menu:
         guild = Link.split("/")[4]
         os.system('cls')
         console.render_ascii()
+        with open("data/tokens.txt", "r") as f:
+            tokens = f.read().splitlines()
         for token in tokens:
             threading.Thread(target=self.raider.vc_joiner, args=(token, guild, channel, websocket.WebSocket())).start()
             threading.Thread(target=self.raider.soundbord, args=(token, channel)).start()
@@ -1479,6 +1504,8 @@ class Menu:
             Menu().main_menu()
         os.system('cls')
         console.render_ascii()
+        with open("data/tokens.txt", "r") as f:
+            tokens = f.read().splitlines()
         args = [
             (token, nickname) for token in tokens
         ]
@@ -1492,6 +1519,8 @@ class Menu:
             Menu().main_menu()
         os.system('cls')
         console.render_ascii()
+        with open("data/tokens.txt", "r") as f:
+            tokens = f.read().splitlines()
         for token in tokens:
             threading.Thread(target=self.raider.call_spammer, args=(token, user_id)).start()
 
@@ -1515,6 +1544,8 @@ class Menu:
         channelid = Link.split("/")[5]
         os.system('cls')
         console.render_ascii()
+        with open("data/tokens.txt", "r") as f:
+            tokens = f.read().splitlines()
         args = [
             (token, channelid) for token in tokens
         ]
@@ -1533,6 +1564,8 @@ class Menu:
             Menu().main_menu()
         os.system('cls')
         console.render_ascii()
+        with open("data/tokens.txt", "r") as f:
+            tokens = f.read().splitlines()
         args = [
             (token, guild, nick) for token in tokens
         ]
@@ -1552,6 +1585,8 @@ class Menu:
         channel = Link.split("/")[5]
         os.system('cls')
         console.render_ascii()
+        with open("data/tokens.txt", "r") as f:
+            tokens = f.read().splitlines()
         args = [
             (token, guild, channel, websocket.WebSocket()) for token in tokens
         ]
@@ -1575,6 +1610,8 @@ class Menu:
         channel_id = Link.split("/")[5]
         os.system('cls')
         console.render_ascii()
+        with open("data/tokens.txt", "r") as f:
+            tokens = f.read().splitlines()
         args = [
             (token, channel_id, name) for token in tokens
         ]
@@ -1589,6 +1626,8 @@ class Menu:
         invite = invite.replace("https://discord.gg/", "").replace("https://discord.com/invite/", "").replace("discord.gg/", "").replace("https://discord.com/invite/", "").replace(".gg/", "").replace("https://canary.", "").replace("canary.", "")
         os.system('cls')
         console.render_ascii()
+        with open("data/tokens.txt", "r") as f:
+            tokens = f.read().splitlines()
         args = [
             (token, invite) for token in tokens
         ]
@@ -1602,6 +1641,8 @@ class Menu:
             Menu().main_menu()
         os.system('cls')
         console.render_ascii()
+        with open("data/tokens.txt", "r") as f:
+            tokens = f.read().splitlines()
         args = [
             (token, guild) for token in tokens
         ]
@@ -1610,6 +1651,8 @@ class Menu:
     @wrapper
     def spammer(self):
         os.system('title Helium - Spammer')
+        with open("data/tokens.txt", "r") as f:
+            tokens = f.read().splitlines()
         Link = input(console.prompt(f"Channel LINK"))
         if Link == "":
             Menu().main_menu()
@@ -1649,7 +1692,7 @@ class Menu:
                 self.run(self.raider.dyno_massping, args)
             else:
                 args = [
-                    (token, channel_id, message, guild_id, True, count, False) for token in tokens
+                    (token, channel_id, message, guild_id, True, count) for token in tokens
                 ]
                 self.run(self.raider.spammer, args)
         else:
@@ -1703,6 +1746,8 @@ class Menu:
             optionbutton = 0
         os.system('cls')
         console.render_ascii()
+        with open("data/tokens.txt", "r") as f:
+            tokens = f.read().splitlines()
         args = [
             (token, message_id, channel_id, guild_id, optionbutton) for token in tokens
         ]
@@ -1736,6 +1781,8 @@ class Menu:
             Menu().main_menu()
         os.system('cls')
         console.render_ascii()
+        with open("data/tokens.txt", "r") as f:
+            tokens = f.read().splitlines()
         args = [
             (token, bio) for token in tokens
         ]
