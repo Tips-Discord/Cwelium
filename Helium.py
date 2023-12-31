@@ -48,7 +48,6 @@ except ModuleNotFoundError:
     import websocket
 
 os.system('clear')
-os.system('title Helium')
 
 session = tls_client.Session(client_identifier="chrome_120",random_tls_extension_order=True)
 
@@ -175,7 +174,7 @@ class Render:
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
         edges = ["─", "╭", "│", "╰", "╯", "╮", "»", "«"]
-        title = f"""{' '*44}{Fore.RESET} Loaded ‹{Fore.LIGHTCYAN_EX}{len(tokens)}{Fore.RESET}› tokens | Loaded ‹{Fore.LIGHTCYAN_EX}{len(proxies)}{Fore.RESET}> proxies
+        title = f"""{' '*44}{Fore.RESET} Loaded ‹{Fore.LIGHTCYAN_EX}{len(tokens)}{Fore.RESET}› tokens | Loaded ‹{Fore.LIGHTCYAN_EX}{len(proxies)}{Fore.RESET}› proxies
 
 {'╭─────────────────────────────────────────────────────────────────────────────────────────────╮'.center(self.size)}
 {'│ «01» Joiner            «06» Token Formatter    «11» Onliner           «16» Call Spammer     │'.center(self.size)}
@@ -1477,7 +1476,6 @@ class Menu:
 
     @wrapper
     def soundbord(self):
-        os.system('title Helium - Soundboard Spam')
         Link = input(console.prompt("Channel LINK"))
         if Link == "":
             Menu().main_menu()
@@ -1497,7 +1495,6 @@ class Menu:
 
     @wrapper
     def friender(self):
-        os.system('title Helium - Friender')
         nickname = input(console.prompt("Nick"))
         if nickname == "":
             Menu().main_menu()
@@ -1512,7 +1509,6 @@ class Menu:
 
     @wrapper
     def caller(self):
-        os.system('title Helium - Caller')
         user_id = input(console.prompt("User ID"))
         if user_id == "":
             Menu().main_menu()
@@ -1524,7 +1520,6 @@ class Menu:
             threading.Thread(target=self.raider.call_spammer, args=(token, user_id)).start()
 
     def onliner(self):
-        os.system('title Helium - Onliner')
         args = [
             (token, websocket.WebSocket()) for token in tokens
         ]
@@ -1532,7 +1527,6 @@ class Menu:
 
     @wrapper
     def typier(self):
-        os.system('title Helium - Typer')
         Link = input(console.prompt(f"Channel LINK"))
         if Link == "":
             Menu().main_menu()
@@ -1552,7 +1546,6 @@ class Menu:
 
     @wrapper
     def nick_changer(self):
-        os.system('title Helium - Nickname Changer')
         nick = input(console.prompt("Nick"))
         if nick == "":
             Menu().main_menu()
@@ -1572,7 +1565,6 @@ class Menu:
 
     @wrapper
     def voice_joiner(self):
-        os.system('title Helium - Voice Joiner')
         Link = input(console.prompt("Channel LINK"))
         if Link == "":
             Menu().main_menu()
@@ -1593,7 +1585,6 @@ class Menu:
 
     @wrapper
     def Thread_Spammer(self):
-        os.system('title Helium - Thread Spammer')
         name = input(console.prompt("Name"))
         if name == "":
             Menu().main_menu()
@@ -1618,7 +1609,6 @@ class Menu:
 
     @wrapper
     def joiner(self):
-        os.system('title Helium - Joiner')
         invite = input(console.prompt(f"Invite"))
         if invite == "":
             Menu().main_menu()
@@ -1634,7 +1624,6 @@ class Menu:
 
     @wrapper 
     def leaver(self):
-        os.system('title Helium - Leaver')
         guild = input(console.prompt("Guild ID"))
         if guild == "":
             Menu().main_menu()
@@ -1649,7 +1638,6 @@ class Menu:
 
     @wrapper
     def spammer(self):
-        os.system('title Helium - Spammer')
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
         Link = input(console.prompt(f"Channel LINK"))
@@ -1701,12 +1689,10 @@ class Menu:
             self.run(self.raider.spammer, args)
 
     def checker(self):
-        os.system('title Helium - Checker')
         self.raider.token_checker()
 
     @wrapper
     def reactor(self):
-        os.system('title Helium - Reactor')
         Link = input(console.prompt("Message Link"))
         if Link == "":
             Menu().main_menu()
@@ -1721,12 +1707,10 @@ class Menu:
         self.raider.reactor_main(channel_id, message_id)
 
     def formatter(self):
-        os.system('title Helium - Formatter')
         self.run(self.raider.format_tokens, [()])
     
     @wrapper
     def button(self):
-        os.system('title Helium - Clicker')
         message = input(console.prompt("Message Link"))
         if message == "":
             Menu().main_menu()
@@ -1754,7 +1738,6 @@ class Menu:
 
     @wrapper
     def accept(self):
-        os.system('title Helium - Accept Rules')
         guild_id = input(console.prompt("Guild ID"))
         if guild_id == "":
             Menu().main_menu()
@@ -1764,7 +1747,6 @@ class Menu:
 
     @wrapper
     def guild(self):
-        os.system('title Helium - Guild Checker')
         guild_id = input(console.prompt("Guild ID"))
         if guild_id == "":
             Menu().main_menu()
@@ -1774,7 +1756,6 @@ class Menu:
 
     @wrapper
     def bio_changer(self):
-        os.system('title Helium - Bio Changer')
         bio = input(console.prompt("Bio"))
         if bio == "":
             Menu().main_menu()
@@ -1789,7 +1770,6 @@ class Menu:
 
     @wrapper
     def onboard(self):
-        os.system('title Helium - Onboarding Bypass')
         guild_id = input(console.prompt("Guild ID"))
         if guild_id == "":
             Menu().main_menu()
