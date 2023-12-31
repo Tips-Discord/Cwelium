@@ -28,7 +28,7 @@ except ModuleNotFoundError:
     ]
     for _import in imports:
         i += 1
-        os.system('cls')
+        os.system('clear')
         print(f"Installing dependencies... ({i}/8)")
         print(f"installing {_import}")
         os.system(f'pip install {_import} > nul')
@@ -47,7 +47,7 @@ except ModuleNotFoundError:
     import uuid
     import websocket
 
-os.system('cls')
+os.system('clear')
 os.system('title Helium')
 
 session = tls_client.Session(client_identifier="chrome_120",random_tls_extension_order=True)
@@ -59,7 +59,7 @@ def get_random_str(length: int) -> str:
 
 def wrapper(func):
     def wrapper(*args, **kwargs):
-        os.system('cls')
+        os.system('clear')
         console.render_ascii()
         result = func(*args, **kwargs)
         return result
@@ -155,8 +155,7 @@ class Render:
             self.background = C[color]
 
     def render_ascii(self):
-        os.system('cls')
-        os.system(f"title Helium - Connected as {os.getlogin()}")
+        os.system('clear')
         edges = ["╗", "║", "╚", "╝", "═", "╔"]
         title = f"""
 {'██╗  ██╗███████╗██╗     ██╗██╗   ██╗███╗   ███╗'.center(self.size)}
@@ -1465,7 +1464,7 @@ class Menu:
 
     def run(self, func, args):
         threads = []
-        os.system('cls')
+        os.system('clear')
         console.render_ascii()
         for arg in args:
             thread = threading.Thread(target=func, args=arg)
@@ -1488,7 +1487,7 @@ class Menu:
             Menu().main_menu()
         channel = Link.split("/")[5]
         guild = Link.split("/")[4]
-        os.system('cls')
+        os.system('clear')
         console.render_ascii()
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
@@ -1502,7 +1501,7 @@ class Menu:
         nickname = input(console.prompt("Nick"))
         if nickname == "":
             Menu().main_menu()
-        os.system('cls')
+        os.system('clear')
         console.render_ascii()
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
@@ -1517,7 +1516,7 @@ class Menu:
         user_id = input(console.prompt("User ID"))
         if user_id == "":
             Menu().main_menu()
-        os.system('cls')
+        os.system('clear')
         console.render_ascii()
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
@@ -1542,7 +1541,7 @@ class Menu:
         else:
             Menu().main_menu()
         channelid = Link.split("/")[5]
-        os.system('cls')
+        os.system('clear')
         console.render_ascii()
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
@@ -1557,12 +1556,12 @@ class Menu:
         nick = input(console.prompt("Nick"))
         if nick == "":
             Menu().main_menu()
-        os.system('cls')
+        os.system('clear')
         console.render_ascii()
         guild = input(console.prompt("Guild ID"))
         if guild == "":
             Menu().main_menu()
-        os.system('cls')
+        os.system('clear')
         console.render_ascii()
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
@@ -1583,7 +1582,7 @@ class Menu:
             Menu().main_menu()
         guild = Link.split("/")[4]
         channel = Link.split("/")[5]
-        os.system('cls')
+        os.system('clear')
         console.render_ascii()
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
@@ -1598,7 +1597,7 @@ class Menu:
         name = input(console.prompt("Name"))
         if name == "":
             Menu().main_menu()
-        os.system('cls')
+        os.system('clear')
         console.render_ascii()
         Link = input(console.prompt("Channel LINK"))
         if Link == "":
@@ -1608,7 +1607,7 @@ class Menu:
         else:
             Menu().main_menu()
         channel_id = Link.split("/")[5]
-        os.system('cls')
+        os.system('clear')
         console.render_ascii()
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
@@ -1624,7 +1623,7 @@ class Menu:
         if invite == "":
             Menu().main_menu()
         invite = invite.replace("https://discord.gg/", "").replace("https://discord.com/invite/", "").replace("discord.gg/", "").replace("https://discord.com/invite/", "").replace(".gg/", "").replace("https://canary.", "").replace("canary.", "")
-        os.system('cls')
+        os.system('clear')
         console.render_ascii()
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
@@ -1639,7 +1638,7 @@ class Menu:
         guild = input(console.prompt("Guild ID"))
         if guild == "":
             Menu().main_menu()
-        os.system('cls')
+        os.system('clear')
         console.render_ascii()
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
@@ -1662,28 +1661,28 @@ class Menu:
             Menu().main_menu()
         guild_id = Link.split("/")[4]
         channel_id = Link.split("/")[5]
-        os.system('cls')
+        os.system('clear')
         console.render_ascii()
         massping = input(console.prompt("Massping", True))
-        os.system('cls')
+        os.system('clear')
         console.render_ascii()
         message = input(console.prompt("Message"))
         if message == "":
             Menu().main_menu()
         if "y" in massping:
-            os.system('cls')
+            os.system('clear')
             console.render_ascii()
             print(f"{Fore.LIGHTWHITE_EX}Scraping users (this may take a while)...")
             self.raider.member_scrape(guild_id, channel_id)
-            os.system('cls')
+            os.system('clear')
             console.render_ascii()
             count = input(console.prompt("Pings Amount"))
             if count == "":
                 Menu().main_menu()
-            os.system('cls')
+            os.system('clear')
             console.render_ascii()
             dyno = input(console.prompt("Dyno Tag", True))
-            os.system('cls')
+            os.system('clear')
             console.render_ascii()
             if "y" in dyno:
                 args = [
@@ -1717,7 +1716,7 @@ class Menu:
             Menu().main_menu()
         channel_id = Link.split("/")[5]
         message_id = Link.split("/")[6]
-        os.system('cls')
+        os.system('clear')
         console.render_ascii()
         self.raider.reactor_main(channel_id, message_id)
 
@@ -1738,13 +1737,13 @@ class Menu:
         guild_id = message.split("/")[4]
         channel_id = message.split("/")[5]
         message_id = message.split("/")[6]
-        os.system('cls')
+        os.system('clear')
         console.render_ascii()
         print(f"{Fore.RESET}If there's 1 button {Fore.LIGHTCYAN_EX}press Enter{Fore.RESET}")
         optionbutton = input(f"{Fore.RESET}[{Fore.LIGHTCYAN_EX}Button Option{Fore.RESET}] → ")
         if optionbutton == "":
             optionbutton = 0
-        os.system('cls')
+        os.system('clear')
         console.render_ascii()
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
@@ -1759,7 +1758,7 @@ class Menu:
         guild_id = input(console.prompt("Guild ID"))
         if guild_id == "":
             Menu().main_menu()
-        os.system('cls')
+        os.system('clear')
         console.render_ascii()
         self.raider.accept_rules(guild_id)
 
@@ -1769,7 +1768,7 @@ class Menu:
         guild_id = input(console.prompt("Guild ID"))
         if guild_id == "":
             Menu().main_menu()
-        os.system('cls')
+        os.system('clear')
         console.render_ascii()
         self.raider.guild_checker(guild_id)
 
@@ -1779,7 +1778,7 @@ class Menu:
         bio = input(console.prompt("Bio"))
         if bio == "":
             Menu().main_menu()
-        os.system('cls')
+        os.system('clear')
         console.render_ascii()
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
@@ -1794,7 +1793,7 @@ class Menu:
         guild_id = input(console.prompt("Guild ID"))
         if guild_id == "":
             Menu().main_menu()
-        os.system('cls')
+        os.system('clear')
         console.render_ascii()
         self.raider.onboard_bypass(guild_id)
 
