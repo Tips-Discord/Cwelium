@@ -1,7 +1,9 @@
-# Helium Raider
+# Cwelium Raider
 
 ⭐ **Leave a star, please!**
 
+# Installation
+### Download exe form Relese 🔥
 
 ## 👾 Features
 - Fully request-based Raider
@@ -28,11 +30,6 @@
 
 ## 📝 Licensing
 You are free to distribute this program under the [GPL V2 License](https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt). Please ensure proper credit is given to our project.
-
-# █▬█ █ ▀█▀
-
-# Installation
-### Download exe form Relese 🔥
 
 ## ✍️ Usage
 <p align="center">
