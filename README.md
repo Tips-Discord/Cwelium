@@ -33,7 +33,7 @@ You are free to distribute this program under the [GPL V2 License](https://www.g
 
 ## ✍️ Usage
 <p align="center">
-  <img src="https://cdn.discordapp.com/attachments/1159154741918564474/1192110796260528158/image.png" alt="Helium" width="1000">
+  <img src="https://cdn.discordapp.com/attachments/1145341719060172813/1204457932507451422/uuPhjk3.png" alt="Helium" width="1000">
 </p>
 
 ## ⚠️ Disclaimer
