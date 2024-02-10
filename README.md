@@ -3,7 +3,7 @@
 ⭐ **Leave a star, please!**
 
 # Installation
-### Download exe form Relese 🔥
+### Download exe form Releases 🔥
 
 ## 👾 Features
 - Fully request-based Raider
