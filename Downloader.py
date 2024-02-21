@@ -6,6 +6,15 @@ os.system(f"title Cwelium Downloader")
 
 stars = requests.get(f"https://api.github.com/repos/Tips-Discord/Cwelium").json()["stargazers_count"]
 
+menu = f"""
+{'██████╗  ██████╗ ██╗    ██╗███╗   ██╗██╗      ██████╗  █████╗ ██████╗ ███████╗██████╗ '.center(os.get_terminal_size().columns)}
+{'██╔══██╗██╔═══██╗██║    ██║████╗  ██║██║     ██╔═══██╗██╔══██╗██╔══██╗██╔════╝██╔══██╗'.center(os.get_terminal_size().columns)}
+{'██║  ██║██║   ██║██║ █╗ ██║██╔██╗ ██║██║     ██║   ██║███████║██║  ██║█████╗  ██████╔╝'.center(os.get_terminal_size().columns)}
+{'██║  ██║██║   ██║██║███╗██║██║╚██╗██║██║     ██║   ██║██╔══██║██║  ██║██╔══╝  ██╔══██╗'.center(os.get_terminal_size().columns)}
+{'██████╔╝╚██████╔╝╚███╔███╔╝██║ ╚████║███████╗╚██████╔╝██║  ██║██████╔╝███████╗██║  ██║'.center(os.get_terminal_size().columns)}
+{'╚═════╝  ╚═════╝  ╚══╝╚══╝ ╚═╝  ╚═══╝╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚═════╝ ╚══════╝╚═╝  ╚═╝'.center(os.get_terminal_size().columns)}
+{f'Stars {stars}'.center(os.get_terminal_size().columns)}"""
+
 def download_latest_release():
     api_url = f"https://api.github.com/repos/Tips-Discord/Cwelium/releases/latest"
     
@@ -26,13 +35,6 @@ def download_latest_release():
 
 
 if __name__ == "__main__":
-    menu = f"""
-{'██████╗  ██████╗ ██╗    ██╗███╗   ██╗██╗      ██████╗  █████╗ ██████╗ ███████╗██████╗ '.center(os.get_terminal_size().columns)}
-{'██╔══██╗██╔═══██╗██║    ██║████╗  ██║██║     ██╔═══██╗██╔══██╗██╔══██╗██╔════╝██╔══██╗'.center(os.get_terminal_size().columns)}
-{'██║  ██║██║   ██║██║ █╗ ██║██╔██╗ ██║██║     ██║   ██║███████║██║  ██║█████╗  ██████╔╝'.center(os.get_terminal_size().columns)}
-{'██║  ██║██║   ██║██║███╗██║██║╚██╗██║██║     ██║   ██║██╔══██║██║  ██║██╔══╝  ██╔══██╗'.center(os.get_terminal_size().columns)}
-{'██████╔╝╚██████╔╝╚███╔███╔╝██║ ╚████║███████╗╚██████╔╝██║  ██║██████╔╝███████╗██║  ██║'.center(os.get_terminal_size().columns)}
-{'╚═════╝  ╚═════╝  ╚══╝╚══╝ ╚═╝  ╚═══╝╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚═════╝ ╚══════╝╚═╝  ╚═╝'.center(os.get_terminal_size().columns)}
-{f'Stars {stars}'.center(os.get_terminal_size().columns)}"""
     print(menu)
     download_latest_release()
+    os.system("start Cwelium.exe")
