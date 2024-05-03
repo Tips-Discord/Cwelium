@@ -16,10 +16,8 @@ menu = f"""
 {f'Stars {stars}'.center(os.get_terminal_size().columns)}"""
 
 def download_latest_release():
-    api_url = f"https://api.github.com/repos/Tips-Discord/Cwelium/releases/latest"
-    
     try:
-        response = requests.get(api_url)
+        response = requests.get("https://api.github.com/repos/Tips-Discord/Cwelium/releases/latest")
         response.raise_for_status()
         release_info = response.json()
         asset_url = release_info['assets'][0]['browser_download_url']
@@ -32,7 +30,6 @@ def download_latest_release():
         
     except requests.exceptions.RequestException as e:
         print(f"Error: {e}")
-
 
 if __name__ == "__main__":
     print(menu)
