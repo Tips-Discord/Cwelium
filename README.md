@@ -33,7 +33,7 @@ You are free to distribute this program under the [GPL V2 License](https://www.g
 
 ## ✍️ Usage
 <p align="center">
-  <img src="https://cdn.discordapp.com/attachments/1207742370200821790/1218146903657812089/0wwu5RH.png?ex=66069ab5&is=65f425b5&hm=680d4cda331fac05eccef3ffd9d15df8478bc403a68a0ab947f84eb4a3a202cd&" alt="Cwelium" width="1000">
+  <img src="https://cdn.discordapp.com/attachments/1230885038653046876/1238812522530734141/JJUj6cF.png?ex=6640a591&is=663f5411&hm=17e35263f9e6d894aa5ce3e1594b94e377282a03a4637caeba53833939531749&" alt="Cwelium" width="1000">
 </p>
 
 ## ⚠️ Disclaimer
