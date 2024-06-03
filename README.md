@@ -2,14 +2,14 @@
 
 ⭐ **Leave a star, please!**
 
-# Installation
-### Download exe form Releases 🔥
+## Installation
+### Download the executable from the Releases section 🔥
 
 ## 👾 Features
 
 - Fully request-based Raider
 - HTTP & HTTPS proxy support
-- Multi-Threading support
+- Multi-threading support
 - Joiner
 - Leaver
 - Spammer
@@ -28,13 +28,13 @@
 - Typer
 - Onboarding Bypass
 - Call Spammer
-- 
+
 ## 📝 Licensing
 You are free to distribute this program under the [GPL V2 License](https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt). Please ensure proper credit is given to our project.
 
 ## ✍️ Usage
 <p align="center">
-  <img src="https://cdn.discordapp.com/attachments/1230885038653046876/1238812522530734141/JJUj6cF.png?ex=6640a591&is=663f5411&hm=17e35263f9e6d894aa5ce3e1594b94e377282a03a4637caeba53833939531749&" alt="Cwelium" width="1000">
+  <img src="https://cdn.discordapp.com/attachments/1207742370200821790/1218146903657812089/0wwu5RH.png?ex=665eef35&is=665d9db5&hm=ad3c5fb711ab3e798be3e5a14fb1c6bc2c14a3e332c9dbacac7394b7c7e0662c&" alt="Cwelium" width="1000">
 </p>
 
 <details>
@@ -43,7 +43,13 @@ You are free to distribute this program under the [GPL V2 License](https://www.g
 - **Which version of the Discord API does Cwelium Raider use?**
   - Cwelium Raider utilizes Discord API version 9 (v9).
 
+- **Is this the official repository?**
+  - Yes, it is.
+
+- **Where is the source code?**
+  - This tool was originally open source but is now closed source. It may be open source again in the future.
+
 </details>
 
 ## ⚠️ Disclaimer
-**DISCLAIMER:** This GitHub repository is intended for **EDUCATIONAL PURPOSES ONLY**. We take no responsibility if problems occur. (You acknowledge this, and we appreciate that.)
+**DISCLAIMER:** This GitHub repository is intended for **EDUCATIONAL PURPOSES ONLY**. We take no responsibility if problems occur. By using this tool, you acknowledge and accept this disclaimer.
