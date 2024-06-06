@@ -51,5 +51,15 @@ You are free to distribute this program under the [GPL V2 License](https://www.g
 
 </details>
 
+## Star History
+
+<a href="https://star-history.com/#R3CI/Vanadium-Free&Tips-Discord/Cwelium&Date">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=R3CI/Vanadium-Free,Tips-Discord/Cwelium&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=R3CI/Vanadium-Free,Tips-Discord/Cwelium&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=R3CI/Vanadium-Free,Tips-Discord/Cwelium&type=Date" />
+ </picture>
+</a>
+
 ## ⚠️ Disclaimer
 **DISCLAIMER:** This GitHub repository is intended for **EDUCATIONAL PURPOSES ONLY**. We take no responsibility if problems occur. By using this tool, you acknowledge and accept this disclaimer.
