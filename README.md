@@ -6,6 +6,8 @@
 ### Download the executable from the Releases section 🔥
 
 ## 👾 Features
+<details>
+<summary></summary>
 
 - Fully request-based Raider
 - HTTP & HTTPS proxy support
@@ -28,6 +30,7 @@
 - Typer
 - Onboarding Bypass
 - Call Spammer
+</details>
 
 ## 📝 Licensing
 You are free to distribute this program under the [GPL V2 License](https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt). Please ensure proper credit is given to our project.
