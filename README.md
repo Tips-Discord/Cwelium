@@ -52,7 +52,7 @@ You are free to distribute this program under the [GPL V2 License](https://www.g
 </details>
 
 ## war
-[![Star History Chart](https://api.star-history.com/svg?repos=R3CI/Vanadium-Free,Tips-Discord/Cwelium&type=Date)](https://star-history.com/#R3CI/Vanadium-Free&Tips-Discord/Cwelium&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=R3CI/Vanadium-Free,Tips-Discord/Cwelium&type=Timeline&theme=dark)](https://star-history.com/#R3CI/Vanadium-Free&Tips-Discord/Cwelium&Timeline)
 
 ## ⚠️ Disclaimer
 **DISCLAIMER:** This GitHub repository is intended for **EDUCATIONAL PURPOSES ONLY**. We take no responsibility if problems occur. By using this tool, you acknowledge and accept this disclaimer.
