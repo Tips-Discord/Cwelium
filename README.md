@@ -30,6 +30,8 @@
 - Typer
 - Onboarding Bypass
 - Call Spammer
+- MassDM
+- Mass Report
 </details>
 
 ## 📝 Licensing
