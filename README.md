@@ -60,12 +60,13 @@ This program is distributed under the [GPL V2 License](https://www.gnu.org/licen
   - capsolver, capmonster, 2captcha
 - **What themes are available?**
   - green, red, yellow, magenta, blue, cyan, gray, white, pink, light blue, brown, aqua
+- **what proxy format i put in**
+  - username:password@proxy3.example.com:8080 or example.com:8080
 
 </details>
 
-## ⭐ Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=R3CI/Vanadium-Free,Tips-Discord/Cwelium&type=Timeline&theme=dark)](https://star-history.com/#R3CI/Vanadium-Free&Tips-Discord/Cwelium&Timeline)
+## ⭐ Star War
+[![Star History Chart](https://api.star-history.com/svg?repos=R3CI/Vanadium-Free,Tips-Discord/Cwelium&type=Timeline)](https://star-history.com/#R3CI/Vanadium-Free&Tips-Discord/Cwelium&Timeline&theme=dark)
 
 ## ⚠️ Disclaimer
 
