@@ -4,7 +4,7 @@
 
 ## Installation
 
-### Download the executable from the [Releases section](#).
+### Download the executable from the [Releases section](https://github.com/Tips-Discord/Cwelium/releases).
 
 ## 👾 Features
 
