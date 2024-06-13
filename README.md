@@ -66,7 +66,7 @@ This program is distributed under the [GPL V2 License](https://www.gnu.org/licen
 </details>
 
 ## ⭐ Star War
-[![Star History Chart](https://api.star-history.com/svg?repos=R3CI/Vanadium-Free,Tips-Discord/Cwelium&type=Timeline)](https://star-history.com/#R3CI/Vanadium-Free&Tips-Discord/Cwelium&Timeline&theme=dark)
+[![Star History Chart](https://api.star-history.com/svg?repos=R3CI/Vanadium-Free,Tips-Discord/Cwelium&type=Timeline&theme=dark)](https://star-history.com/#R3CI/Vanadium-Free&Tips-Discord/Cwelium&Timeline)
 
 ## ⚠️ Disclaimer
 
