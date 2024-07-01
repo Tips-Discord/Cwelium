@@ -39,12 +39,12 @@
 
 ## 📝 Licensing
 
-This program is distributed under the [GPL V2 License](https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt). Please ensure proper credit is given to this project.
+This program is distributed under Custom [AGPL v3.0](https://github.com/Tips-Discord/Cwelium/blob/main/LICENSE). Please ensure proper credit is given to this project.
 
 ## ✍️ Usage
 
 <p align="center">
-  <img src="https://cdn.discordapp.com/attachments/1207742370200821790/1218146903657812089/0wwu5RH.png?ex=665eef35&is=665d9db5&hm=ad3c5fb711ab3e798be3e5a14fb1c6bc2c14a3e332c9dbacac7394b7c7e0662c&" alt="Cwelium" width="1000">
+  <img src="https://cdn.discordapp.com/attachments/1207742370200821790/1218146903657812089/0wwu5RH.png?ex=66833075&is=6681def5&hm=1c37b0667d6d61be8ac306c6a4f75a7472434bbb27fd7038a38c4522c0da73c0&" alt="Cwelium" width="1000">
 </p>
 
 <details>
