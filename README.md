@@ -67,6 +67,9 @@ This program is distributed under Custom [AGPL v3.0](https://github.com/Tips-Dis
 
 </details>
 
+## Support me
+  ### Paypal: <https://paypal.me/Kacperkuszko>
+
 ## ⭐ Star War
 [![Star History Chart](https://api.star-history.com/svg?repos=R3CI/Vanadium-Free,Tips-Discord/Cwelium&type=Timeline&theme=dark)](https://star-history.com/#R3CI/Vanadium-Free&Tips-Discord/Cwelium&Timeline)
 
