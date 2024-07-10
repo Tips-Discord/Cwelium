@@ -64,6 +64,8 @@ This program is distributed under Custom [AGPL v3.0](https://github.com/Tips-Dis
   - username:password@proxy3.example.com:8080 or example.com:8080
 - **If the tokens are locked can they join servers?**
   - No, they cant.
+- **What is Cwelium**
+  - Cwelium is a Discord raiding tool with multiple features designed for Raiding on Discord. It supports HTTP and HTTPS proxies, multi-threading, and includes functionalities like joining and leaving servers, spamming, token checking, mass DMing, and more. It uses Discord API v9 and supports various captcha solvers. The repository emphasizes that it is for educational purposes only.
 
 </details>
 
