@@ -59,7 +59,7 @@ This program is distributed under Custom [AGPL v3.0](https://github.com/Tips-Dis
 - **What solvers are available?**
   - capsolver, capmonster, 2captcha
 - **What themes are available?**
-  - green, red, yellow, magenta, blue, cyan, gray, white, pink, light blue, brown, aqua
+  - green, red, yellow, magenta, blue, cyan, gray, white, pink, light blue, brown, black, aqua, purple, lime, orange, indigo, violet, gold, silver, teal, navy, olive, maroon, coral, salmon, khaki, orchid
 - **What proxy format i put in**
   - username:password@proxy3.example.com:8080 or example.com:8080
 - **If the tokens are locked can they join servers?**
