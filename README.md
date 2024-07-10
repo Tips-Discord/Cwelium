@@ -72,7 +72,7 @@ This program is distributed under Custom [AGPL v3.0](https://github.com/Tips-Dis
   #### 40% of any donation goes to charity
 
 ## ⭐ Star War
-[![Star History Chart](https://api.star-history.com/svg?repos=R3CI/Vanadium-Free,Tips-Discord/Cwelium&type=Timeline&theme=dark)](https://star-history.com/#R3CI/Vanadium-Free&Tips-Discord/Cwelium&Timeline)
+[![Star History Chart](https://api.star-history.com/svg?repos=Tips-Discord/Cwelium,R3CI/Lime-lite&type=Timeline&theme=dark)](https://api.star-history.com/svg?repos=Tips-Discord/Cwelium,R3CI/Lime-lite&type=Timeline)
 
 ## ⚠️ Disclaimer
 
