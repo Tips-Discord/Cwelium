@@ -2,8 +2,18 @@ Cwelium - An Open Source Project
 
 Cwelium is licensed under the GNU Affero General Public License (AGPL) v3.0 with the following additional term:
 
-Additional Term:
-- If the original author (defined as the owner of the GitHub repository 'https://github.com/Tips-Discord/Cwelium') requests the deletion of a repository that contains modified or unmodified versions of this software, the repository owner must comply within 14 days of the request.
+Additional Terms:
+- The repository owner must comply with the original author's (defined as the owner of the GitHub repository 'https://github.com/Tips-Discord/Cwelium') request to delete any repository, including videos, containing modified or unmodified versions of the software within 14 days.
+
+- Users are only permitted to fork the original repository 'https://github.com/Tips-Discord/Cwelium'. Creating new repositories containing the software, whether modified or unmodified, is prohibited.
+
+- The software cannot be made closed source. All forks and modifications must retain their open-source status under the AGPL v3.0 license.
+
+- The credit to the original author in the Python file(s) cannot be removed or altered.
+
+- The responsibility for using this software lies entirely with the user. The original author is not liable for any misuse or damage caused by the use of this program.
+
+- The software cannot be sold in any form. Users are prohibited from selling the software, whether modified or unmodified, and any commercial use must comply with the terms of the AGPL v3.0 license.
 
 GNU AFFERO GENERAL PUBLIC LICENSE
 Version 3, 19 November 2007
