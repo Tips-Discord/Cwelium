@@ -44,7 +44,7 @@ This program is distributed under Custom [AGPL v3.0](https://github.com/Tips-Dis
 ## ✍️ Usage
 
 <p align="center">
-  <img src="https://cdn.discordapp.com/attachments/1207742370200821790/1218146903657812089/0wwu5RH.png?ex=66833075&is=6681def5&hm=1c37b0667d6d61be8ac306c6a4f75a7472434bbb27fd7038a38c4522c0da73c0&" alt="Cwelium" width="1000">
+  <img src="https://cdn.discordapp.com/attachments/1207742370200821790/1218146903657812089/0wwu5RH.png?ex=66964e35&is=6694fcb5&hm=bed70c7a99cb65f7cad1d07dba1a06d81ea895a74995082ae6fc8807f41552ec&" alt="Cwelium" width="1000">
 </p>
 
 <details>
@@ -65,7 +65,7 @@ This program is distributed under Custom [AGPL v3.0](https://github.com/Tips-Dis
 - **If the tokens are locked can they join servers?**
   - No, they cant.
 - **What is Cwelium**
-  - Cwelium is a Discord raiding tool with multiple features designed for Raiding on Discord. It supports HTTP and HTTPS proxies, multi-threading, and includes functionalities like joining and leaving servers, spamming, token checking, mass DMing, and more. It uses Discord API v9 and supports various captcha solvers. The repository emphasizes that it is for educational purposes only.
+  - Cwelium is a Discord raiding tool with multiple features designed for Raiding on Discord. It supports HTTP and HTTPS proxies, multi-threading, and includes functionalities like joining and leaving servers, spamming, token checking, mass DMing, and more. It uses Discord API v9 and supports various captcha solvers.
 
 </details>
 
