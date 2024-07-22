@@ -1,13 +1,9 @@
 # Cwelium Raider
-
 ⭐ **Please leave a star!**
 
-## Installation
-
-### Download the executable from the [Releases section](https://github.com/Tips-Discord/Cwelium/releases).
+# *Please read the license, as failure to do so may result in legal action.*
 
 ## 👾 Features
-
 <details>
 <summary>Click to expand</summary>
 
