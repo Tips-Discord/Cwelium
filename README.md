@@ -50,8 +50,6 @@ This program is distributed under Custom [AGPL v3.0](https://github.com/Tips-Dis
   - Cwelium Raider utilizes Discord API version 9 (v9).
 - **Is this the official repository?**
   - Yes, it is.
-- **Where is the source code?**
-  - This tool was originally open source but is now closed source. It may be open source again in the future.
 - **What solvers are available?**
   - capsolver, capmonster, 2captcha
 - **What themes are available?**
