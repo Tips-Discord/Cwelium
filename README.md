@@ -1,8 +1,6 @@
 # Cwelium Raider
 ⭐ **Please leave a star!**
 
-# *Please read the license, as failure to do so may result in legal action.*
-
 ## 👾 Features
 <details>
 <summary>Click to expand</summary>
@@ -34,6 +32,7 @@
 </details>
 
 ## 📝 Licensing
+*Please read the license, as failure to do so may result in legal action.*
 
 This program is distributed under Custom [AGPL v3.0](https://github.com/Tips-Discord/Cwelium/blob/main/LICENSE). Please ensure proper credit is given to this project.
 
