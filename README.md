@@ -40,7 +40,7 @@ This program is distributed under Custom [AGPL v3.0](https://github.com/Tips-Dis
 ## ✍️ Usage
 
 <p align="center">
-  <img src="https://cdn.discordapp.com/attachments/1207742370200821790/1218146903657812089/0wwu5RH.png?ex=66964e35&is=6694fcb5&hm=bed70c7a99cb65f7cad1d07dba1a06d81ea895a74995082ae6fc8807f41552ec&" alt="Cwelium" width="1000">
+  <img src="https://cdn.discordapp.com/attachments/1207742370200821790/1265602507036557454/image.png?ex=66a21baf&is=66a0ca2f&hm=2af73c3e7c2ef8b030ee0650e155fedc2fd8bde03217bd51f39baf8703a83f16&" alt="Cwelium" width="1000">
 </p>
 
 <details>
