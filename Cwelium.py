@@ -7,7 +7,6 @@
 #
 # Additional Terms can be found at:
 # https://github.com/Tips-Discord/Cwelium/blob/main/LICENSE
-#
 
 import os
 from colorama import Fore
@@ -28,7 +27,7 @@ import websocket
 os.system('cls')
 os.system('title Cwelium')
 
-session = tls_client.Session(client_identifier="chrome_124",random_tls_extension_order=True)
+session = tls_client.Session(client_identifier="chrome_126",random_tls_extension_order=True)
 
 def get_random_str(length: int) -> str:
     return "".join(random.choice(string.ascii_letters + string.digits) for _ in range(length))
@@ -134,10 +133,10 @@ service = Config["Service"]
 Key = Config["Api-Key"]
 
 if proxy:
-    niga = random.choice(proxies)
+    selected_proxy = random.choice(proxies)
     session.proxies = {
-        "http": f"http://{niga}", 
-        "https": f"http://{niga}"
+        "http": f"http://{selected_proxy}", 
+        "https": f"http://{selected_proxy}"
     }
 
 class Render:
@@ -212,116 +211,143 @@ console = Render()
 
 # Big Thanks to Aniell4 for the scraper
 class Utils:
-    def rangeCorrector(ranges):
+    @staticmethod
+    def range_corrector(ranges):
         if [0, 99] not in ranges:
             ranges.insert(0, [0, 99])
         return ranges
 
-    def getRanges(index, multiplier, memberCount):
-        initialNum = int(index * multiplier)
-        rangesList = [[initialNum, initialNum + 99]]
-        if memberCount > initialNum + 99:
-            rangesList.append([initialNum + 100, initialNum + 199])
-        return Utils.rangeCorrector(rangesList)
+    @staticmethod
+    def get_ranges(index, multiplier, member_count):
+        initial_num = int(index * multiplier)
+        ranges = [[initial_num, initial_num + 99]]
+        if member_count > initial_num + 99:
+            ranges.append([initial_num + 100, initial_num + 199])
+        return Utils.range_corrector(ranges)
 
-    def parseGuildMemberListUpdate(response):
-        memberdata = {
-            "online_count": response["d"]["online_count"],
-            "member_count": response["d"]["member_count"],
-            "id": response["d"]["id"],
-            "guild_id": response["d"]["guild_id"],
-            "hoisted_roles": response["d"]["groups"],
-            "types": [],
+    @staticmethod
+    def parse_member_list_update(response):
+        data = response["d"]
+        member_data = {
+            "online_count": data["online_count"],
+            "member_count": data["member_count"],
+            "id": data["id"],
+            "guild_id": data["guild_id"],
+            "hoisted_roles": data["groups"],
+            "types": [op["op"] for op in data["ops"]],
             "locations": [],
             "updates": [],
         }
 
-        for chunk in response["d"]["ops"]:
-            memberdata["types"].append(chunk["op"])
-            if chunk["op"] in ("SYNC", "INVALIDATE"):
-                memberdata["locations"].append(chunk["range"])
-                if chunk["op"] == "SYNC":
-                    memberdata["updates"].append(chunk["items"])
-                else:
-                    memberdata["updates"].append([])
-            elif chunk["op"] in ("INSERT", "UPDATE", "DELETE"):
-                memberdata["locations"].append(chunk["index"])
-                if chunk["op"] == "DELETE":
-                    memberdata["updates"].append([])
-                else:
-                    memberdata["updates"].append(chunk["item"])
-        return memberdata
+        for chunk in data["ops"]:
+            if chunk["op"] in {"SYNC", "INVALIDATE"}:
+                member_data["locations"].append(chunk["range"])
+                member_data["updates"].append(chunk["items"] if chunk["op"] == "SYNC" else [])
+            elif chunk["op"] in {"INSERT", "UPDATE", "DELETE"}:
+                member_data["locations"].append(chunk["index"])
+                member_data["updates"].append(chunk["item"] if chunk["op"] != "DELETE" else [])
+        
+        return member_data
 
 class DiscordSocket(websocket.WebSocketApp):
     def __init__(self, token, guild_id, channel_id):
         self.token = token
         self.guild_id = guild_id
         self.channel_id = channel_id
-        self.blacklisted_roles, self.blacklisted_users = [], []
-        
-        self.socket_headers = {
+        self.blacklisted_ids = ["1100342265303547924"]
+
+        self.headers = {
             "Accept-Encoding": "gzip, deflate, br",
             "Accept-Language": "en-US,en;q=0.9",
             "Cache-Control": "no-cache",
             "Pragma": "no-cache",
             "Sec-WebSocket-Extensions": "permessage-deflate; client_max_window_bits",
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "User-Agent": ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                           "AppleWebKit/537.36 (KHTML, like Gecko) "
+                           "Chrome/126.0.0.0 Safari/537.36"),
         }
 
         super().__init__(
             "wss://gateway.discord.gg/?encoding=json&v=9",
-            header=self.socket_headers,
-            on_open=lambda ws: self.sock_open(ws),
-            on_message=lambda ws, msg: self.sock_message(ws, msg), 
-            on_close=lambda ws, close_code, close_msg: self.sock_close(
-                ws, close_code, close_msg
-            ),
+            header=self.headers,
+            on_open=self.on_open,
+            on_message=self.on_message,
+            on_close=self.on_close,
         )
 
-        self.endScraping = False
-
+        self.end_scraping = False
         self.guilds = {}
         self.members = {}
-
         self.ranges = [[0, 0]]
-        self.lastRange = 0
+        self.last_range = 0
         self.packets_recv = 0
 
     def run(self):
         self.run_forever()
         return self.members
 
-    def scrapeUsers(self):
-        if self.endScraping == False:
-            self.send(
-                '{"op":14,"d":{"guild_id":"'
-                + self.guild_id
-                + '","typing":true,"activities":true,"threads":true,"channels":{"'
-                + self.channel_id
-                + '":'
-                + json.dumps(self.ranges)
-                + "}}}"
-            )
+    def scrape_users(self):
+        if not self.end_scraping:
+            self.send(json.dumps({
+                "op": 14,
+                "d": {
+                    "guild_id": self.guild_id,
+                    "typing": True,
+                    "activities": True,
+                    "threads": True,
+                    "channels": {self.channel_id: self.ranges}
+                }
+            }))
 
-    def sock_open(self, ws):
-        self.send(
-            '{"op":2,"d":{"token":"'
-            + self.token
-            + '","capabilities":125,"properties":{"os":"Windows NT","browser":"Chrome","device":"","system_locale":"it-IT","browser_user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36","browser_version":"119.0","os_version":"10","referrer":"","referring_domain":"","referrer_current":"","referring_domain_current":"","release_channel":"stable","client_build_number":103981,"client_event_source":null},"presence":{"status":"online","since":0,"activities":[],"afk":false},"compress":false,"client_state":{"guild_hashes":{},"highest_last_message_id":"0","read_state_version":0,"user_guild_settings_version":-1,"user_settings_version":-1}}}'
-        )
+    def on_open(self, ws):
+        self.send(json.dumps({
+            "op": 2,
+            "d": {
+                "token": self.token,
+                "capabilities": 125,
+                "properties": {
+                    "os": "Windows NT",
+                    "browser": "Chrome",
+                    "device": "",
+                    "system_locale": "it-IT",
+                    "browser_user_agent": ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                                           "AppleWebKit/537.36 (KHTML, like Gecko) "
+                                           "Chrome/126.0.0.0 Safari/537.36"),
+                    "browser_version": "126.0",
+                    "os_version": "10",
+                    "referrer": "",
+                    "referring_domain": "",
+                    "referrer_current": "",
+                    "referring_domain_current": "",
+                    "release_channel": "stable",
+                    "client_build_number": 311885,
+                    "client_event_source": None
+                },
+                "presence": {
+                    "status": "online",
+                    "since": 0,
+                    "activities": [],
+                    "afk": False
+                },
+                "compress": False,
+                "client_state": {
+                    "guild_hashes": {},
+                    "highest_last_message_id": "0",
+                    "read_state_version": 0,
+                    "user_guild_settings_version": -1,
+                    "user_settings_version": -1
+                }
+            }
+        }))
 
-    def heartbeatThread(self, interval):
-        try:
-            while True:
-                self.send('{"op":1,"d":' + str(self.packets_recv) + "}")
-                time.sleep(interval)
-        except Exception as e:
-            print(e)
+    def heartbeat_thread(self, interval):
+        while True:
+            self.send(json.dumps({"op": 1, "d": self.packets_recv}))
+            time.sleep(interval)
 
-    def sock_message(self, ws, message):
+    def on_message(self, ws, message):
         decoded = json.loads(message)
-
-        if decoded is None:
+        if not decoded:
             return
 
         if decoded["op"] != 11:
@@ -329,69 +355,55 @@ class DiscordSocket(websocket.WebSocketApp):
 
         if decoded["op"] == 10:
             threading.Thread(
-                target=self.heartbeatThread,
+                target=self.heartbeat_thread,
                 args=(decoded["d"]["heartbeat_interval"] / 1000,),
                 daemon=True,
             ).start()
 
         if decoded["t"] == "READY":
-            for guild in decoded["d"]["guilds"]:
-                self.guilds[guild["id"]] = {"member_count": guild["member_count"]}
+            self.guilds.update({guild["id"]: {"member_count": guild["member_count"]} for guild in decoded["d"]["guilds"]})
 
         if decoded["t"] == "READY_SUPPLEMENTAL":
-            self.ranges = Utils.getRanges(
-                0, 100, self.guilds[self.guild_id]["member_count"]
-            )
-            self.scrapeUsers()
+            self.ranges = Utils.get_ranges(0, 100, self.guilds[self.guild_id]["member_count"])
+            self.scrape_users()
 
         elif decoded["t"] == "GUILD_MEMBER_LIST_UPDATE":
-            parsed = Utils.parseGuildMemberListUpdate(decoded)
+            parsed = Utils.parse_member_list_update(decoded)
+            if parsed["guild_id"] == self.guild_id:
+                self.process_updates(parsed)
+                
+    def process_updates(self, parsed):
+        if "SYNC" in parsed["types"] or "UPDATE" in parsed["types"]:
+            for i, update_type in enumerate(parsed["types"]):
+                if update_type == "SYNC":
+                    if not parsed["updates"][i]:
+                        self.end_scraping = True
+                        break
+                    self.process_members(parsed["updates"][i])
+                elif update_type == "UPDATE":
+                    self.process_members(parsed["updates"][i])
 
-            if parsed["guild_id"] == self.guild_id and (
-                "SYNC" in parsed["types"] or "UPDATE" in parsed["types"]
-            ):
-                for elem, index in enumerate(parsed["types"]):
-                    if index == "SYNC":
-                        if len(parsed["updates"][elem]) == 0:
-                            self.endScraping = True
-                            break
+                self.last_range += 1
+                self.ranges = Utils.get_ranges(self.last_range, 100, self.guilds[self.guild_id]["member_count"])
+                time.sleep(0.45)
+                self.scrape_users()
 
-                        for item in parsed["updates"][elem]:
-                            if "member" in item:
-                                mem = item["member"]
-                                obj = {
-                                    "tag": mem["user"]["username"]
-                                    + "#"
-                                    + mem["user"]["discriminator"],
-                                    "id": mem["user"]["id"],
-                                }
-                                if not mem["user"].get("bot"):
-                                    self.members[mem["user"]["id"]] = obj
+        if self.end_scraping:
+            self.close()
 
-                    elif index == "UPDATE":
-                        for item in parsed["updates"][elem]:
-                            if "member" in item:
-                                mem = item["member"]
-                                obj = {
-                                    "tag": mem["user"]["username"]
-                                    + "#"
-                                    + mem["user"]["discriminator"],
-                                    "id": mem["user"]["id"],
-                                }
-                                if not mem["user"].get("bot"):
-                                    self.members[mem["user"]["id"]] = obj
+    def process_members(self, updates):
+        for item in updates:
+            if "member" in item:
+                member = item["member"]
+                user_id = member["user"]["id"]
+                if user_id not in self.blacklisted_ids and not member["user"].get("bot"):
+                    user_info = {
+                        "tag": f'{member["user"]["username"]}#{member["user"]["discriminator"]}',
+                        "id": user_id,
+                    }
+                    self.members[user_id] = user_info
 
-                    self.lastRange += 1
-                    self.ranges = Utils.getRanges(
-                        self.lastRange, 100, self.guilds[self.guild_id]["member_count"]
-                    )
-                    time.sleep(0.45)
-                    self.scrapeUsers()
-
-            if self.endScraping:
-                self.close()
-
-    def sock_close(self, ws, close_code, close_msg):
+    def on_close(self, ws, close_code, close_msg):
         pass
 
 def scrape(token, guild_id, channel_id):
@@ -420,95 +432,112 @@ class WebSocketClient:
             },
         }
         ws.send(json.dumps(payload))
-
-def solve_2cap(site_key, page_url):
-    captcha_id = requests.post(
-        'http://2captcha.com/in.php',
-        data={
-            'key': Key,
-            'method': 'hcaptcha',
-            'sitekey': site_key,
-            'pageurl': page_url
-        }
-    ).text.split('|')[1]
-
-    while True:
-        time.sleep(5)
-        response = requests.get(
-            f'http://2captcha.com/res.php?key={Key}&action=get&id={captcha_id}'
-        ).text
-        if response == 'CAPCHA_NOT_READY':
-            continue
-        elif response.startswith('OK|'):
-            return response.split('|')[1]
-        else:
-            raise Exception('Error solving captcha')
-    
-def solve_capmonster():
-    create_task_payload = {
-        "clientKey": Key,
-        "task": {
-            "type": "HCaptchaTaskProxyless",
-            "websiteURL": 'https://discord.com/',
-            "websiteKey": '4c672d35-0701-42b2-88c3-78380b0db560'
-        }
-    }
-
-    try:
-        create_task_response = requests.post("https://api.capmonster.cloud/createTask", json=create_task_payload).json()
-
-        if create_task_response["errorId"] != 0:
-            raise Exception(f"Error creating task: {create_task_response['errorDescription']}")
-
-        task_id = create_task_response["taskId"]
-
-        while True:
-            result_response = requests.post("https://api.capmonster.cloud/getTaskResult", json={"clientKey": Key, "taskId": task_id}).json()
-
-            if result_response["status"] == "ready":
-                return result_response["solution"]["gRecaptchaResponse"]
-
-            if result_response["errorId"] != 0:
-                raise Exception(f"Error fetching result: {result_response['errorDescription']}")
-
-            time.sleep(5)
-
-    except requests.RequestException as e:
-        raise Exception(f"Request failed: {e}")
-    except Exception as e:
-        raise Exception(f"An error occurred: {e}")
-    
-def solve_capsolver(site_key, page_url):
-    payload = {
-        "clientKey": Key,
-        "task": {
-            "type": "HCaptchaTaskProxyless",
-            "websiteURL": page_url,
-            "websiteKey": site_key
-        }
-    }
-    response = requests.post("https://api.capsolver.com/createTask", json=payload)
-    if response.status_code != 200:
-        raise Exception(f"Error creating task: {response.text}")
         
-    task_id = response.json().get("taskId")
-    if not task_id:
-        raise Exception("No taskId found in response")
+class Solver:
+    @staticmethod
+    def solve_2cap():
+        try:
+            response = requests.post(
+                'http://2captcha.com/in.php',
+                data={
+                    'key': Key,
+                    'method': 'hcaptcha',
+                    'sitekey': "4c672d35-0701-42b2-88c3-78380b0db560",
+                    'pageurl': "https://discord.com/"
+                }
+            ).text
 
-    result_payload = {
-        "clientKey": Key,
-        "taskId": task_id
-    }
-    while True:
-        result_response = requests.post("https://api.capsolver.com/getTaskResult", json=result_payload)
-        if result_response.status_code != 200:
-            raise Exception(f"Error getting task result: {result_response.text}")
-            
-        result = result_response.json()
-        if result.get("status") == "ready":
-            return result.get("solution", {}).get("gRecaptchaResponse")
-            
-        time.sleep(5)
+            captcha_id = response.split('|')[1]
+
+            while True:
+                time.sleep(5)
+                result = requests.get(
+                    f'http://2captcha.com/res.php?key={Key}&action=get&id={captcha_id}'
+                ).text
+                if result == 'CAPCHA_NOT_READY':
+                    continue
+                elif result.startswith('OK|'):
+                    return result.split('|')[1]
+                else:
+                    raise Exception('Error solving captcha')
+        except requests.RequestException as e:
+            raise Exception(f"Request failed: {e}")
+        except Exception as e:
+            raise Exception(f"An error occurred: {e}")
+
+    @staticmethod
+    def solve_capmonster():
+        create_task_payload = {
+            "clientKey": Key,
+            "task": {
+                "type": "HCaptchaTaskProxyless",
+                "websiteURL": 'https://discord.com/',
+                "websiteKey": '4c672d35-0701-42b2-88c3-78380b0db560'
+            }
+        }
+
+        try:
+            create_task_response = requests.post("https://api.capmonster.cloud/createTask", json=create_task_payload).json()
+
+            if create_task_response["errorId"] != 0:
+                raise Exception(f"Error creating task: {create_task_response['errorDescription']}")
+
+            task_id = create_task_response["taskId"]
+
+            while True:
+                result_response = requests.post("https://api.capmonster.cloud/getTaskResult", json={"clientKey": Key, "taskId": task_id}).json()
+
+                if result_response["status"] == "ready":
+                    return result_response["solution"]["gRecaptchaResponse"]
+
+                if result_response["errorId"] != 0:
+                    raise Exception(f"Error fetching result: {result_response['errorDescription']}")
+
+                time.sleep(5)
+
+        except requests.RequestException as e:
+            raise Exception(f"Request failed: {e}")
+        except Exception as e:
+            raise Exception(f"An error occurred: {e}")
+
+    @staticmethod
+    def solve_capsolver():
+        payload = {
+            "clientKey": Key,
+            "task": {
+                "type": "HCaptchaTaskProxyless",
+                "websiteURL": 'https://discord.com/',
+                "websiteKey": '4c672d35-0701-42b2-88c3-78380b0db560'
+            }
+        }
+
+        try:
+            response = requests.post("https://api.capsolver.com/createTask", json=payload)
+            if response.status_code != 200:
+                raise Exception(f"Error creating task: {response.text}")
+                
+            task_id = response.json().get("taskId")
+            if not task_id:
+                raise Exception("No taskId found in response")
+
+            result_payload = {
+                "clientKey": Key,
+                "taskId": task_id
+            }
+            while True:
+                result_response = requests.post("https://api.capsolver.com/getTaskResult", json=result_payload)
+                if result_response.status_code != 200:
+                    raise Exception(f"Error getting task result: {result_response.text}")
+
+                result = result_response.json()
+                if result.get("status") == "ready":
+                    return result.get("solution", {}).get("gRecaptchaResponse")
+
+                time.sleep(5)
+        except requests.RequestException as e:
+            raise Exception(f"Request failed: {e}")
+        except Exception as e:
+            raise Exception(f"An error occurred: {e}")
     
 class Raider:
     def __init__(self):
@@ -589,18 +618,17 @@ class Raider:
                         headers["x-captcha-rqtoken"] = response.json()["captcha_rqtoken"]
 
                         if service == "capsolver" or "CapSolver" or "Capsolver":
-                            headers["x-captcha-key"] = solve_capsolver(site_key='b2b02ab5-7dae-4d6f-830e-7b55634c888b', page_url='https://discord.com/')
+                            headers["x-captcha-key"] = Solver.solve_capsolver()
                             payload = {
-                                "captcha_key": solve_capsolver(site_key='4c672d35-0701-42b2-88c3-78380b0db560', page_url='https://discord.com/'),
                                 "session_id": uuid.uuid4().hex,
                             }
                         elif service == "capmonster" or "Capmonster" or "CapMonster":
-                            headers["x-captcha-key"] = solve_capmonster(site_key='b2b02ab5-7dae-4d6f-830e-7b55634c888b', page_url='https://discord.com/')
+                            headers["x-captcha-key"] = Solver.solve_capmonster()
                             payload = {
                                 "session_id": uuid.uuid4().hex,
                             }
                         else:
-                            headers["x-captcha-key"] = solve_2cap(site_key='b2b02ab5-7dae-4d6f-830e-7b55634c888b', page_url='https://discord.com/')
+                            headers["x-captcha-key"] = Solver.solve_2cap()
                             payload = {
                                 "session_id": uuid.uuid4().hex,
                             }
@@ -1422,19 +1450,19 @@ class Raider:
                         headers["x-captcha-rqtoken"] = response.json()["captcha_rqtoken"]
                         
                         if service == "capsolver" or "CapSolver" or "Capsolver":
-                            headers["x-captcha-key"] = solve_capsolver(site_key='b2b02ab5-7dae-4d6f-830e-7b55634c888b', page_url='https://discord.com/')
+                            headers["x-captcha-key"] = Solver.solve_capsolver()
                             data = {
                                 "username": nickname,
                                 "discriminator": None,
                             }
                         elif service == "capmonster" or "Capmonster" or "CapMonster":
-                            headers["x-captcha-key"] = solve_capmonster(site_key='b2b02ab5-7dae-4d6f-830e-7b55634c888b', page_url='https://discord.com/')
+                            headers["x-captcha-key"] = Solver.solve_capmonster()
                             data = {
                                 "username": nickname,
                                 "discriminator": None,
                             }
                         else:
-                            headers["x-captcha-key"] = solve_2cap(site_key='b2b02ab5-7dae-4d6f-830e-7b55634c888b', page_url='https://discord.com/')
+                            headers["x-captcha-key"] = Solver.solve_2cap()
                             data = {
                                 "username": nickname,
                                 "discriminator": None,
@@ -1582,7 +1610,7 @@ def credit():
         "Special Thanks to",
         "Coder: Tips",
         "Scraper: Aniell4",
-        "Original Tools src: Cwelium on github",
+        "Original src: Cwelium on github",
         "Original Owner of Helium: Ekkore",
         "And last but not least, you! Without you, this project wouldn't be possible.",
     ]
