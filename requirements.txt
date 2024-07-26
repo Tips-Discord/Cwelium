@@ -5,3 +5,4 @@ requests
 tls_client
 websocket_client
 uuid
+typing_extensions
