@@ -1,6 +1,8 @@
 # Cwelium Raider
 ⭐ **Please leave a star!**
 
+
+
 ## 👾 Features
 <details>
 <summary>Click to expand</summary>
@@ -28,7 +30,6 @@
 - Call Spammer
 - MassDM
 - Mass Report
-
 </details>
 
 ## 📝 Licensing
@@ -67,7 +68,7 @@ This program is distributed under Custom [AGPL v3.0](https://github.com/Tips-Dis
   #### 40% of any donation goes to charity
 
 ## ⭐ Star War
-[![Star History Chart](https://api.star-history.com/svg?repos=Tips-Discord/Cwelium,R3CI/Lime-lite&type=Timeline&theme=dark)](https://api.star-history.com/svg?repos=Tips-Discord/Cwelium,R3CI/Lime-lite&type=Timeline)
+[![Star History Chart](https://api.star-history.com/svg?repos=Tips-Discord/Cwelium,R3CI/Lime-lite&theme=dark)](https://api.star-history.com/svg?repos=Tips-Discord/Cwelium,R3CI/Lime-lite)
 
 ## ⚠️ Disclaimer
 
