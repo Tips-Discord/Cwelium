@@ -1,8 +1,6 @@
 # Cwelium Raider
 ⭐ **Please leave a star!**
 
-
-
 ## 👾 Features
 <details>
 <summary>Click to expand</summary>
@@ -37,10 +35,9 @@
 
 This program is distributed under Custom [AGPL v3.0](https://github.com/Tips-Discord/Cwelium/blob/main/LICENSE). Please ensure proper credit is given to this project.
 
-## ✍️ Usage
-
+## 👁 Peview
 <p align="center">
-  <img src="https://cdn.discordapp.com/attachments/1207742370200821790/1265602507036557454/image.png?ex=66a21baf&is=66a0ca2f&hm=2af73c3e7c2ef8b030ee0650e155fedc2fd8bde03217bd51f39baf8703a83f16&" alt="Cwelium" width="1000">
+  <img src="https://cdn.discordapp.com/attachments/1207742370200821790/1265602507036557454/image.png?ex=66a6102f&is=66a4beaf&hm=9a2cc29010d66b4c08068d9646971bd0f90556f5a38f16fe7eb894bca05d3b96&" alt="Cwelium">
 </p>
 
 <details>
@@ -67,7 +64,7 @@ This program is distributed under Custom [AGPL v3.0](https://github.com/Tips-Dis
   ### Paypal: <https://paypal.me/Kacperkuszko>
   #### 40% of any donation goes to charity
 
-## ⭐ Star War
+## ⭐ Star War (2 best tools?🤨)
 [![Star History Chart](https://api.star-history.com/svg?repos=Tips-Discord/Cwelium,R3CI/Lime-lite&theme=dark)](https://api.star-history.com/svg?repos=Tips-Discord/Cwelium,R3CI/Lime-lite)
 
 ## ⚠️ Disclaimer
