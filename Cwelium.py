@@ -12,6 +12,7 @@ import os
 from colorama import Fore
 from colorist import ColorHex as h
 from datetime import datetime
+import ctypes
 import base64
 import json
 import random
@@ -75,6 +76,7 @@ class Files:
             if not os.path.exists("config.json"):
                 data = {
                     "Proxies": False,
+                    "Threads": "10",
                     "Theme": "light_blue", 
                     "Solver": False,
                     "Service": "",
@@ -124,6 +126,7 @@ with open("data/tokens.txt", "r") as f:
     tokens = f.read().splitlines()
     
 proxy = Config["Proxies"]
+threadamt = Config["Threads"]
 color = Config["Theme"]
 solver = Config["Solver"]
 service = Config["Service"]
@@ -517,54 +520,46 @@ class Solver:
 class Raider:
     def __init__(self):
         self.cookies = self.get_discord_cookies()
-        self.props = self.super_properties()
         self.ws = websocket.WebSocket()
 
     def get_discord_cookies(self):
         try:
-            response = requests.get("https://canary.discord.com")
+            response = session.get(
+                'https://discord.com',
+                headers=self.headers()
+            )
             match response.status_code:
                 case 200:
                     return "; ".join(
                         [f"{cookie.name}={cookie.value}" for cookie in response.cookies]
                     ) + "; locale=en-US"
                 case _:
+                    console.log(C["red"], "(ERR)", e, "FAILED TO GET COOKIES USING STATIC")
                     return "__dcfduid=62f9e16000a211ef8089eda5bffbf7f9; __sdcfduid=62f9e16100a211ef8089eda5bffbf7f98e904ba04346eacdf57ee4af97bdd94e4c16f7df1db5132bea9132dd26b21a2a; __cfruid=a2ccd7637937e6a41e6888bdb6e8225cd0a6f8e0-1714045775; _cfuvid=s_CLUzmUvmiXyXPSv91CzlxP00pxRJpqEhuUgJql85Y-1714045775095-0.0.1.1-604800000; locale=en-US"
         except Exception as e:
             console.log(C["red"], "(ERR)", e, "(get_discord_cookies)")
-
-    def super_properties(self):
-        try:
-            payload = {
-                "os": "Windows",
-                "browser": "Discord Client",
-                "release_channel": "stable",
-                "client_version": "1.0.9155",
-                "os_version": "10.0.19045",
-                "system_locale": "en",
-                "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9155 Chrome/124.0.6367.243 Electron/30.2.0 Safari/537.36",
-                "browser_version": "30.2.0",
-                "client_build_number": 310927,
-                "native_build_number": 49817,
-                "client_event_source": None,
-            }
-            properties = base64.b64encode(json.dumps(payload).encode()).decode()
-            return properties
-        except Exception as e:
-            console.log(C["red"], "(ERR)", e, "(get_super_properties)")
 
     def headers(self, token):
         return {
             "authority": "discord.com",
             "accept": "*/*",
-            "accept-language": "en",
+            'Accept-Encoding': 'gzip, deflate, br',
+            "accept-language": "en-GB",
             "authorization": token,
             "cookie": self.cookies,
+            'Origin': 'https://discord.com',
+            'Priority': 'u=1, i',
+            'Sec-Ch-Ua': '"Not-A.Brand";v="99", "Chromium";v="124"',
+            'Sec-Ch-Ua-Mobile': '?0',
+            'Sec-Ch-Ua-Platform': '"Windows"',
+            'Sec-Fetch-Dest': 'empty',
+            'Sec-Fetch-Mode': 'cors',
+            'Sec-Fetch-Site': 'same-origin',
             "content-type": "application/json",
-            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9155 Chrome/124.0.6367.243 Electron/30.2.0 Safari/537.36",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9156 Chrome/124.0.6367.243 Electron/30.2.0 Safari/537.36",
             "x-discord-locale": "en-US",
             "x-debug-options": "bugReporterEnabled",
-            "x-super-properties": self.props,
+            "x-super-properties": 'eyJvcyI6IldpbmRvd3MiLCJicm93c2VyIjoiRGlzY29yZCBDbGllbnQiLCJyZWxlYXNlX2NoYW5uZWwiOiJzdGFibGUiLCJjbGllbnRfdmVyc2lvbiI6IjEuMC45MTU2Iiwib3NfdmVyc2lvbiI6IjEwLjAuMjI2MzEiLCJvc19hcmNoIjoieDY0IiwiYXBwX2FyY2giOiJ4NjQiLCJzeXN0ZW1fbG9jYWxlIjoiZW4tR0IiLCJicm93c2VyX3VzZXJfYWdlbnQiOiJNb3ppbGxhLzUuMCAoV2luZG93cyBOVCAxMC4wOyBXaW42NDsgeDY0KSBBcHBsZVdlYktpdC81MzcuMzYgKEtIVE1MLCBsaWtlIEdlY2tvKSBkaXNjb3JkLzEuMC45MTU2IENocm9tZS8xMjQuMC42MzY3LjI0MyBFbGVjdHJvbi8zMC4yLjAgU2FmYXJpLzUzNy4zNiIsImJyb3dzZXJfdmVyc2lvbiI6IjMwLjIuMCIsImNsaWVudF9idWlsZF9udW1iZXIiOjMxNDA0NiwibmF0aXZlX2J1aWxkX251bWJlciI6NTAxNzIsImNsaWVudF9ldmVudF9zb3VyY2UiOm51bGx9',
         }
     
     def nonce(self):
@@ -1583,6 +1578,23 @@ class Menu:
         }
 
     def main_menu(self, _input=None):
+        def get_title():
+            buffer = ctypes.create_unicode_buffer(1024)
+            ctypes.windll.kernel32.GetConsoleTitleW(buffer, len(buffer))
+            return buffer.value
+
+        def contains_word_in_title(word):
+            title = get_title()
+            return word.lower() in title.lower()
+        
+        if contains_word_in_title(base64.b64decode('Q3dlbGl1bQ==').decode('utf-8')):
+            pass
+        else:
+            print(base64.b64decode('SW1hZ2luZSBza2lkZGluZyBMIEwgTEw=').decode('utf-8')),
+            time.sleep(3)
+            os._exit(0)
+            exit()
+
         if _input:
             input()
         console.run()
@@ -1620,6 +1632,7 @@ class Menu:
             "Scraper: Aniell4",
             "Original src: Cwelium on github",
             "Original Owner of Helium: Ekkore",
+            'Ja: r3ci'
             "And last but not least, you! Without you, this project wouldn't be possible.",
         ]
 
