@@ -2,7 +2,7 @@ colorama
 colorist
 datetime
 requests
-tls_client
+tls-client
 websocket_client
 uuid
 typing_extensions
