@@ -17,6 +17,7 @@ import base64
 import json
 import random
 import requests
+from concurrent.futures import ThreadPoolExecutor
 import string
 import threading
 import time
@@ -1606,15 +1607,30 @@ class Menu:
             self.main_menu()
 
     def run(self, func, args):
-        threads = []
         os.system("cls")
         console.render_ascii()
-        for arg in args:
-            thread = threading.Thread(target=func, args=arg)
-            threads.append(thread)
-            thread.start()
-        for thread in threads:
-            thread.join()
+        futures = []
+
+        with ThreadPoolExecutor(max_workers=threadamt) as exe:
+            for arg in args:
+                try:
+                    future = exe.submit(func, arg)
+                    futures.append(future)
+                except Exception as e:
+                    console.log("Failed", C["red"], e)
+
+            for future in futures:
+                try:
+                    future.result()
+                except Exception as e:
+                    console.log("Failed", C["red"], e)
+
+        #for arg in args:
+        #    thread = threading.Thread(target=func, args=arg)
+        #    threads.append(thread)
+        #    thread.start()
+        #for thread in threads:
+        #    thread.join()
         input("\n ~/> press enter to continue ")
         self.main_menu()
     
