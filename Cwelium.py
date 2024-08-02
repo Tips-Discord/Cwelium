@@ -12,32 +12,34 @@ import os
 from colorama import Fore
 from colorist import ColorHex as h
 from datetime import datetime
-import ctypes
+from re import sub
 import base64
 import json
 import random
 import requests
-from concurrent.futures import ThreadPoolExecutor
-import string
 import threading
 import time
 import tls_client
 import uuid
-import re
 import websocket
-
-os.system("cls")
-os.system("title Cwelium")
+import ctypes
+# from concurrent.futures import ThreadPoolExecutor
 
 session = tls_client.Session(client_identifier="chrome_126",random_tls_extension_order=True)
 
+def clear():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
 def wrapper(func):
     def wrapper(*args, **kwargs):
-        os.system("cls")
+        clear()
         console.render_ascii()
         result = func(*args, **kwargs)
         return result
     return wrapper
+
+def title(title):
+    ctypes.windll.kernel32.SetConsoleTitleW(title)
 
 C = {
     "green": h("#65fb07"),
@@ -77,7 +79,6 @@ class Files:
             if not os.path.exists("config.json"):
                 data = {
                     "Proxies": False,
-                    "Threads": "10",
                     "Theme": "light_blue", 
                     "Solver": False,
                     "Service": "",
@@ -127,7 +128,6 @@ with open("data/tokens.txt", "r") as f:
     tokens = f.read().splitlines()
     
 proxy = Config["Proxies"]
-threadamt = Config["Threads"]
 color = Config["Theme"]
 solver = Config["Solver"]
 service = Config["Service"]
@@ -149,10 +149,10 @@ class Render:
             self.background = C[color]
 
     def render_ascii(self):
-        os.system("cls")
-        os.system(f"title Cwelium - Connected as {os.getlogin()} - made by Tips-Discord")
+        clear()
+        title(f"Cwelium | Connected as {os.getlogin()} | made by Tips-Discord")
         edges = ["╗", "║", "╚", "╝", "═", "╔"]
-        title = f"""
+        ascii = f"""
 {' ██████╗██╗    ██╗███████╗██╗     ██╗██╗   ██╗███╗   ███╗'.center(self.size)}
 {'██╔════╝██║    ██║██╔════╝██║     ██║██║   ██║████╗ ████║'.center(self.size)}
 {'██║     ██║ █╗ ██║█████╗  ██║     ██║██║   ██║██╔████╔██║'.center(self.size)}
@@ -161,8 +161,8 @@ class Render:
 {' ╚═════╝ ╚══╝╚══╝ ╚══════╝╚══════╝╚═╝ ╚═════╝ ╚═╝     ╚═╝'.center(self.size)}
 """
         for edge in edges:
-            title = title.replace(edge, f"{self.background}{edge}{C['white']}")
-        print(title)
+            ascii = ascii.replace(edge, f"{self.background}{edge}{C['white']}")
+        print(ascii)
 
     def raider_options(self):
         with open("data/proxies.txt") as f:
@@ -521,13 +521,13 @@ class Solver:
 class Raider:
     def __init__(self):
         self.cookies = self.get_discord_cookies()
+        self.props = self.super_properties()
         self.ws = websocket.WebSocket()
 
     def get_discord_cookies(self):
         try:
             response = session.get(
                 'https://discord.com',
-                headers=self.headers()
             )
             match response.status_code:
                 case 200:
@@ -535,32 +535,43 @@ class Raider:
                         [f"{cookie.name}={cookie.value}" for cookie in response.cookies]
                     ) + "; locale=en-US"
                 case _:
-                    console.log(C["red"], "(ERR)", e, "FAILED TO GET COOKIES USING STATIC")
+                    console.log("(ERR)", C["red"], "Failed to get cookies using Static")
                     return "__dcfduid=62f9e16000a211ef8089eda5bffbf7f9; __sdcfduid=62f9e16100a211ef8089eda5bffbf7f98e904ba04346eacdf57ee4af97bdd94e4c16f7df1db5132bea9132dd26b21a2a; __cfruid=a2ccd7637937e6a41e6888bdb6e8225cd0a6f8e0-1714045775; _cfuvid=s_CLUzmUvmiXyXPSv91CzlxP00pxRJpqEhuUgJql85Y-1714045775095-0.0.1.1-604800000; locale=en-US"
         except Exception as e:
-            console.log(C["red"], "(ERR)", e, "(get_discord_cookies)")
+            console.log("(ERR)", C["red"], e, "(get_discord_cookies)")
+
+    def super_properties(self):
+        try:
+            payload = {
+                "os": "Windows",
+                "browser": "Discord Client",
+                "release_channel": "stable",
+                "client_version": "1.0.9156",
+                "os_version": "10.0.22631",
+                "system_locale": "en",
+                "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9156 Chrome/124.0.6367.243 Electron/30.2.0 Safari/537.36",
+                "browser_version": "30.2.0",
+                "client_build_number": 314046,
+                "native_build_number": 50172,
+                "client_event_source": None,
+            }
+            properties = base64.b64encode(json.dumps(payload).encode()).decode()
+            return properties
+        except Exception as e:
+            console.log("(ERR)", C["red"], e, "(get_super_properties)")
 
     def headers(self, token):
         return {
             "authority": "discord.com",
             "accept": "*/*",
-            'Accept-Encoding': 'gzip, deflate, br',
-            "accept-language": "en-GB",
+            "accept-language": "en",
             "authorization": token,
             "cookie": self.cookies,
-            'Origin': 'https://discord.com',
-            'Priority': 'u=1, i',
-            'Sec-Ch-Ua': '"Not-A.Brand";v="99", "Chromium";v="124"',
-            'Sec-Ch-Ua-Mobile': '?0',
-            'Sec-Ch-Ua-Platform': '"Windows"',
-            'Sec-Fetch-Dest': 'empty',
-            'Sec-Fetch-Mode': 'cors',
-            'Sec-Fetch-Site': 'same-origin',
             "content-type": "application/json",
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9156 Chrome/124.0.6367.243 Electron/30.2.0 Safari/537.36",
             "x-discord-locale": "en-US",
             "x-debug-options": "bugReporterEnabled",
-            "x-super-properties": 'eyJvcyI6IldpbmRvd3MiLCJicm93c2VyIjoiRGlzY29yZCBDbGllbnQiLCJyZWxlYXNlX2NoYW5uZWwiOiJzdGFibGUiLCJjbGllbnRfdmVyc2lvbiI6IjEuMC45MTU2Iiwib3NfdmVyc2lvbiI6IjEwLjAuMjI2MzEiLCJvc19hcmNoIjoieDY0IiwiYXBwX2FyY2giOiJ4NjQiLCJzeXN0ZW1fbG9jYWxlIjoiZW4tR0IiLCJicm93c2VyX3VzZXJfYWdlbnQiOiJNb3ppbGxhLzUuMCAoV2luZG93cyBOVCAxMC4wOyBXaW42NDsgeDY0KSBBcHBsZVdlYktpdC81MzcuMzYgKEtIVE1MLCBsaWtlIEdlY2tvKSBkaXNjb3JkLzEuMC45MTU2IENocm9tZS8xMjQuMC42MzY3LjI0MyBFbGVjdHJvbi8zMC4yLjAgU2FmYXJpLzUzNy4zNiIsImJyb3dzZXJfdmVyc2lvbiI6IjMwLjIuMCIsImNsaWVudF9idWlsZF9udW1iZXIiOjMxNDA0NiwibmF0aXZlX2J1aWxkX251bWJlciI6NTAxNzIsImNsaWVudF9ldmVudF9zb3VyY2UiOm51bGx9',
+            "x-super-properties": self.props,
         }
     
     def nonce(self):
@@ -1020,7 +1031,6 @@ class Raider:
 
             while True:
                 sound = random.choice(sounds)
-
                 name = sound.get("name")
 
                 payload = {
@@ -1094,10 +1104,27 @@ class Raider:
     def dm_spammer(self, token, user_id, message, normal=None):
         try:
             payload = {
-                "content": message,
-                "nonce": self.nonce(),
+                'content': message,
+                'nonce': self.nonce(),
             }
-            while True:
+            if normal:
+                while True:
+                    channel_id = self.open_dm(token, user_id)
+
+                    response = session.post(
+                        f"https://discord.com/api/v9/channels/{channel_id}/messages",
+                        headers=self.headers(token),
+                        json=payload
+                    )
+
+                    match response.status_code:
+                        case 200:
+                            console.log("Send", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", user_id)
+                        case _:
+                            console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))  
+                            break
+                    time.sleep(7)
+            else:
                 channel_id = self.open_dm(token, user_id)
 
                 response = session.post(
@@ -1111,9 +1138,6 @@ class Raider:
                         console.log("Send", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", user_id)
                     case _:
                         console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))  
-                        break
-            if not normal:
-                time.sleep(7)
         except Exception as e:
             console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
@@ -1555,30 +1579,28 @@ class Menu:
             "3": self.spammer, 
             "4": self.checker,
             "5": self.reactor, 
-            "6": self.sooncoming,
             "7": self.formatter,
             "8": self.button,
             "9": self.accept,
             "10": self.guild,
             "11": self.friender,
-            "12": self.sooncoming,
             "13": self.onliner,
             "14": self.soundbord,
             "15": self.nick_changer,
             "16": self.Thread_Spammer,
             "17": self.typier,
-            "18": self.sooncoming,
             "19": self.caller,
             "20": self.bio_changer,
             "21": self.voice_joiner,
             "22": self.onboard,
             "23": self.dm_spam,
-            "24": self.sooncoming,
             "credits": self.credit,
             "secret": self.mass_advert,
         }
 
     def main_menu(self, _input=None):
+        console.run()
+
         def get_title():
             buffer = ctypes.create_unicode_buffer(1024)
             ctypes.windll.kernel32.GetConsoleTitleW(buffer, len(buffer))
@@ -1587,7 +1609,7 @@ class Menu:
         def contains_word_in_title(word):
             title = get_title()
             return word.lower() in title.lower()
-        
+                
         if contains_word_in_title(base64.b64decode('Q3dlbGl1bQ==').decode('utf-8')):
             pass
         else:
@@ -1598,8 +1620,9 @@ class Menu:
 
         if _input:
             input()
-        console.run()
+
         choice = input(f"{' '*4}{Fore.LIGHTCYAN_EX}-> {Fore.RESET}")
+
         if choice in self.options:
             console.render_ascii()
             self.options[choice]()
@@ -1607,36 +1630,30 @@ class Menu:
             self.main_menu()
 
     def run(self, func, args):
-        os.system("cls")
+        threads = []
+        clear()
         console.render_ascii()
-        futures = []
 
-        with ThreadPoolExecutor(max_workers=threadamt) as exe:
-            for arg in args:
-                try:
-                    future = exe.submit(func, arg)
-                    futures.append(future)
-                except Exception as e:
-                    console.log("Failed", C["red"], e)
+        # with ThreadPoolExecutor(max_workers=threadamt) as exe:
+        #    for arg in args:
+        #        try:
+        #            future = exe.submit(func, arg)
+        #            futures.append(future)
+        #        except Exception as e:
+        #            console.log("Failed", C["red"], e)
 
-            for future in futures:
-                try:
-                    future.result()
-                except Exception as e:
-                    console.log("Failed", C["red"], e)
+        #    for future in futures:
+        #        try:
+        #            future.result()
+        #        except Exception as e:
+        #            console.log("Failed", C["red"], e)
 
-        #for arg in args:
-        #    thread = threading.Thread(target=func, args=arg)
-        #    threads.append(thread)
-        #    thread.start()
-        #for thread in threads:
-        #    thread.join()
-        input("\n ~/> press enter to continue ")
-        self.main_menu()
-    
-    @wrapper
-    def sooncoming(self):
-        print(f"{' '*44}{self.background}Here will be something soon dummy")
+        for arg in args:
+            thread = threading.Thread(target=func, args=arg)
+            threads.append(thread)
+            thread.start()
+        for thread in threads:
+            thread.join()
         input("\n ~/> press enter to continue ")
         self.main_menu()
 
@@ -1648,7 +1665,7 @@ class Menu:
             "Scraper: Aniell4",
             "Original src: Cwelium on github",
             "Original Owner of Helium: Ekkore",
-            'Ja: r3ci'
+            "Friend: R3ci",
             "And last but not least, you! Without you, this project wouldn't be possible.",
         ]
 
@@ -1661,7 +1678,7 @@ class Menu:
         
     @wrapper
     def mass_advert(self):
-        os.system("title Cwelium - Mass advertiser")
+        title(f"Cwelium | Mass advertiser")
         Link = input(console.prompt("Channel LINK"))
         if Link == "" or not Link.startswith("https://"):
             self.main_menu()
@@ -1678,7 +1695,7 @@ class Menu:
         with open(f"scraped/{guild_id}.txt") as f:
             members = f.read().splitlines()
 
-        os.system("cls")
+        clear()
         console.render_ascii()
         for x in members:
             for token in tokens:
@@ -1690,7 +1707,7 @@ class Menu:
 
     @wrapper
     def dm_spam(self):
-        os.system("title Cwelium - Dm Spammer")
+        title(f"Cwelium - Dm Spammer")
         user_id = input(console.prompt("User ID"))
         if user_id == "":
             Menu().main_menu()
@@ -1699,21 +1716,22 @@ class Menu:
         if message == "":
             Menu().main_menu()
 
-        os.system("cls")
+        clear()
         console.render_ascii()
         for token in tokens:
             threading.Thread(target=self.raider.dm_spammer, args=(token, user_id, message, True)).start()
 
     @wrapper
     def soundbord(self):
-        os.system("title Cwelium - Soundboard Spam")
+        title(f"Cwelium - Soundboard Spam")
         Link = input(console.prompt("Channel LINK"))
         if Link == "" or not Link.startswith("https://"):
             self.main_menu()
             
         channel = Link.split("/")[5]
         guild = Link.split("/")[4]
-        os.system("cls")
+
+        clear()
         console.render_ascii()
         for token in tokens:
             threading.Thread(target=self.raider.vc_joiner, args=(token, guild, channel, websocket.WebSocket())).start()
@@ -1721,7 +1739,7 @@ class Menu:
 
     @wrapper
     def friender(self):
-        os.system("title Cwelium - Friender")
+        title(f"Cwelium - Friender")
         nickname = input(console.prompt("Nick"))
         if nickname == "":
             Menu().main_menu()
@@ -1733,18 +1751,18 @@ class Menu:
 
     @wrapper
     def caller(self):
-        os.system("title Cwelium - Caller")
+        title(f"Cwelium - Caller")
         user_id = input(console.prompt("User ID"))
         if user_id == "":
             Menu().main_menu()
 
-        os.system("cls")
+        clear()
         console.render_ascii()
         for token in tokens:
             threading.Thread(target=self.raider.call_spammer, args=(token, user_id)).start()
 
     def onliner(self):
-        os.system("title Cwelium - Onliner")
+        title(f"Cwelium - Onliner")
         args = [
             (token, websocket.WebSocket()) for token in tokens
         ]
@@ -1752,7 +1770,7 @@ class Menu:
 
     @wrapper
     def typier(self):
-        os.system("title Cwelium - Typer")
+        title(f"Cwelium - Typer")
         Link = input(console.prompt(f"Channel LINK"))
         if Link == "" or not Link.startswith("https://"):
             self.main_menu()
@@ -1765,7 +1783,7 @@ class Menu:
 
     @wrapper
     def nick_changer(self):
-        os.system("title Cwelium - Nickname Changer")
+        title(f"Cwelium - Nickname Changer")
         nick = input(console.prompt("Nick"))
         if nick == "":
             Menu().main_menu()
@@ -1774,7 +1792,7 @@ class Menu:
         if guild == "":
             Menu().main_menu()
 
-        os.system("cls")
+        clear()
         console.render_ascii()
         args = [
             (token, guild, nick) for token in tokens
@@ -1783,7 +1801,7 @@ class Menu:
 
     @wrapper
     def voice_joiner(self):
-        os.system("title Cwelium - Voice Joiner")
+        title(f"Cwelium - Voice Joiner")
         Link = input(console.prompt("Channel LINK"))
         if Link == "" or not Link.startswith("https://"):
             self.main_menu()
@@ -1797,7 +1815,7 @@ class Menu:
 
     @wrapper
     def Thread_Spammer(self):
-        os.system("title Cwelium - Thread Spammer")
+        title(f"Cwelium - Thread Spammer")
         Link = input(console.prompt("Channel LINK"))
         if Link == "" or not Link.startswith("https://"):
             self.main_menu()
@@ -1814,12 +1832,12 @@ class Menu:
 
     @wrapper
     def joiner(self):
-        os.system("title Cwelium - Joiner")
+        title(f"Cwelium - Joiner")
         invite = input(console.prompt(f"Invite"))
         if invite == "":
             Menu().main_menu()
 
-        invite = re.sub(r"(https?://)?(www\.)?(discord\.(gg|com)/invite/|discord\.gg/|discord\.com/invite/|\.gg/)", "", invite)
+        invite = sub(r"(https?://)?(www\.)?(discord\.(gg|com)/invite/|discord\.gg/|discord\.com/invite/|\.gg/)", "", invite)
 
         args = [
             (token, invite) for token in tokens
@@ -1828,7 +1846,7 @@ class Menu:
 
     @wrapper 
     def leaver(self):
-        os.system("title Cwelium - Leaver")
+        title(f"Cwelium - Leaver")
         guild = input(console.prompt("Guild ID"))
         if guild == "":
             Menu().main_menu()
@@ -1840,7 +1858,7 @@ class Menu:
 
     @wrapper
     def spammer(self):
-        os.system("title Cwelium - Spammer")
+        title(f"Cwelium - Spammer")
         Link = input(console.prompt(f"Channel LINK"))
         if Link == "" or not Link.startswith("https://"):
             self.main_menu()
@@ -1871,29 +1889,29 @@ class Menu:
             self.run(self.raider.spammer, args)
 
     def checker(self):
-        os.system("title Cwelium - Checker")
+        title(f"Cwelium - Checker")
         self.raider.token_checker()
 
     @wrapper
     def reactor(self):
-        os.system("title Cwelium - Reactor")
+        title(f"Cwelium - Reactor")
         Link = input(console.prompt("Message Link"))
         if Link == "" or not Link.startswith("https://"):
             self.main_menu()
 
         channel_id = Link.split("/")[5]
         message_id = Link.split("/")[6]
-        os.system("cls")
+        clear()
         console.render_ascii()
         self.raider.reactor_main(channel_id, message_id)
 
     def formatter(self):
-        os.system("title Cwelium - Formatter")
+        title(f"Cwelium - Formatter")
         self.run(self.raider.format_tokens, [()])
     
     @wrapper
     def button(self):
-        os.system("title Cwelium - Clicker")
+        title(f"Cwelium - Clicker")
         Link = input(console.prompt("Message Link"))
         if Link == "" or not Link.startswith("https://"):
             self.main_menu()
@@ -1908,29 +1926,29 @@ class Menu:
 
     @wrapper
     def accept(self):
-        os.system("title Cwelium - Accept Rules")
+        title(f"Cwelium - Accept Rules")
         guild_id = input(console.prompt("Guild ID"))
         if guild_id == "":
             Menu().main_menu()
 
-        os.system("cls")
+        clear()
         console.render_ascii()
         self.raider.accept_rules(guild_id)
 
     @wrapper
     def guild(self):
-        os.system("title Cwelium - Guild Checker")
+        title(f"Cwelium - Guild Checker")
         guild_id = input(console.prompt("Guild ID"))
         if guild_id == "":
             Menu().main_menu()
 
-        os.system("cls")
+        clear()
         console.render_ascii()
         self.raider.guild_checker(guild_id)
 
     @wrapper
     def bio_changer(self):
-        os.system("title Cwelium - Bio Changer")
+        title(f"Cwelium - Bio Changer")
         bio = input(console.prompt("Bio"))
         if bio == "":
             Menu().main_menu()
@@ -1942,12 +1960,12 @@ class Menu:
 
     @wrapper
     def onboard(self):
-        os.system("title Cwelium - Onboarding Bypass")
+        title(f"Cwelium - Onboarding Bypass")
         guild_id = input(console.prompt("Guild ID"))
         if guild_id == "":
             Menu().main_menu()
 
-        os.system("cls")
+        clear()
         console.render_ascii()
         self.raider.onboard_bypass(guild_id)
 
