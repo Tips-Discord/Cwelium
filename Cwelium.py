@@ -28,7 +28,7 @@ import ctypes
 session = tls_client.Session(client_identifier="chrome_126",random_tls_extension_order=True)
 
 def clear():
-    os.system('cls' if os.name == 'nt' else 'clear')
+    os.system("cls" if os.name == "nt" else "clear")
 
 def wrapper(func):
     def wrapper(*args, **kwargs):
@@ -1104,8 +1104,8 @@ class Raider:
     def dm_spammer(self, token, user_id, message, normal=None):
         try:
             payload = {
-                'content': message,
-                'nonce': self.nonce(),
+                "content": message,
+                "nonce": self.nonce(),
             }
             if normal:
                 while True:
@@ -1610,10 +1610,10 @@ class Menu:
             title = get_title()
             return word.lower() in title.lower()
                 
-        if contains_word_in_title(base64.b64decode('Q3dlbGl1bQ==').decode('utf-8')):
+        if contains_word_in_title(base64.b64decode("Q3dlbGl1bQ==").decode("utf-8")):
             pass
         else:
-            print(base64.b64decode('SW1hZ2luZSBza2lkZGluZyBMIEwgTEw=').decode('utf-8')),
+            print(base64.b64decode("SW1hZ2luZSBza2lkZGluZyBMIEwgTEw=").decode("utf-8")),
             time.sleep(3)
             os._exit(0)
             exit()
