@@ -8,13 +8,14 @@
 # Additional Terms can be found at:
 # https://github.com/Tips-Discord/Cwelium/blob/main/LICENSE
 
-import os
 from colorama import Fore
 from colorist import ColorHex as h
 from datetime import datetime
 from re import sub
 import base64
+import ctypes
 import json
+import os
 import random
 import requests
 import threading
@@ -22,7 +23,6 @@ import time
 import tls_client
 import uuid
 import websocket
-import ctypes
 # from concurrent.futures import ThreadPoolExecutor
 
 session = tls_client.Session(client_identifier="chrome_126",random_tls_extension_order=True)
@@ -547,11 +547,11 @@ class Raider:
                 "browser": "Discord Client",
                 "release_channel": "stable",
                 "client_version": "1.0.9156",
-                "os_version": "10.0.22631",
+                "os_version": "10.0.19045",
                 "system_locale": "en",
                 "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9156 Chrome/124.0.6367.243 Electron/30.2.0 Safari/537.36",
                 "browser_version": "30.2.0",
-                "client_build_number": 314046,
+                "client_build_number": 315432,
                 "native_build_number": 50172,
                 "client_event_source": None,
             }
@@ -1601,22 +1601,17 @@ class Menu:
     def main_menu(self, _input=None):
         console.run()
 
-        def get_title():
+        def check(word):
             buffer = ctypes.create_unicode_buffer(1024)
             ctypes.windll.kernel32.GetConsoleTitleW(buffer, len(buffer))
-            return buffer.value
-
-        def contains_word_in_title(word):
-            title = get_title()
-            return word.lower() in title.lower()
+            return word.lower() in buffer.value.lower()
                 
-        if contains_word_in_title(base64.b64decode("Q3dlbGl1bQ==").decode("utf-8")):
+        if check(base64.b64decode("Q3dlbGl1bQ==").decode("utf-8")) and check(base64.b64decode("bWFkZSBieSBUaXBzLURpc2NvcmQ=").decode("utf-8")):
             pass
         else:
-            print(base64.b64decode("SW1hZ2luZSBza2lkZGluZyBMIEwgTEw=").decode("utf-8")),
+            print(base64.b64decode("SW1hZ2luZSBza2lkZGluZyBMIEwgTEw=").decode("utf-8"))
             time.sleep(3)
             os._exit(0)
-            exit()
 
         if _input:
             input()
@@ -1678,7 +1673,7 @@ class Menu:
         
     @wrapper
     def mass_advert(self):
-        title(f"Cwelium | Mass advertiser")
+        title(f"Cwelium - Mass advertiser | secret option my pookie")
         Link = input(console.prompt("Channel LINK"))
         if Link == "" or not Link.startswith("https://"):
             self.main_menu()
@@ -1792,8 +1787,6 @@ class Menu:
         if guild == "":
             Menu().main_menu()
 
-        clear()
-        console.render_ascii()
         args = [
             (token, guild, nick) for token in tokens
         ]
@@ -1876,8 +1869,10 @@ class Menu:
             console.log(f"Scraping users (this may take a while)...", C["light_blue"])
             self.raider.member_scrape(guild_id, channel_id)
             count = input(console.prompt("Pings Amount"))
+
             if count == "":
                 Menu().main_menu()
+
             args = [
                 (token, channel_id, message, guild_id, True, count) for token in tokens
             ]
