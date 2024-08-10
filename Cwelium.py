@@ -535,10 +535,10 @@ class Raider:
                         [f"{cookie.name}={cookie.value}" for cookie in response.cookies]
                     ) + "; locale=en-US"
                 case _:
-                    console.log("(ERR)", C["red"], "Failed to get cookies using Static")
+                    console.log("ERROR", C["red"], "Failed to get cookies using Static")
                     return "__dcfduid=62f9e16000a211ef8089eda5bffbf7f9; __sdcfduid=62f9e16100a211ef8089eda5bffbf7f98e904ba04346eacdf57ee4af97bdd94e4c16f7df1db5132bea9132dd26b21a2a; __cfruid=a2ccd7637937e6a41e6888bdb6e8225cd0a6f8e0-1714045775; _cfuvid=s_CLUzmUvmiXyXPSv91CzlxP00pxRJpqEhuUgJql85Y-1714045775095-0.0.1.1-604800000; locale=en-US"
         except Exception as e:
-            console.log("(ERR)", C["red"], e, "(get_discord_cookies)")
+                console.log("ERROR", C["red"], e, "get_discord_cookies")
 
     def super_properties(self):
         try:
@@ -546,19 +546,19 @@ class Raider:
                 "os": "Windows",
                 "browser": "Discord Client",
                 "release_channel": "stable",
-                "client_version": "1.0.9156",
+                "client_version": "1.0.9157",
                 "os_version": "10.0.19045",
                 "system_locale": "en",
-                "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9156 Chrome/124.0.6367.243 Electron/30.2.0 Safari/537.36",
+                "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9157 Chrome/124.0.6367.243 Electron/30.2.0 Safari/537.36",
                 "browser_version": "30.2.0",
-                "client_build_number": 315432,
-                "native_build_number": 50172,
+                "client_build_number": 317392,
+                "native_build_number": 50412,
                 "client_event_source": None,
             }
             properties = base64.b64encode(json.dumps(payload).encode()).decode()
             return properties
         except Exception as e:
-            console.log("(ERR)", C["red"], e, "(get_super_properties)")
+            console.log("ERROR", C["red"], e, "get_super_properties")
 
     def headers(self, token):
         return {
@@ -568,7 +568,7 @@ class Raider:
             "authorization": token,
             "cookie": self.cookies,
             "content-type": "application/json",
-            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9156 Chrome/124.0.6367.243 Electron/30.2.0 Safari/537.36",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9157 Chrome/124.0.6367.243 Electron/30.2.0 Safari/537.36",
             "x-discord-locale": "en-US",
             "x-debug-options": "bugReporterEnabled",
             "x-super-properties": self.props,
@@ -1047,7 +1047,7 @@ class Raider:
 
                 match response.status_code:
                     case 204:
-                        console.log(C["light_blue"], f"Successfully played sound {Fore.YELLOW}{name}", f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
+                        console.log("Success", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Played {name}")
                     case 429:
                         retry_after = response.json().get("retry_after")
                         console.log("RATELIMIT", C["yellow"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after}s",)
