@@ -8,6 +8,7 @@
 # Additional Terms can be found at:
 # https://github.com/Tips-Discord/Cwelium/blob/main/LICENSE
 
+#from concurrent.futures import ThreadPoolExecutor
 from colorama import Fore
 from colorist import ColorHex as h
 from datetime import datetime
@@ -23,7 +24,6 @@ import time
 import tls_client
 import uuid
 import websocket
-# from concurrent.futures import ThreadPoolExecutor
 
 session = tls_client.Session(client_identifier="chrome_126",random_tls_extension_order=True)
 
@@ -406,7 +406,7 @@ class DiscordSocket(websocket.WebSocketApp):
                     self.members[user_id] = user_info
 
     def on_close(self, ws, close_code, close_msg):
-        console.log("Scraping Done", C["green"])
+        console.log("Success", C["green"], False, f"scraped {len(self.members)} members")
 
 def scrape(token, guild_id, channel_id):
     sb = DiscordSocket(token, guild_id, channel_id)
@@ -526,7 +526,7 @@ class Raider:
 
     def get_discord_cookies(self):
         try:
-            response = session.get(
+            response = requests.get(
                 'https://discord.com',
             )
             match response.status_code:
@@ -538,7 +538,7 @@ class Raider:
                     console.log("ERROR", C["red"], "Failed to get cookies using Static")
                     return "__dcfduid=62f9e16000a211ef8089eda5bffbf7f9; __sdcfduid=62f9e16100a211ef8089eda5bffbf7f98e904ba04346eacdf57ee4af97bdd94e4c16f7df1db5132bea9132dd26b21a2a; __cfruid=a2ccd7637937e6a41e6888bdb6e8225cd0a6f8e0-1714045775; _cfuvid=s_CLUzmUvmiXyXPSv91CzlxP00pxRJpqEhuUgJql85Y-1714045775095-0.0.1.1-604800000; locale=en-US"
         except Exception as e:
-                console.log("ERROR", C["red"], e, "get_discord_cookies")
+            console.log("ERROR", C["red"], "get_discord_cookies", e)
 
     def super_properties(self):
         try:
@@ -546,19 +546,20 @@ class Raider:
                 "os": "Windows",
                 "browser": "Discord Client",
                 "release_channel": "stable",
-                "client_version": "1.0.9157",
+                "client_version": "1.0.9158",
                 "os_version": "10.0.19045",
                 "system_locale": "en",
-                "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9157 Chrome/124.0.6367.243 Electron/30.2.0 Safari/537.36",
+                "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9158 Chrome/124.0.6367.243 Electron/30.2.0 Safari/537.36",
                 "browser_version": "30.2.0",
-                "client_build_number": 317392,
-                "native_build_number": 50412,
+                "os_sdk_version":"19045",
+                "client_build_number": 319737,
+                "native_build_number": 50841,
                 "client_event_source": None,
             }
             properties = base64.b64encode(json.dumps(payload).encode()).decode()
             return properties
         except Exception as e:
-            console.log("ERROR", C["red"], e, "get_super_properties")
+            console.log("ERROR", C["red"], "get_super_properties", e)
 
     def headers(self, token):
         return {
@@ -568,7 +569,7 @@ class Raider:
             "authorization": token,
             "cookie": self.cookies,
             "content-type": "application/json",
-            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9157 Chrome/124.0.6367.243 Electron/30.2.0 Safari/537.36",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9158 Chrome/124.0.6367.243 Electron/30.2.0 Safari/537.36",
             "x-discord-locale": "en-US",
             "x-debug-options": "bugReporterEnabled",
             "x-super-properties": self.props,
@@ -617,7 +618,7 @@ class Raider:
                             
                         newresponse = session.post(
                             f"https://discord.com/api/v9/invites/{invite}",
-                            headers=self.headers(token), 
+                            headers=headers, 
                             json=payload
                         )
 
@@ -1107,24 +1108,7 @@ class Raider:
                 "content": message,
                 "nonce": self.nonce(),
             }
-            if normal:
-                while True:
-                    channel_id = self.open_dm(token, user_id)
-
-                    response = session.post(
-                        f"https://discord.com/api/v9/channels/{channel_id}/messages",
-                        headers=self.headers(token),
-                        json=payload
-                    )
-
-                    match response.status_code:
-                        case 200:
-                            console.log("Send", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", user_id)
-                        case _:
-                            console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))  
-                            break
-                    time.sleep(7)
-            else:
+            while True:
                 channel_id = self.open_dm(token, user_id)
 
                 response = session.post(
@@ -1138,6 +1122,8 @@ class Raider:
                         console.log("Send", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", user_id)
                     case _:
                         console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))  
+                        break
+                time.sleep(7)
         except Exception as e:
             console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
@@ -1428,30 +1414,18 @@ class Raider:
                     if solver:
                         headers["x-context-properties"] = "eyJsb2NhdGlvbiI6IkFkZCBGcmllbmQifQ=="
                         headers["x-captcha-rqtoken"] = response.json()["captcha_rqtoken"]
-                        
+
                         if service == "capsolver" or "CapSolver" or "Capsolver":
                             headers["x-captcha-key"] = Solver.solve_capsolver()
-                            data = {
-                                "username": nickname,
-                                "discriminator": None,
-                            }
                         elif service == "capmonster" or "Capmonster" or "CapMonster":
                             headers["x-captcha-key"] = Solver.solve_capmonster()
-                            data = {
-                                "username": nickname,
-                                "discriminator": None,
-                            }
                         else:
                             headers["x-captcha-key"] = Solver.solve_2cap()
-                            data = {
-                                "username": nickname,
-                                "discriminator": None,
-                            }
 
                         newresponse = session.post(
                             f"https://canary.discord.com/api/v9/users/@me/relationships", 
-                            headers=self.headers(token), 
-                            json=data
+                            headers=headers, 
+                            json=payload
                         )
                         match newresponse.status_code:
                             case 204:
@@ -1595,7 +1569,6 @@ class Menu:
             "22": self.onboard,
             "23": self.dm_spam,
             "credits": self.credit,
-            "secret": self.mass_advert,
         }
 
     def main_menu(self, _input=None):
@@ -1670,35 +1643,6 @@ class Menu:
 
         input("\n ~/> press enter to continue ")
         self.main_menu()
-        
-    @wrapper
-    def mass_advert(self):
-        title(f"Cwelium - Mass advertiser | secret option my pookie")
-        Link = input(console.prompt("Channel LINK"))
-        if Link == "" or not Link.startswith("https://"):
-            self.main_menu()
-            
-        channel_id = Link.split("/")[5]
-        guild_id = Link.split("/")[4]
-
-        message = input(console.prompt("Message"))
-        if message == "":
-            Menu().main_menu()
-
-        console.log(f"Scraping users (this may take a while)...", C["light_blue"])
-        self.raider.member_scrape(guild_id, channel_id)
-        with open(f"scraped/{guild_id}.txt") as f:
-            members = f.read().splitlines()
-
-        clear()
-        console.render_ascii()
-        for x in members:
-            for token in tokens:
-                threading.Thread(target=self.raider.onliner, args=(token, websocket.WebSocket()))
-                threading.Thread(target=self.raider.dm_spammer, args=(token, x, message, False)).start()
-            if not proxy:
-                time.sleep(2)
-        Menu().main_menu()
 
     @wrapper
     def dm_spam(self):
@@ -1714,7 +1658,7 @@ class Menu:
         clear()
         console.render_ascii()
         for token in tokens:
-            threading.Thread(target=self.raider.dm_spammer, args=(token, user_id, message, True)).start()
+            threading.Thread(target=self.raider.dm_spammer, args=(token, user_id, message)).start()
 
     @wrapper
     def soundbord(self):
@@ -1866,7 +1810,7 @@ class Menu:
             Menu().main_menu()
 
         if "y" in massping:
-            console.log(f"Scraping users (this may take a while)...", C["light_blue"])
+            console.log(f"Scraping users", C["light_blue"], False, "this may take a while...")
             self.raider.member_scrape(guild_id, channel_id)
             count = input(console.prompt("Pings Amount"))
 
