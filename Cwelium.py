@@ -1439,6 +1439,8 @@ class Raider:
 
     def onboard_bypass(self, guild_id):
         try:
+            with open("data/tokens.txt", "r") as f:
+                tokens = f.read().splitlines()
             onboarding_responses_seen = {}
             onboarding_prompts_seen = {}
             onboarding_responses = []
@@ -1506,7 +1508,7 @@ class Raider:
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
         args = [
-            (token,) for token in tokens
+            (token, ) for token in tokens
         ]
         Menu().run(run_task, args)
 
@@ -1535,7 +1537,7 @@ class Raider:
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
         args = [
-            (token,) for token in tokens
+            (token, ) for token in tokens
         ]
         Menu().run(run_task, args)
 
