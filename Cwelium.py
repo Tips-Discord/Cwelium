@@ -12,7 +12,7 @@
 from colorama import Fore
 from colorist import ColorHex as h
 from datetime import datetime
-from re import sub
+import re
 import base64
 import ctypes
 import json
@@ -130,7 +130,7 @@ with open("data/tokens.txt", "r") as f:
 proxy = Config["Proxies"]
 color = Config["Theme"]
 solver = Config["Solver"]
-service = Config["Service"]
+service = Config["Service"].lower()
 Key = Config["Api-Key"]
 
 if proxy:
@@ -256,7 +256,7 @@ class DiscordSocket(websocket.WebSocketApp):
         self.token = token
         self.guild_id = guild_id
         self.channel_id = channel_id
-        self.blacklisted_ids = {"1100342265303547924", "1190052987477958806", "1125147653970337896"}
+        self.blacklisted_ids = {"1100342265303547924", "1190052987477958806", "1125147653970337896", "833007032000446505"}
 
         headers = {
             "Accept-Encoding": "gzip, deflate, br",
@@ -478,45 +478,6 @@ class Solver:
             raise Exception(f"Request failed: {e}")
         except Exception as e:
             raise Exception(f"An error occurred: {e}")
-
-    @staticmethod
-    def solve_capsolver():
-        payload = {
-            "clientKey": Key,
-            "task": {
-                "type": "HCaptchaTaskProxyless",
-                "websiteURL": "https://discord.com/",
-                "websiteKey": "4c672d35-0701-42b2-88c3-78380b0db560"
-            }
-        }
-
-        try:
-            response = requests.post("https://api.capsolver.com/createTask", json=payload)
-            if response.status_code != 200:
-                raise Exception(f"Error creating task: {response.text}")
-                
-            task_id = response.json().get("taskId")
-            if not task_id:
-                raise Exception("No taskId found in response")
-
-            result_payload = {
-                "clientKey": Key,
-                "taskId": task_id
-            }
-            while True:
-                result_response = requests.post("https://api.capsolver.com/getTaskResult", json=result_payload)
-                if result_response.status_code != 200:
-                    raise Exception(f"Error getting task result: {result_response.text}")
-
-                result = result_response.json()
-                if result.get("status") == "ready":
-                    return result.get("solution", {}).get("gRecaptchaResponse")
-
-                time.sleep(5)
-        except requests.RequestException as e:
-            raise Exception(f"Request failed: {e}")
-        except Exception as e:
-            raise Exception(f"An error occurred: {e}")
     
 class Raider:
     def __init__(self):
@@ -546,14 +507,14 @@ class Raider:
                 "os": "Windows",
                 "browser": "Discord Client",
                 "release_channel": "stable",
-                "client_version": "1.0.9158",
+                "client_version": "1.0.9161",
                 "os_version": "10.0.19045",
                 "system_locale": "en",
-                "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9158 Chrome/124.0.6367.243 Electron/30.2.0 Safari/537.36",
+                "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9161 Chrome/124.0.6367.243 Electron/30.2.0 Safari/537.36",
                 "browser_version": "30.2.0",
                 "os_sdk_version":"19045",
-                "client_build_number": 319737,
-                "native_build_number": 50841,
+                "client_build_number": 323539,
+                "native_build_number": 51643,
                 "client_event_source": None,
             }
             properties = base64.b64encode(json.dumps(payload).encode()).decode()
@@ -569,7 +530,7 @@ class Raider:
             "authorization": token,
             "cookie": self.cookies,
             "content-type": "application/json",
-            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9158 Chrome/124.0.6367.243 Electron/30.2.0 Safari/537.36",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9161 Chrome/124.0.6367.243 Electron/30.2.0 Safari/537.36",
             "x-discord-locale": "en-US",
             "x-debug-options": "bugReporterEnabled",
             "x-super-properties": self.props,
@@ -600,12 +561,7 @@ class Raider:
                         headers["x-context-properties"] = "eyJsb2NhdGlvbiI6IkpvaW4gR3VpbGQiLCJsb2NhdGlvbl9jaGFubmVsX3R5cGUiOjB9=="
                         headers["x-captcha-rqtoken"] = response.json()["captcha_rqtoken"]
 
-                        if service == "capsolver" or "CapSolver" or "Capsolver":
-                            headers["x-captcha-key"] = Solver.solve_capsolver()
-                            payload = {
-                                "session_id": uuid.uuid4().hex,
-                            }
-                        elif service == "capmonster" or "Capmonster" or "CapMonster":
+                        if service == "capmonster":
                             headers["x-captcha-key"] = Solver.solve_capmonster()
                             payload = {
                                 "session_id": uuid.uuid4().hex,
@@ -946,7 +902,8 @@ class Raider:
 
             if not access_token:
                 console.log("Failed", C["red"], "Missing Permissions")
-                Menu().main_menu(True)
+                input()
+                Menu().main_menu()
             else:
                 data = response.json()
                 for __ in data:
@@ -963,7 +920,8 @@ class Raider:
                                     emojis.append(f"{emoji_name}:{emoji_id}")
                             else:
                                 console.log("Failed", C["red"], "No reactions Found in this message",)
-                                Menu().main_menu(True)
+                                input()
+                                Menu().main_menu()
 
                 for i, emoji in enumerate(emojis, start=1):
                     print(f"{C['light_blue']}0{i}:{C['white']} {emoji}")
@@ -996,7 +954,8 @@ class Raider:
 
         except Exception as e:
             console.log("FAILED", C["red"], "Failed to get emojis", e)
-            Menu().main_menu(True)
+            input()
+            Menu().main_menu()
 
             def add_reaction(token):
                 try:
@@ -1147,6 +1106,7 @@ class Raider:
             with open("data/tokens.txt", "w") as f:
                 for token in formatted:
                     f.write(f"{token}\n")
+
             Menu().main_menu()
         except Exception as e:
             console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
@@ -1221,7 +1181,8 @@ class Raider:
 
             if not valid:
                 console.log("FAILED", C["red"], "All tokens are Invalid")
-                Menu().main_menu(True)
+                input()
+                Menu().main_menu()
 
         except Exception as e:
             console.log("FAILED", C["red"], "Failed to Accept Rules", e)
@@ -1415,9 +1376,7 @@ class Raider:
                         headers["x-context-properties"] = "eyJsb2NhdGlvbiI6IkFkZCBGcmllbmQifQ=="
                         headers["x-captcha-rqtoken"] = response.json()["captcha_rqtoken"]
 
-                        if service == "capsolver" or "CapSolver" or "Capsolver":
-                            headers["x-captcha-key"] = Solver.solve_capsolver()
-                        elif service == "capmonster" or "Capmonster" or "CapMonster":
+                        if service == "capmonster":
                             headers["x-captcha-key"] = Solver.solve_capmonster()
                         else:
                             headers["x-captcha-key"] = Solver.solve_2cap()
@@ -1458,7 +1417,8 @@ class Raider:
 
             if not in_guild:
                 console.log("FAILED", C["red"], "Missing Access")
-                Menu().main_menu(True)
+                input()
+                Menu().main_menu()
             else:
                 data = response.json()
                 now = int(datetime.now().timestamp())
@@ -1477,11 +1437,13 @@ class Raider:
                                 C["red"],
                                 "No onboarding in This Server",
                             )
-                            Menu().main_menu(True)
+                            input()
+                            Menu().main_menu()
 
         except Exception as e:
             console.log("FAILED", C["red"], "Failed to Pass Onboard", e)
-            Menu().main_menu(True)
+            input()
+            Menu().main_menu()
 
         def run_task(token):
             try:
@@ -1505,8 +1467,6 @@ class Raider:
             except Exception as e:
                 console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
-        with open("data/tokens.txt", "r") as f:
-            tokens = f.read().splitlines()
         args = [
             (token, ) for token in tokens
         ]
@@ -1534,8 +1494,6 @@ class Raider:
             except Exception as e:
                 console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
-        with open("data/tokens.txt", "r") as f:
-            tokens = f.read().splitlines()
         args = [
             (token, ) for token in tokens
         ]
@@ -1573,7 +1531,7 @@ class Menu:
             "credits": self.credit,
         }
 
-    def main_menu(self, _input=None):
+    def main_menu(self):
         console.run()
 
         def check(word):
@@ -1587,15 +1545,12 @@ class Menu:
             print(base64.b64decode("SW1hZ2luZSBza2lkZGluZyBMIEwgTEw=").decode("utf-8"))
             time.sleep(3)
             os._exit(0)
-
-        if _input:
-            input()
-
+    
         choice = input(f"{' '*4}{Fore.LIGHTCYAN_EX}-> {Fore.RESET}")
 
-        if choice in self.options:
+        if choice.lower() in self.options:
             console.render_ascii()
-            self.options[choice]()
+            self.options[choice.lower()]()
         else:
             self.main_menu()
 
@@ -1633,7 +1588,6 @@ class Menu:
             "Special Thanks to",
             "Coder: Tips",
             "Scraper: Aniell4",
-            "Original src: Cwelium on github",
             "Original Owner of Helium: Ekkore",
             "Friend: R3ci",
             "And last but not least, you! Without you, this project wouldn't be possible.",
@@ -1776,7 +1730,7 @@ class Menu:
         if invite == "":
             Menu().main_menu()
 
-        invite = sub(r"(https?://)?(www\.)?(discord\.(gg|com)/invite/|discord\.gg/|discord\.com/invite/|\.gg/)", "", invite)
+        invite = re.sub(r"(https?://)?(www\.)?(discord\.(gg|com)/invite/|discord\.gg/|discord\.com/invite/|\.gg/)", "", invite)
 
         args = [
             (token, invite) for token in tokens
