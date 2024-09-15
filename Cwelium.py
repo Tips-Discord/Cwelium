@@ -28,7 +28,7 @@ import websocket
 session = tls_client.Session(client_identifier="chrome_126",random_tls_extension_order=True)
 
 def clear():
-    os.system("cls" if os.name == "nt" else "clear")
+    os.system("cls")
 
 def wrapper(func):
     def wrapper(*args, **kwargs):
@@ -507,14 +507,14 @@ class Raider:
                 "os": "Windows",
                 "browser": "Discord Client",
                 "release_channel": "stable",
-                "client_version": "1.0.9161",
+                "client_version": "1.0.9163",
                 "os_version": "10.0.19045",
                 "system_locale": "en",
-                "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9161 Chrome/124.0.6367.243 Electron/30.2.0 Safari/537.36",
+                "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9163 Chrome/124.0.6367.243 Electron/30.2.0 Safari/537.36",
                 "browser_version": "30.2.0",
                 "os_sdk_version":"19045",
-                "client_build_number": 323539,
-                "native_build_number": 51643,
+                "client_build_number": 327180,
+                "native_build_number": 52153,
                 "client_event_source": None,
             }
             properties = base64.b64encode(json.dumps(payload).encode()).decode()
@@ -530,7 +530,7 @@ class Raider:
             "authorization": token,
             "cookie": self.cookies,
             "content-type": "application/json",
-            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9161 Chrome/124.0.6367.243 Electron/30.2.0 Safari/537.36",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9163 Chrome/124.0.6367.243 Electron/30.2.0 Safari/537.36",
             "x-discord-locale": "en-US",
             "x-debug-options": "bugReporterEnabled",
             "x-super-properties": self.props,
@@ -732,7 +732,6 @@ class Raider:
                     payload = {
                         "content": f"{message} {msg}"
                     }
-                    
                 else:
                     payload = {
                         "content": message
@@ -1545,7 +1544,7 @@ class Menu:
             print(base64.b64decode("SW1hZ2luZSBza2lkZGluZyBMIEwgTEw=").decode("utf-8"))
             time.sleep(3)
             os._exit(0)
-    
+
         choice = input(f"{' '*4}{Fore.LIGHTCYAN_EX}-> {Fore.RESET}")
 
         if choice.lower() in self.options:
