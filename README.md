@@ -37,7 +37,7 @@ This program is distributed under Custom [AGPL v3.0](https://github.com/Tips-Dis
 
 ## 👁 Peview
 <p align="center">
-  <img src="https://cdn.discordapp.com/attachments/1207742370200821790/1265602507036557454/image.png?ex=66d434af&is=66d2e32f&hm=0c7c3cd7bda62ab3ad69c7b41ee01c30ca08afe12850a4a7ab8569decb08ccbb&" alt="Cwelium">
+  <img src="https://cdn.discordapp.com/attachments/1207742370200821790/1265602507036557454/image.png?ex=66e7fb2f&is=66e6a9af&hm=3a3370516699d2ddfe0d776b8d125ed23dc58f45318a9df635df133a5b3d7239&" alt="Cwelium">
 </p>
 
 <details>
