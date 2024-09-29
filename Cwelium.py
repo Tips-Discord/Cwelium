@@ -507,14 +507,14 @@ class Raider:
                 "os": "Windows",
                 "browser": "Discord Client",
                 "release_channel": "stable",
-                "client_version": "1.0.9163",
+                "client_version": "1.0.9164",
                 "os_version": "10.0.19045",
                 "system_locale": "en",
-                "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9163 Chrome/124.0.6367.243 Electron/30.2.0 Safari/537.36",
+                "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9164 Chrome/124.0.6367.243 Electron/30.2.0 Safari/537.36",
                 "browser_version": "30.2.0",
                 "os_sdk_version":"19045",
-                "client_build_number": 327180,
-                "native_build_number": 52153,
+                "client_build_number": 331146,
+                "native_build_number": 52826,
                 "client_event_source": None,
             }
             properties = base64.b64encode(json.dumps(payload).encode()).decode()
@@ -530,7 +530,7 @@ class Raider:
             "authorization": token,
             "cookie": self.cookies,
             "content-type": "application/json",
-            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9163 Chrome/124.0.6367.243 Electron/30.2.0 Safari/537.36",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9164 Chrome/124.0.6367.243 Electron/30.2.0 Safari/537.36",
             "x-discord-locale": "en-US",
             "x-debug-options": "bugReporterEnabled",
             "x-super-properties": self.props,
@@ -944,8 +944,6 @@ class Raider:
                 except Exception as e:
                     console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
-            with open("data/tokens.txt", "r") as f:
-                tokens = f.read().splitlines()
             args = [
                 (token,) for token in tokens
             ]
@@ -1060,7 +1058,7 @@ class Raider:
         except Exception as e:
             console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
-    def dm_spammer(self, token, user_id, message, normal=None):
+    def dm_spammer(self, token, user_id, message):
         try:
             payload = {
                 "content": message,
@@ -1166,6 +1164,7 @@ class Raider:
             valid = []
             with open("data/tokens.txt", "r") as f:
                 tokens = f.read().splitlines()
+                
             for token in tokens:
                 value = session.get(
                     f"https://canary.discord.com/api/v9/guilds/{guild_id}/member-verification",
