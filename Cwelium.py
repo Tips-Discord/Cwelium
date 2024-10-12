@@ -12,20 +12,24 @@
 from colorama import Fore
 from colorist import ColorHex as h
 from datetime import datetime
-import re
 import base64
 import ctypes
 import json
 import os
 import random
+import re
 import requests
+import string
 import threading
 import time
 import tls_client
 import uuid
 import websocket
 
-session = tls_client.Session(client_identifier="chrome_126",random_tls_extension_order=True)
+session = tls_client.Session(client_identifier="chrome_128",random_tls_extension_order=True)
+
+def get_random_str(length: int) -> str:
+    return "".join(random.choice(string.ascii_letters + string.digits) for _ in range(length))
 
 def clear():
     os.system("cls")
@@ -256,7 +260,7 @@ class DiscordSocket(websocket.WebSocketApp):
         self.token = token
         self.guild_id = guild_id
         self.channel_id = channel_id
-        self.blacklisted_ids = {"1100342265303547924", "1190052987477958806", "1125147653970337896", "833007032000446505"}
+        self.blacklisted_ids = {"1100342265303547924", "1190052987477958806", "833007032000446505", "1287914810821836843", "1273658880039190581"}
 
         headers = {
             "Accept-Encoding": "gzip, deflate, br",
@@ -507,14 +511,13 @@ class Raider:
                 "os": "Windows",
                 "browser": "Discord Client",
                 "release_channel": "stable",
-                "client_version": "1.0.9164",
+                "client_version": "1.0.9167",
                 "os_version": "10.0.19045",
                 "system_locale": "en",
-                "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9164 Chrome/124.0.6367.243 Electron/30.2.0 Safari/537.36",
-                "browser_version": "30.2.0",
-                "os_sdk_version":"19045",
-                "client_build_number": 331146,
-                "native_build_number": 52826,
+                "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9167 Chrome/128.0.6613.36 Electron/32.0.0 Safari/537.36",
+                "browser_version": "32.0.0",
+                "client_build_number": 335184,
+                "native_build_number": 53601,
                 "client_event_source": None,
             }
             properties = base64.b64encode(json.dumps(payload).encode()).decode()
@@ -530,7 +533,7 @@ class Raider:
             "authorization": token,
             "cookie": self.cookies,
             "content-type": "application/json",
-            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9164 Chrome/124.0.6367.243 Electron/30.2.0 Safari/537.36",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9167 Chrome/128.0.6613.36 Electron/32.0.0 Safari/537.36",
             "x-discord-locale": "en-US",
             "x-debug-options": "bugReporterEnabled",
             "x-super-properties": self.props,
@@ -547,7 +550,7 @@ class Raider:
             }
 
             response = session.post(
-                f"https://canary.discord.com/api/v9/invites/{invite}",
+                f"https://discord.com/api/v9/invites/{invite}",
                 headers=headers,
                 json=data
             )
@@ -596,7 +599,7 @@ class Raider:
                 in_guild = []
                 for token in tokens:
                     response = session.get(
-                        f"https://canary.discord.com/api/v9/guilds/{guild}",
+                        f"https://discord.com/api/v9/guilds/{guild}",
                         headers=self.headers(token)
                     )
 
@@ -618,7 +621,7 @@ class Raider:
 
             while True:
                 response = session.delete(
-                    f"https://canary.discord.com/api/v9/users/@me/guilds/{guild}",
+                    f"https://discord.com/api/v9/users/@me/guilds/{guild}",
                     json=payload,
                     headers=self.headers(token)
                 )
@@ -694,7 +697,7 @@ class Raider:
             if not os.path.exists(f"scraped/{guild_id}.txt"):
                 for token in tokens:
                     response = session.get(
-                        f"https://canary.discord.com/api/v9/guilds/{guild_id}",
+                        f"https://discord.com/api/v9/guilds/{guild_id}",
                         headers=self.headers(token),
                     )
 
@@ -734,11 +737,11 @@ class Raider:
                     }
                 else:
                     payload = {
-                        "content": message
+                        "content": f"{message}"
                     }
                 
                 response = session.post(
-                    f"https://canary.discord.com/api/v9/channels/{channel}/messages",
+                    f"https://discord.com/api/v9/channels/{channel}/messages",
                     headers=self.headers(token),
                     json=payload
                 )
@@ -762,7 +765,7 @@ class Raider:
 
         def check_for_guild(token):
             response = session.get(
-                f"https://canary.discord.com/api/v9/guilds/{guild_id}", 
+                f"https://discord.com/api/v9/guilds/{guild_id}", 
                 headers=self.headers(token)
             )
             match response.status_code:
@@ -774,7 +777,7 @@ class Raider:
         def check_for_channel(token):
             if check_for_guild(token):
                 response = session.get(
-                    f"https://canary.discord.com/api/v9/channels/{channel_id}", 
+                    f"https://discord.com/api/v9/channels/{channel_id}", 
                     headers=self.headers(token)
                 )
 
@@ -843,7 +846,7 @@ class Raider:
             try:
                 while True:
                     response = session.get(
-                        "https://canary.discordapp.com/api/v9/users/@me/library",
+                        "https://discordapp.com/api/v9/users/@me/library",
                         headers=self.headers(token)
                     )
 
@@ -889,7 +892,7 @@ class Raider:
 
             for token in tokens:
                 response = session.get(
-                    f"https://canary.discord.com/api/v9/channels/{channel_id}/messages",
+                    f"https://discord.com/api/v9/channels/{channel_id}/messages",
                     headers=self.headers(token),
                     params=params
                 )
@@ -930,7 +933,7 @@ class Raider:
 
             def add_reaction(token):
                 try:
-                    url = f"https://canary.discord.com/api/v9/channels/{channel_id}/messages/{message_id}/reactions/{selected}/@me"
+                    url = f"https://discord.com/api/v9/channels/{channel_id}/messages/{message_id}/reactions/{selected}/@me"
 
                     if emoji_id is None:
                         url += "?location=Message&type=0"
@@ -956,7 +959,7 @@ class Raider:
 
             def add_reaction(token):
                 try:
-                    url = f"https://canary.discord.com/api/v9/channels/{channel_id}/messages/{message_id}/reactions/{selected}/@me"
+                    url = f"https://discord.com/api/v9/channels/{channel_id}/messages/{message_id}/reactions/{selected}/@me"
 
                     if emoji_id is None:
                         url += "?location=Message&type=0"
@@ -980,7 +983,7 @@ class Raider:
     def soundbord(self, token, channel):
         try:
             sounds = session.get(
-                "https://canary.discord.com/api/v9/soundboard-default-sounds",
+                "https://discord.com/api/v9/soundboard-default-sounds",
                 headers=self.headers(token)
             ).json()
 
@@ -997,7 +1000,7 @@ class Raider:
                 }
 
                 response = session.post(
-                    f"https://canary.discord.com/api/v9/channels/{channel}/send-soundboard-sound", 
+                    f"https://discord.com/api/v9/channels/{channel}/send-soundboard-sound", 
                     headers=self.headers(token), 
                     json=payload,
                 )
@@ -1022,7 +1025,7 @@ class Raider:
             }
 
             response = session.post(
-                "https://canary.discord.com/api/v9/users/@me/channels",
+                "https://discord.com/api/v9/users/@me/channels",
                 headers=self.headers(token),
                 json=payload
             )
@@ -1042,7 +1045,7 @@ class Raider:
                 channel_id = self.open_dm(token, user_id)
 
                 response = session.get(
-                    f"https://canary.discord.com/api/v9/channels/{channel_id}/call",
+                    f"https://discord.com/api/v9/channels/{channel_id}/call",
                     headers=self.headers(token)
                 )
 
@@ -1112,7 +1115,7 @@ class Raider:
         try:
             payload = {"limit": "50", "around": message_id}
             response = session.get(
-                f"https://canary.discord.com/api/v9/channels/{channel_id}/messages",
+                f"https://discord.com/api/v9/channels/{channel_id}/messages",
                 params=payload,
                 headers=self.headers(token)
             )
@@ -1146,7 +1149,7 @@ class Raider:
                 }
 
                 response = session.post(
-                    "https://canary.discord.com/api/v9/interactions",
+                    "https://discord.com/api/v9/interactions",
                     headers=self.headers(token),
                     json=data
                 )
@@ -1167,7 +1170,7 @@ class Raider:
                 
             for token in tokens:
                 value = session.get(
-                    f"https://canary.discord.com/api/v9/guilds/{guild_id}/member-verification",
+                    f"https://discord.com/api/v9/guilds/{guild_id}/member-verification",
                     headers=self.headers(token)
                 )
 
@@ -1188,7 +1191,7 @@ class Raider:
         def run_main(token):
             try:
                 response = session.put(
-                    f"https://canary.discord.com/api/v9/guilds/{guild_id}/requests/@me",
+                    f"https://discord.com/api/v9/guilds/{guild_id}/requests/@me",
                     headers=self.headers(token),
                     json=payload
                 )
@@ -1214,7 +1217,7 @@ class Raider:
             try:
                 while True:
                     response = session.get(
-                        f"https://canary.discord.com/api/v9/guilds/{guild_id}",
+                        f"https://discord.com/api/v9/guilds/{guild_id}",
                         headers=self.headers(token)
                     )
 
@@ -1230,8 +1233,6 @@ class Raider:
                         case _:
                             console.log("Not Found", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", guild_id)
                             break
-                with open("data/tokens.txt", "w") as f:
-                    f.write("\n".join(in_guild))
             except Exception as e:
                 console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
@@ -1250,7 +1251,7 @@ class Raider:
 
             while True:
                 response = session.patch(
-                    "https://canary.discord.com/api/v9/users/@me/profile",
+                    "https://discord.com/api/v9/users/@me/profile",
                     headers=self.headers(token),
                     json=payload
                 )
@@ -1277,7 +1278,7 @@ class Raider:
 
             while True:
                 response = session.patch(
-                    f"https://canary.discord.com/api/v9/guilds/{guild}/members/@me", 
+                    f"https://discord.com/api/v9/guilds/{guild}/members/@me", 
                     headers=self.headers(token),
                     json=payload
                 )
@@ -1307,7 +1308,7 @@ class Raider:
 
             while True:
                 response = session.post(
-                    f"https://canary.discord.com/api/v9/channels/{channel_id}/threads",
+                    f"https://discord.com/api/v9/channels/{channel_id}/threads",
                     headers=self.headers(token),
                     json=payload
                 )
@@ -1333,7 +1334,7 @@ class Raider:
         try:
             while True:
                 response = session.post(
-                    f"https://canary.discord.com/api/v9/channels/{channelid}/typing", 
+                    f"https://discord.com/api/v9/channels/{channelid}/typing", 
                     headers=self.headers(token)
                 )
 
@@ -1360,7 +1361,7 @@ class Raider:
             }
 
             response = session.post(
-                f"https://canary.discord.com/api/v9/users/@me/relationships", 
+                f"https://discord.com/api/v9/users/@me/relationships", 
                 headers=headers, 
                 json=payload
             )
@@ -1380,7 +1381,7 @@ class Raider:
                             headers["x-captcha-key"] = Solver.solve_2cap()
 
                         newresponse = session.post(
-                            f"https://canary.discord.com/api/v9/users/@me/relationships", 
+                            f"https://discord.com/api/v9/users/@me/relationships", 
                             headers=headers, 
                             json=payload
                         )
@@ -1405,7 +1406,7 @@ class Raider:
 
             for _token in tokens:
                 response = session.get(
-                    f"https://canary.discord.com/api/v9/guilds/{guild_id}/onboarding",
+                    f"https://discord.com/api/v9/guilds/{guild_id}/onboarding",
                     headers=self.headers(_token)
                 )
                 match response.status_code:
@@ -1452,7 +1453,7 @@ class Raider:
                 }
 
                 response = session.post(
-                    f"https://canary.discord.com/api/v9/guilds/{guild_id}/onboarding-responses",
+                    f"https://discord.com/api/v9/guilds/{guild_id}/onboarding-responses",
                     headers=self.headers(token),
                     json=json_data
                 )
@@ -1479,7 +1480,7 @@ class Raider:
                 }
 
                 response = session.post(
-                    f"https://canary.discord.com/api/v9/guilds/{guild_id}/onboarding-responses",
+                    f"https://discord.com/api/v9/guilds/{guild_id}/onboarding-responses",
                     headers=self.headers(token),
                     json=json_data
                 )
