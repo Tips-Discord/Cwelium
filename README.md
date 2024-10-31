@@ -44,7 +44,7 @@ This program is distributed under the [AGPL v3.0](https://github.com/Tips-Discor
 
 ## 👁 Preview
 <p align="center">
-  <img src="https://cdn.discordapp.com/attachments/1257999198490464327/1299852716838752266/1729979439237.png?ex=671eb5ad&is=671d642d&hm=3e9f4b6dbcf2661c3186e445a151243803fd7064e7015b273c05b8c820a55ec2&" alt="Cwelium Preview">
+  <img src="https://raw.githubusercontent.com/Tips-Discord/Tips-Discord/refs/heads/main/image.png" alt="Cwelium Preview">
 </p>
 
 ## ❓ Q&A
