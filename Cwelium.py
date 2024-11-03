@@ -146,8 +146,9 @@ def change_proxy():
         }
         time.sleep(5)
 
-proxy_thread = threading.Thread(target=change_proxy, daemon=True)
-proxy_thread.start()
+if proxy:
+    proxy_thread = threading.Thread(target=change_proxy, daemon=True)
+    proxy_thread.start()
 
 class Render:
     def __init__(self):
