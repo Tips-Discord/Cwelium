@@ -28,7 +28,7 @@ import websocket
 
 session = tls_client.Session(client_identifier="chrome_128",random_tls_extension_order=True)
 
-def get_random_str(length: int) -> str:
+def get_random_str(length):
     return "".join(random.choice(string.ascii_letters + string.digits) for _ in range(length))
 
 def clear():
@@ -517,13 +517,13 @@ class Raider:
                 "os": "Windows",
                 "browser": "Discord Client",
                 "release_channel": "stable",
-                "client_version": "1.0.9168",
+                "client_version": "1.0.9169",
                 "os_version": "10.0.19045",
                 "system_locale": "en",
-                "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9168 Chrome/128.0.6613.36 Electron/32.0.0 Safari/537.36",
+                "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9169 Chrome/128.0.6613.36 Electron/32.0.0 Safari/537.36",
                 "browser_version": "32.0.0",
-                "client_build_number": 339221,
-                "native_build_number": 54039,
+                "client_build_number": 342408,
+                "native_build_number": 54876,
                 "client_event_source": None,
             }
             properties = base64.b64encode(json.dumps(payload).encode()).decode()
@@ -539,7 +539,7 @@ class Raider:
             "authorization": token,
             "cookie": self.cookies,
             "content-type": "application/json",
-            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9168 Chrome/128.0.6613.36 Electron/32.0.0 Safari/537.36",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9169 Chrome/128.0.6613.36 Electron/32.0.0 Safari/537.36",
             "x-discord-locale": "en-US",
             "x-debug-options": "bugReporterEnabled",
             "x-super-properties": self.props,
@@ -732,7 +732,7 @@ class Raider:
         except Exception as e:
             console.log("FAILED", C["red"], "Failed to get Random Members", e)
 
-    def spammer(self, token, channel, message=None, guild=None, massping=None, pings=None):
+    def spammer(self, token, channel, message=None, guild=None, massping=None, pings=None, random_str=None):
         try:
             while True:
                 if massping:
@@ -746,6 +746,9 @@ class Raider:
                         "content": f"{message}"
                     }
                 
+                if random_str:
+                    payload["content"] += f" > {get_random_str(10)}"
+
                 response = session.post(
                     f"https://discord.com/api/v9/channels/{channel}/messages",
                     headers=self.headers(token),
@@ -1765,6 +1768,7 @@ class Menu:
         channel_id = Link.split("/")[5]
 
         massping = input(console.prompt("Massping", True))
+        random_str = input(console.prompt("Random String", True))
         message = input(console.prompt("Message"))
 
         if message == "":
@@ -1774,19 +1778,30 @@ class Menu:
             console.log(f"Scraping users", C["light_blue"], False, "this may take a while...")
             self.raider.member_scrape(guild_id, channel_id)
             count = input(console.prompt("Pings Amount"))
-
             if count == "":
                 Menu().main_menu()
 
-            args = [
-                (token, channel_id, message, guild_id, True, count) for token in tokens
-            ]
-            self.run(self.raider.spammer, args)
+            if "y" in random_str:
+                args = [
+                    (token, channel_id, message, guild_id, True, count, True) for token in tokens
+                ]
+                self.run(self.raider.spammer, args)
+            else:
+                args = [
+                    (token, channel_id, message, guild_id, True, count) for token in tokens         # not my finest code
+                ]
+                self.run(self.raider.spammer, args)
         else:
-            args = [
-                (token, channel_id, message) for token in tokens
-            ]
-            self.run(self.raider.spammer, args)
+            if "y" in random_str:
+                args = [
+                    (token, channel_id, message, guild_id, False, None, True) for token in tokens
+                ]
+                self.run(self.raider.spammer, args)
+            else:
+                args = [
+                    (token, channel_id, message, guild_id, False, None) for token in tokens
+                ]
+                self.run(self.raider.spammer, args)
 
     def checker(self):
         title(f"Cwelium - Checker")
