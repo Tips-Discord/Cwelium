@@ -1,12 +1,5 @@
 # Cwelium Raider
 
-## Need Proxies?
-Consider using [IPRoyal](https://iproyal.com/?r=Cwelium):
-
-<a href="https://iproyal.com/?r=Cwelium" target="_blank">
-  <img src="https://dashboard.iproyal.com/img/b/728_1.jpg" alt="IPRoyal">
-</a>
-
 ## 👾 Features
 <details>
 <summary>Click to expand</summary>
