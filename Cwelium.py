@@ -26,7 +26,7 @@ import tls_client
 import uuid
 import websocket
 
-session = tls_client.Session(client_identifier="chrome_128",random_tls_extension_order=True)
+session = tls_client.Session(client_identifier="chrome_131",random_tls_extension_order=True)
 
 def get_random_str(length):
     return "".join(random.choice(string.ascii_letters + string.digits) for _ in range(length))
@@ -84,9 +84,6 @@ class Files:
                 data = {
                     "Proxies": False,
                     "Theme": "light_blue", 
-                    "Solver": False,
-                    "Service": "",
-                    "Api-Key": "",
                 }
                 with open("config.json", "w") as f:
                     json.dump(data, f, indent=4)
@@ -133,9 +130,6 @@ with open("data/tokens.txt", "r") as f:
     
 proxy = Config["Proxies"]
 color = Config["Theme"]
-solver = Config["Solver"]
-service = Config["Service"].lower()
-Key = Config["Api-Key"]
 
 def change_proxy():
     while True:
@@ -318,21 +312,19 @@ class DiscordSocket(websocket.WebSocketApp):
                 "token": self.token,
                 "capabilities": 125,
                 "properties": {
-                    "os": "Windows NT",
+                    "os": "Windows",
                     "browser": "Chrome",
                     "device": "",
                     "system_locale": "it-IT",
-                    "browser_user_agent": ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                                           "AppleWebKit/537.36 (KHTML, like Gecko) "
-                                           "Chrome/126.0.0.0 Safari/537.36"),
-                    "browser_version": "126.0",
+                    "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+                    "browser_version": "131.0.0.0",
                     "os_version": "10",
                     "referrer": "",
                     "referring_domain": "",
                     "referrer_current": "",
                     "referring_domain_current": "",
                     "release_channel": "stable",
-                    "client_build_number": 311885,
+                    "client_build_number": 355624,
                     "client_event_source": None
                 },
                 "presence": {
@@ -397,7 +389,7 @@ class DiscordSocket(websocket.WebSocketApp):
 
                 self.last_range += 1
                 self.ranges = Utils.get_ranges(self.last_range, 100, self.guilds[self.guild_id]["member_count"])
-                time.sleep(0.45)
+                time.sleep(0.65)
                 self.scrape_users()
 
         if self.end_scraping:
@@ -421,73 +413,6 @@ class DiscordSocket(websocket.WebSocketApp):
 def scrape(token, guild_id, channel_id):
     sb = DiscordSocket(token, guild_id, channel_id)
     return sb.run()
-        
-class Solver:
-    @staticmethod
-    def solve_2cap():
-        try:
-            response = requests.post(
-                "http://2captcha.com/in.php",
-                data={
-                    "key": Key,
-                    "method": "hcaptcha",
-                    "sitekey": "4c672d35-0701-42b2-88c3-78380b0db560",
-                    "pageurl": "https://discord.com/"
-                }
-            ).text
-
-            captcha_id = response.split("|")[1]
-
-            while True:
-                time.sleep(5)
-                result = requests.get(
-                    f"http://2captcha.com/res.php?key={Key}&action=get&id={captcha_id}"
-                ).text
-                if result == "CAPCHA_NOT_READY":
-                    continue
-                elif result.startswith("OK|"):
-                    return result.split("|")[1]
-                else:
-                    raise Exception("Error solving captcha")
-        except requests.RequestException as e:
-            raise Exception(f"Request failed: {e}")
-        except Exception as e:
-            raise Exception(f"An error occurred: {e}")
-
-    @staticmethod
-    def solve_capmonster():
-        create_task_payload = {
-            "clientKey": Key,
-            "task": {
-                "type": "HCaptchaTaskProxyless",
-                "websiteURL": "https://discord.com/",
-                "websiteKey": "4c672d35-0701-42b2-88c3-78380b0db560"
-            }
-        }
-
-        try:
-            create_task_response = requests.post("https://api.capmonster.cloud/createTask", json=create_task_payload).json()
-
-            if create_task_response["errorId"] != 0:
-                raise Exception(f"Error creating task: {create_task_response['errorDescription']}")
-
-            task_id = create_task_response["taskId"]
-
-            while True:
-                result_response = requests.post("https://api.capmonster.cloud/getTaskResult", json={"clientKey": Key, "taskId": task_id}).json()
-
-                if result_response["status"] == "ready":
-                    return result_response["solution"]["gRecaptchaResponse"]
-
-                if result_response["errorId"] != 0:
-                    raise Exception(f"Error fetching result: {result_response['errorDescription']}")
-
-                time.sleep(5)
-
-        except requests.RequestException as e:
-            raise Exception(f"Request failed: {e}")
-        except Exception as e:
-            raise Exception(f"An error occurred: {e}")
     
 class Raider:
     def __init__(self):
@@ -517,13 +442,13 @@ class Raider:
                 "os": "Windows",
                 "browser": "Discord Client",
                 "release_channel": "stable",
-                "client_version": "1.0.9174",
+                "client_version": "1.0.9175",
                 "os_version": "10.0.19045",
                 "system_locale": "en",
-                "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9174 Chrome/128.0.6613.186 Electron/32.2.7 Safari/537.36",
+                "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9175 Chrome/128.0.6613.186 Electron/32.2.7 Safari/537.36",
                 "browser_version": "32.2.7",
-                "client_build_number": 353304,
-                "native_build_number": 56336,
+                "client_build_number": 355624,
+                "native_build_number": 56716,
                 "client_event_source": None,
             }
             properties = base64.b64encode(json.dumps(payload).encode()).decode()
@@ -539,14 +464,14 @@ class Raider:
             "authorization": token,
             "cookie": self.cookies,
             "content-type": "application/json",
-            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9174 Chrome/128.0.6613.186 Electron/32.2.7 Safari/537.36",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9175 Chrome/128.0.6613.186 Electron/32.2.7 Safari/537.36",
             "x-discord-locale": "en-US",
             "x-debug-options": "bugReporterEnabled",
             "x-super-properties": self.props,
         }
     
     def nonce(self):
-        return str((int(time.mktime(datetime.now().timetuple())) * 1000 - 1420070400000) * 4194304)
+        return str((int(time.mktime(datetime.now().timetuple())) * 1000 - 1704067200000) * 4194304)
 
     def joiner(self, token, invite):
         try:
@@ -566,32 +491,6 @@ class Raider:
                     console.log(f"JOINED", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"{response.json()['guild']['name']}")
                 case 400:
                     console.log("CAPTCHA", C["yellow"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"discord.gg/{invite}")
-                    if solver:
-                        headers["x-context-properties"] = "eyJsb2NhdGlvbiI6IkpvaW4gR3VpbGQiLCJsb2NhdGlvbl9jaGFubmVsX3R5cGUiOjB9=="
-                        headers["x-captcha-rqtoken"] = response.json()["captcha_rqtoken"]
-
-                        if service == "capmonster":
-                            headers["x-captcha-key"] = Solver.solve_capmonster()
-                            payload = {
-                                "session_id": uuid.uuid4().hex,
-                            }
-                        else:
-                            headers["x-captcha-key"] = Solver.solve_2cap()
-                            payload = {
-                                "session_id": uuid.uuid4().hex,
-                            }
-                            
-                        newresponse = session.post(
-                            f"https://discord.com/api/v9/invites/{invite}",
-                            headers=headers, 
-                            json=payload
-                        )
-
-                        match newresponse.status_code:
-                            case 200:
-                                console.log(f"JOINED", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"{response.json()['guild']['name']}")
-                            case _:
-                                console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
                 case 429:
                     console.log("CLOUDFARE", C["magenta"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"discord.gg/{invite}")
                 case _:
@@ -667,7 +566,7 @@ class Raider:
                     "d": {
                         "guild_id": guild,
                         "channel_id": channel,
-                        "self_mute": False,
+                        "self_mute": random.choice([True, False]),
                         "self_deaf": False
                     }
                 }))
@@ -1380,25 +1279,6 @@ class Raider:
                     console.log(f"SUCCESS", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
                 case 400:
                     console.log("CAPTCHA", C["yellow"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
-                    if solver:
-                        headers["x-context-properties"] = "eyJsb2NhdGlvbiI6IkFkZCBGcmllbmQifQ=="
-                        headers["x-captcha-rqtoken"] = response.json()["captcha_rqtoken"]
-
-                        if service == "capmonster":
-                            headers["x-captcha-key"] = Solver.solve_capmonster()
-                        else:
-                            headers["x-captcha-key"] = Solver.solve_2cap()
-
-                        newresponse = session.post(
-                            f"https://discord.com/api/v9/users/@me/relationships", 
-                            headers=headers, 
-                            json=payload
-                        )
-                        match newresponse.status_code:
-                            case 204:
-                                console.log(f"SUCCESS", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
-                            case _:
-                                console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json())
                 case _:
                     console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json())
         except Exception as e:
@@ -1555,6 +1435,9 @@ class Menu:
             os._exit(0)
 
         choice = input(f"{' '*4}{Fore.LIGHTCYAN_EX}-> {Fore.RESET}")
+
+        if choice.startswith('0') and len(choice) == 2:
+            choice = str(int(choice))
 
         if choice.lower() in self.options:
             console.render_ascii()
