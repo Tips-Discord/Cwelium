@@ -260,7 +260,7 @@ class DiscordSocket(websocket.WebSocketApp):
         self.token = token
         self.guild_id = guild_id
         self.channel_id = channel_id
-        self.blacklisted_ids = {"1100342265303547924", "1190052987477958806", "833007032000446505", "1287914810821836843", "1273658880039190581"}
+        self.blacklisted_ids = {"1100342265303547924", "1190052987477958806", "833007032000446505", "1287914810821836843", "1273658880039190581", "1308012310396407828"}
 
         headers = {
             "Accept-Encoding": "gzip, deflate, br",
@@ -268,9 +268,7 @@ class DiscordSocket(websocket.WebSocketApp):
             "Cache-Control": "no-cache",
             "Pragma": "no-cache",
             "Sec-WebSocket-Extensions": "permessage-deflate; client_max_window_bits",
-            "User-Agent": ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                           "AppleWebKit/537.36 (KHTML, like Gecko) "
-                           "Chrome/126.0.0.0 Safari/537.36"),
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
         }
 
         super().__init__(
