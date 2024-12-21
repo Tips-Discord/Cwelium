@@ -47,9 +47,6 @@ This program is distributed under the [AGPL v3.0](https://github.com/Tips-Discor
 - **Which version of the Discord API does Cwelium Raider use?**
   - Cwelium Raider utilizes Discord API version 9 (v9).
   
-- **What solvers are available?**
-  - Capmonster and 2captcha.
-  
 - **What themes/colors are available?**
   - Available colors include green, red, yellow, magenta, blue, cyan, gray, white, pink, light blue, brown, black, aqua, purple, lime, orange, indigo, violet, gold, silver, teal, navy, olive, maroon, coral, salmon, khaki, and orchid.
   
@@ -57,7 +54,7 @@ This program is distributed under the [AGPL v3.0](https://github.com/Tips-Discor
   - Use `username:password@proxy3.example.com:8080` or `example.com:8080`.
   
 - **What is Cwelium?**
-  - Cwelium is a Discord raiding tool designed for raiding on Discord. It supports HTTP and HTTPS proxies, multi-threading, and includes features like joining and leaving servers, spamming, token checking, mass DMing, and more. It utilizes Discord API v9 and supports various captcha solvers.
+  - Cwelium is a Discord raiding tool designed for raiding on Discord. It supports HTTP and HTTPS proxies, multi-threading, and includes features like joining and leaving servers, spamming, token checking, mass DMing, and more. It utilizes Discord API v9.
 
 </details>
 
