@@ -59,7 +59,7 @@ This program is distributed under the [AGPL v3.0](https://github.com/Tips-Discor
 </details>
 
 ## ⭐ Star War
-[![Star History Chart](https://api.star-history.com/svg?repos=Tips-Discord/Cwelium&theme=dark)](https://api.star-history.com/svg?repos=Tips-Discord/Cwelium,R3CI/Lime-lite)
+[![Star History Chart](https://api.star-history.com/svg?repos=Tips-Discord/Cwelium&theme=dark)](https://api.star-history.com/svg?repos=Tips-Discord/Cwelium)
 
 ## ⚠️ Disclaimer
 **DISCLAIMER:** This repository is intended for **EDUCATIONAL PURPOSES ONLY**. The author takes no responsibility for any issues that arise from using this tool. By using this tool, you acknowledge and accept this disclaimer.
