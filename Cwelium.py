@@ -778,6 +778,7 @@ class Raider:
 
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
+        tokens = [token.replace('"', '') for token in tokens if token]
         tokens = list(set(tokens))
         args = [
             (token, ) for token in tokens
