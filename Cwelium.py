@@ -26,7 +26,7 @@ import tls_client
 import uuid
 import websocket
 
-session = tls_client.Session(client_identifier="chrome_131",random_tls_extension_order=True)
+session = tls_client.Session(client_identifier="chrome_128",random_tls_extension_order=True)
 
 def get_random_str(length):
     return "".join(random.choice(string.ascii_letters + string.digits) for _ in range(length))
@@ -183,7 +183,7 @@ class Render:
 {'│ «03» Spammer           «09» Accept Rules       «15» Change Nick       «21» Voice Joiner     │'.center(self.size)}
 {'│ «04» Token Checker     «10» Guild Check        «16» Thread Spammer    «22» Onboard Bypass   │'.center(self.size)}
 {'│ «05» Emoji Reaction    «11» Friend Spam        «17» Typer             «23» Dm Spammer       │'.center(self.size)}
-{'│ «06» ???               «12» ???                «18» ???               «24» ???              │'.center(self.size)}
+{'│ «06» ???               «12» ???                «18» ???               «24» Exit             │'.center(self.size)}
 {'╰─────────────────────────────────────────────────────────────────────────────────────────────╯'.center(self.size)}
 """
         for edge in edges:
@@ -440,13 +440,13 @@ class Raider:
                 "os": "Windows",
                 "browser": "Discord Client",
                 "release_channel": "stable",
-                "client_version": "1.0.9175",
+                "client_version": "1.0.9178",
                 "os_version": "10.0.19045",
                 "system_locale": "en",
-                "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9175 Chrome/128.0.6613.186 Electron/32.2.7 Safari/537.36",
+                "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9178 Chrome/128.0.6613.186 Electron/32.2.7 Safari/537.36",
                 "browser_version": "32.2.7",
-                "client_build_number": 355624,
-                "native_build_number": 56716,
+                "client_build_number": 358789,
+                "native_build_number": 57396,
                 "client_event_source": None,
             }
             properties = base64.b64encode(json.dumps(payload).encode()).decode()
@@ -462,7 +462,7 @@ class Raider:
             "authorization": token,
             "cookie": self.cookies,
             "content-type": "application/json",
-            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9175 Chrome/128.0.6613.186 Electron/32.2.7 Safari/537.36",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9178 Chrome/128.0.6613.186 Electron/32.2.7 Safari/537.36",
             "x-discord-locale": "en-US",
             "x-debug-options": "bugReporterEnabled",
             "x-super-properties": self.props,
@@ -473,15 +473,14 @@ class Raider:
 
     def joiner(self, token, invite):
         try:
-            headers = self.headers(token)
-            data = {
+            payload = {
                 "session_id": uuid.uuid4().hex
             }
 
             response = session.post(
                 f"https://discord.com/api/v9/invites/{invite}",
-                headers=headers,
-                json=data
+                headers=self.headers(token),
+                json=payload
             )
 
             match response.status_code:
@@ -613,6 +612,7 @@ class Raider:
                     console.log("Failed", C["red"], "Missing Access")
                 token = random.choice(in_guild)
                 members = scrape(token, guild_id, channel_id)
+                
                 with open(f"scraped/{guild_id}.txt", "a") as f:
                     f.write("\n".join(members))
         except Exception as e:
@@ -622,9 +622,11 @@ class Raider:
         try:
             with open(f"scraped/{guild_id}.txt") as f:
                 members = f.read().splitlines()
+
             message = ""
             for _ in range(int(count)):
                 message += f"<@!{random.choice(members)}>"
+
             return message
         except Exception as e:
             console.log("FAILED", C["red"], "Failed to get Random Members", e)
@@ -702,6 +704,7 @@ class Raider:
 
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
+
         args = [
             (token, ) for token in tokens
         ]
@@ -748,6 +751,7 @@ class Raider:
 
     def token_checker(self):
         valid = []
+
         def main(token):
             try:
                 while True:
@@ -778,8 +782,10 @@ class Raider:
 
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
+
         tokens = [token.replace('"', '') for token in tokens if token]
         tokens = list(set(tokens))
+
         args = [
             (token, ) for token in tokens
         ]
@@ -787,10 +793,11 @@ class Raider:
         
     def reactor_main(self, channel_id, message_id):
         try:
-            access_token = []
-            emojis = []
             with open("data/tokens.txt", "r") as f:
                 tokens = f.read().splitlines()
+
+            access_token = []
+            emojis = []
 
             params = {
                 "around": message_id, 
@@ -870,7 +877,11 @@ class Raider:
 
                     if emoji_id is None:
                         url += "?location=Message&type=0"
-                    response = session.put(url, headers=self.headers(token))
+
+                    response = session.put(
+                        url, 
+                        headers=self.headers(token)
+                    )
 
                     match response.status_code:
                         case 204:
@@ -882,6 +893,7 @@ class Raider:
 
             with open("data/tokens.txt", "r") as f:
                 tokens = f.read().splitlines()
+
             args = [
                 (token) for token in tokens
             ]
@@ -970,12 +982,13 @@ class Raider:
 
     def dm_spammer(self, token, user_id, message):
         try:
-            payload = {
-                "content": message,
-                "nonce": self.nonce(),
-            }
+            channel_id = self.open_dm(token, user_id)
+
             while True:
-                channel_id = self.open_dm(token, user_id)
+                payload = {
+                    "content": message,
+                    "nonce": self.nonce(),
+                }
 
                 response = session.post(
                     f"https://discord.com/api/v9/channels/{channel_id}/messages",
@@ -1021,6 +1034,7 @@ class Raider:
     def button_bypass(self, token, message_id, channel_id, guild_id):
         try:
             payload = {"limit": "50", "around": message_id}
+
             response = session.get(
                 f"https://discord.com/api/v9/channels/{channel_id}/messages",
                 params=payload,
@@ -1071,9 +1085,10 @@ class Raider:
 
     def accept_rules(self, guild_id):
         try:
-            valid = []
             with open("data/tokens.txt", "r") as f:
                 tokens = f.read().splitlines()
+
+            valid = []
                 
             for token in tokens:
                 value = session.get(
@@ -1113,6 +1128,7 @@ class Raider:
 
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
+
         args = [
             (token, ) for token in tokens
         ]
@@ -1145,6 +1161,7 @@ class Raider:
 
         with open("data/tokens.txt", "r") as f:
             tokens = f.read().splitlines()
+
         args = [
             (token, ) for token in tokens
         ]
@@ -1261,7 +1278,6 @@ class Raider:
 
     def friender(self, token, nickname):
         try:
-            headers = self.headers(token)
             payload = {
                 "username": nickname,
                 "discriminator": None,
@@ -1269,7 +1285,7 @@ class Raider:
 
             response = session.post(
                 f"https://discord.com/api/v9/users/@me/relationships", 
-                headers=headers, 
+                headers=self.headers(token), 
                 json=payload
             )
 
@@ -1287,6 +1303,7 @@ class Raider:
         try:
             with open("data/tokens.txt", "r") as f:
                 tokens = f.read().splitlines()
+
             onboarding_responses_seen = {}
             onboarding_prompts_seen = {}
             onboarding_responses = []
@@ -1297,6 +1314,7 @@ class Raider:
                     f"https://discord.com/api/v9/guilds/{guild_id}/onboarding",
                     headers=self.headers(_token)
                 )
+
                 match response.status_code:
                     case 200:
                         in_guild.append(_token)
@@ -1415,6 +1433,7 @@ class Menu:
             "21": self.voice_joiner,
             "22": self.onboard,
             "23": self.dm_spam,
+            "24": self.exits,
             "credits": self.credit,
         }
 
@@ -1449,7 +1468,7 @@ class Menu:
         clear()
         console.render_ascii()
 
-        # with ThreadPoolExecutor(max_workers=threadamt) as exe:
+        # with ThreadPoolExecutor(max_workers=len(tokens)) as exe:
         #    for arg in args:
         #        try:
         #            future = exe.submit(func, arg)
@@ -1467,8 +1486,10 @@ class Menu:
             thread = threading.Thread(target=func, args=arg)
             threads.append(thread)
             thread.start()
+
         for thread in threads:
             thread.join()
+
         input("\n ~/> press enter to continue ")
         self.main_menu()
 
@@ -1670,7 +1691,7 @@ class Menu:
                 self.run(self.raider.spammer, args)
             else:
                 args = [
-                    (token, channel_id, message, guild_id, True, count) for token in tokens         # not my finest code
+                    (token, channel_id, message, guild_id, True, count) for token in tokens
                 ]
                 self.run(self.raider.spammer, args)
         else:
@@ -1765,6 +1786,10 @@ class Menu:
         clear()
         console.render_ascii()
         self.raider.onboard_bypass(guild_id)
+
+    @wrapper
+    def exits(self):
+        os._exit(0)
 
 if __name__ == "__main__":
     Menu().main_menu()
