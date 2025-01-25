@@ -205,12 +205,13 @@ class Render:
         print(response)
 
     def prompt(self, text, ask=None):
-        response = f"[{C[f'{color}']}{text}{C['white']}"
+        prompt_text = f"[{C[color]}{text}{C['white']}]"
         if ask:
-            response += f"? {C['gray']}(y/n){C['white']}]: "
+            prompt_text += f" {C['gray']}(y/n){C['white']}: "
         else:
-            response += f"]: "
-        return response
+            prompt_text += ": "
+            
+        return prompt_text
 
 console = Render()
 
@@ -440,13 +441,13 @@ class Raider:
                 "os": "Windows",
                 "browser": "Discord Client",
                 "release_channel": "stable",
-                "client_version": "1.0.9178",
+                "client_version": "1.0.9179",
                 "os_version": "10.0.19045",
                 "system_locale": "en",
-                "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9178 Chrome/128.0.6613.186 Electron/32.2.7 Safari/537.36",
+                "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9179 Chrome/128.0.6613.186 Electron/32.2.7 Safari/537.36",
                 "browser_version": "32.2.7",
-                "client_build_number": 358789,
-                "native_build_number": 57396,
+                "client_build_number": 362392,
+                "native_build_number": 57782,
                 "client_event_source": None,
             }
             properties = base64.b64encode(json.dumps(payload).encode()).decode()
@@ -462,14 +463,14 @@ class Raider:
             "authorization": token,
             "cookie": self.cookies,
             "content-type": "application/json",
-            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9178 Chrome/128.0.6613.186 Electron/32.2.7 Safari/537.36",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9179 Chrome/128.0.6613.186 Electron/32.2.7 Safari/537.36",
             "x-discord-locale": "en-US",
             "x-debug-options": "bugReporterEnabled",
             "x-super-properties": self.props,
         }
     
     def nonce(self):
-        return str((int(time.mktime(datetime.now().timetuple())) * 1000 - 1704067200000) * 4194304)
+        return (int(time.time() * 1000) - 1420070400000) << 22
 
     def joiner(self, token, invite):
         try:
@@ -1500,7 +1501,7 @@ class Menu:
             "Coder: Tips",
             "Scraper: Aniell4",
             "Original Owner of Helium: Ekkore",
-            "Friend: R3ci",
+            "Lime Owner: R3ci",
             "And last but not least, you! Without you, this project wouldn't be possible.",
         ]
 
@@ -1641,7 +1642,7 @@ class Menu:
         if invite == "":
             Menu().main_menu()
 
-        invite = re.sub(r"(https?://)?(www\.)?(discord\.(gg|com)/invite/|discord\.gg/|discord\.com/invite/|\.gg/)", "", invite)
+        invite = re.sub(r"(https?://)?(www\.)?(discord\.(gg|com)/(invite/)?|\.gg/)", "", invite)
 
         args = [
             (token, invite) for token in tokens
