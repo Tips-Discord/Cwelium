@@ -205,13 +205,13 @@ class Render:
         print(response)
 
     def prompt(self, text, ask=None):
-        prompt_text = f"[{C[color]}{text}{C['white']}]"
+        prompted = f"[{C[color]}{text}{C['white']}]"
         if ask:
-            prompt_text += f" {C['gray']}(y/n){C['white']}: "
+            prompted += f" {C['gray']}(y/n){C['white']}: "
         else:
-            prompt_text += ": "
+            prompted += ": "
             
-        return prompt_text
+        return prompted
 
 console = Render()
 
@@ -225,7 +225,7 @@ class Utils:
 
     @staticmethod
     def get_ranges(index, multiplier, member_count):
-        initial_num = int(index * multiplier)
+        initial_num = index * multiplier
         ranges = [[initial_num, initial_num + 99]]
         if member_count > initial_num + 99:
             ranges.append([initial_num + 100, initial_num + 199])
@@ -261,7 +261,7 @@ class DiscordSocket(websocket.WebSocketApp):
         self.token = token
         self.guild_id = guild_id
         self.channel_id = channel_id
-        self.blacklisted_ids = {"1100342265303547924", "1190052987477958806", "833007032000446505", "1287914810821836843", "1273658880039190581", "1308012310396407828"}
+        self.blacklisted_ids = {"1100342265303547924", "1190052987477958806", "833007032000446505", "1273658880039190581", "1308012310396407828", "1326906424873193586", "1334512667456442411"}
 
         headers = {
             "Accept-Encoding": "gzip, deflate, br",
@@ -353,8 +353,7 @@ class DiscordSocket(websocket.WebSocketApp):
         if not decoded:
             return
 
-        if decoded["op"] != 11:
-            self.packets_recv += 1
+        self.packets_recv += decoded["op"] != 11
 
         if decoded["op"] == 10:
             threading.Thread(
@@ -378,12 +377,10 @@ class DiscordSocket(websocket.WebSocketApp):
     def process_updates(self, parsed):
         if "SYNC" in parsed["types"] or "UPDATE" in parsed["types"]:
             for i, update_type in enumerate(parsed["types"]):
-                if update_type == "SYNC":
+                if update_type in {"SYNC", "UPDATE"}:
                     if not parsed["updates"][i]:
                         self.end_scraping = True
                         break
-                    self.process_members(parsed["updates"][i])
-                elif update_type == "UPDATE":
                     self.process_members(parsed["updates"][i])
 
                 self.last_range += 1
@@ -396,15 +393,15 @@ class DiscordSocket(websocket.WebSocketApp):
 
     def process_members(self, updates):
         for item in updates:
-            if "member" in item:
-                member = item["member"]
-                user_id = member["user"]["id"]
-                if user_id not in self.blacklisted_ids and not member["user"].get("bot"):
-                    user_info = {
-                        "tag": f"{member['user']['username']}#{member['user']['discriminator']}",
+            member = item.get("member")
+            if member:
+                user = member.get("user", {})
+                user_id = user.get("id")
+                if user_id and user_id not in self.blacklisted_ids and not user.get("bot"):
+                    self.members[user_id] = {
+                        "tag": f"{user.get('username')}#{user.get('discriminator')}",
                         "id": user_id,
                     }
-                    self.members[user_id] = user_info
 
     def on_close(self, ws, close_code, close_msg):
         console.log("Success", C["green"], False, f"scraped {len(self.members)} members")
@@ -441,13 +438,13 @@ class Raider:
                 "os": "Windows",
                 "browser": "Discord Client",
                 "release_channel": "stable",
-                "client_version": "1.0.9179",
+                "client_version": "1.0.9181",
                 "os_version": "10.0.19045",
                 "system_locale": "en",
-                "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9179 Chrome/128.0.6613.186 Electron/32.2.7 Safari/537.36",
+                "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9181 Chrome/128.0.6613.186 Electron/32.2.7 Safari/537.36",
                 "browser_version": "32.2.7",
-                "client_build_number": 362392,
-                "native_build_number": 57782,
+                "client_build_number": 366955,
+                "native_build_number": 58420,
                 "client_event_source": None,
             }
             properties = base64.b64encode(json.dumps(payload).encode()).decode()
@@ -463,14 +460,14 @@ class Raider:
             "authorization": token,
             "cookie": self.cookies,
             "content-type": "application/json",
-            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9179 Chrome/128.0.6613.186 Electron/32.2.7 Safari/537.36",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9181 Chrome/128.0.6613.186 Electron/32.2.7 Safari/537.36",
             "x-discord-locale": "en-US",
             "x-debug-options": "bugReporterEnabled",
             "x-super-properties": self.props,
         }
     
     def nonce(self):
-        return (int(time.time() * 1000) - 1420070400000) << 22
+        return int(time.time() * 1000) - 1420070400000 << 22
 
     def joiner(self, token, invite):
         try:
@@ -534,7 +531,7 @@ class Raider:
                         console.log("LEFT", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", self.guild)
                         break
                     case 429:
-                        retry_after = response.json().get("retry_after")
+                        retry_after = response.json()["retry_after"]
                         console.log("RATELIMIT", C["yellow"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after}s",)
                         time.sleep(float(retry_after))
                     case _:
@@ -659,7 +656,7 @@ class Raider:
                     case 200:
                         console.log("Sent", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
                     case 429:
-                        retry_after = response.json().get("retry_after")
+                        retry_after = response.json()["retry_after"]
                         console.log("RATELIMIT", C["yellow"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after}s",)
                         time.sleep(float(retry_after))
                     case _:
@@ -770,7 +767,7 @@ class Raider:
                             console.log("LOCKED", C["yellow"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
                             break
                         case 429:
-                            retry_after = response.json().get("retry_after")
+                            retry_after = response.json()["retry_after"]
                             console.log("RATELIMITED", C["pink"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"{retry_after}s")
                             time.sleep(retry_after)
                         case _:
@@ -929,7 +926,7 @@ class Raider:
                     case 204:
                         console.log("Success", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Played {name}")
                     case 429:
-                        retry_after = response.json().get("retry_after")
+                        retry_after = response.json()["retry_after"]
                         console.log("RATELIMIT", C["yellow"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after}s",)
                         time.sleep(float(retry_after))
                     case _:
@@ -1151,7 +1148,7 @@ class Raider:
                             in_guild.append(token)
                             break
                         case 429:
-                            retry_after = response.json().get("retry_after")
+                            retry_after = response.json()["retry_after"]
                             console.log("RATELIMIT", C["yellow"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after}s",)
                             time.sleep(float(retry_after))
                         case _:
@@ -1186,7 +1183,7 @@ class Raider:
                         console.log("Changed", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", bio)
                         break
                     case 429:
-                        retry_after = response.json().get("retry_after")
+                        retry_after = response.json()["retry_after"]
                         console.log("RATELIMIT", C["yellow"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after}s",)
                         time.sleep(float(retry_after))
                     case _:
@@ -1213,7 +1210,7 @@ class Raider:
                         console.log("SUCCESS", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
                         break
                     case 429:
-                        retry_after = response.json().get("retry_after")
+                        retry_after = response.json()["retry_after"]
                         console.log("RATELIMIT", C["yellow"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after}s",)
                         time.sleep(float(retry_after))
                     case _:
@@ -1242,7 +1239,7 @@ class Raider:
                     case 201:
                         console.log("CREATED", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", name)
                     case 429:
-                        retry_after = response.json().get("retry_after")
+                        retry_after = response.json()["retry_after"]
                         if int(retry_after) > 10:
                             console.log("STOPPED", C["magenta"], token[:25], f"Ratelimit Exceeded - {int(round(retry_after))}s",)
                             break
@@ -1268,7 +1265,7 @@ class Raider:
                         console.log("SUCCESS", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
                         time.sleep(9)
                     case 429:
-                        retry_after = response.json().get("retry_after")
+                        retry_after = response.json()["retry_after"]
                         console.log("RATELIMIT", C["yellow"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after}s",)
                         time.sleep(float(retry_after))
                     case _:
@@ -1501,7 +1498,6 @@ class Menu:
             "Coder: Tips",
             "Scraper: Aniell4",
             "Original Owner of Helium: Ekkore",
-            "Lime Owner: R3ci",
             "And last but not least, you! Without you, this project wouldn't be possible.",
         ]
 
@@ -1517,11 +1513,11 @@ class Menu:
         title(f"Cwelium - Dm Spammer")
         user_id = input(console.prompt("User ID"))
         if user_id == "":
-            Menu().main_menu()
+            self.main_menu()
 
         message = input(console.prompt("Message"))
         if message == "":
-            Menu().main_menu()
+            self.main_menu()
 
         clear()
         console.render_ascii()
@@ -1549,7 +1545,7 @@ class Menu:
         title(f"Cwelium - Friender")
         nickname = input(console.prompt("Nick"))
         if nickname == "":
-            Menu().main_menu()
+            self.main_menu()
 
         args = [
             (token, nickname) for token in tokens
@@ -1561,7 +1557,7 @@ class Menu:
         title(f"Cwelium - Caller")
         user_id = input(console.prompt("User ID"))
         if user_id == "":
-            Menu().main_menu()
+            self.main_menu()
 
         clear()
         console.render_ascii()
@@ -1593,11 +1589,11 @@ class Menu:
         title(f"Cwelium - Nickname Changer")
         nick = input(console.prompt("Nick"))
         if nick == "":
-            Menu().main_menu()
+            self.main_menu()
 
         guild = input(console.prompt("Guild ID"))
         if guild == "":
-            Menu().main_menu()
+            self.main_menu()
 
         args = [
             (token, guild, nick) for token in tokens
@@ -1627,7 +1623,7 @@ class Menu:
 
         name = input(console.prompt("Name"))
         if name == "":
-            Menu().main_menu()
+            self.main_menu()
 
         channel_id = Link.split("/")[5]
         args = [
@@ -1640,7 +1636,7 @@ class Menu:
         title(f"Cwelium - Joiner")
         invite = input(console.prompt(f"Invite"))
         if invite == "":
-            Menu().main_menu()
+            self.main_menu()
 
         invite = re.sub(r"(https?://)?(www\.)?(discord\.(gg|com)/(invite/)?|\.gg/)", "", invite)
 
@@ -1654,7 +1650,7 @@ class Menu:
         title(f"Cwelium - Leaver")
         guild = input(console.prompt("Guild ID"))
         if guild == "":
-            Menu().main_menu()
+            self.main_menu()
 
         args = [
             (token, guild) for token in tokens
@@ -1676,14 +1672,14 @@ class Menu:
         message = input(console.prompt("Message"))
 
         if message == "":
-            Menu().main_menu()
+            self.main_menu()
 
         if "y" in massping:
             console.log(f"Scraping users", C["light_blue"], False, "this may take a while...")
             self.raider.member_scrape(guild_id, channel_id)
             count = input(console.prompt("Pings Amount"))
             if count == "":
-                Menu().main_menu()
+                self.main_menu()
 
             if "y" in random_str:
                 args = [
@@ -1748,7 +1744,7 @@ class Menu:
         title(f"Cwelium - Accept Rules")
         guild_id = input(console.prompt("Guild ID"))
         if guild_id == "":
-            Menu().main_menu()
+            self.main_menu()
 
         clear()
         console.render_ascii()
@@ -1759,7 +1755,7 @@ class Menu:
         title(f"Cwelium - Guild Checker")
         guild_id = input(console.prompt("Guild ID"))
         if guild_id == "":
-            Menu().main_menu()
+            self.main_menu()
 
         clear()
         console.render_ascii()
@@ -1770,7 +1766,7 @@ class Menu:
         title(f"Cwelium - Bio Changer")
         bio = input(console.prompt("Bio"))
         if bio == "":
-            Menu().main_menu()
+            self.main_menu()
 
         args = [
             (token, bio) for token in tokens
@@ -1782,7 +1778,7 @@ class Menu:
         title(f"Cwelium - Onboarding Bypass")
         guild_id = input(console.prompt("Guild ID"))
         if guild_id == "":
-            Menu().main_menu()
+            self.main_menu()
 
         clear()
         console.render_ascii()
