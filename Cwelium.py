@@ -26,7 +26,7 @@ import tls_client
 import uuid
 import websocket
 
-session = tls_client.Session(client_identifier="chrome_138", random_tls_extension_order=True, ja3_string="771,4865-4866-4867,0-11-10-43-35-51-13-45-23-18-16-27-5-65281-28-25-17513,29-23-24,0", h2_settings={"HEADER_TABLE_SIZE":65536,"ENABLE_PUSH":0,"INITIAL_WINDOW_SIZE":6291456,"MAX_HEADER_LIST_SIZE":262144}, h2_settings_order=["HEADER_TABLE_SIZE","ENABLE_PUSH","INITIAL_WINDOW_SIZE","MAX_HEADER_LIST_SIZE"], supported_signature_algorithms=["ecdsa_secp256r1_sha256","rsa_pss_rsae_sha256","rsa_pkcs1_sha256","ecdsa_secp384r1_sha384","rsa_pss_rsae_sha384","rsa_pkcs1_sha384","rsa_pss_rsae_sha512","rsa_pkcs1_sha512"], supported_versions=["TLS_1_3","TLS_1_2"], key_share_curves=["GREASE","X25519","secp256r1","secp384r1"], pseudo_header_order=[":method",":authority",":scheme",":path"], connection_flow=15663105, priority_frames=[])
+session = tls_client.Session(client_identifier="chrome_138", random_tls_extension_order=True, ja3_string="771,4865-4866-4867-49195-49196-49200-52393-52392-49171-49172-156-157-47-53,65281-18-8-11-10-35-51-45-23-27-43-5-25,0-29-23-24,0", h2_settings={"HEADER_TABLE_SIZE": 65536, "ENABLE_PUSH": 0, "INITIAL_WINDOW_SIZE": 6291456, "MAX_HEADER_LIST_SIZE": 262144}, h2_settings_order=["HEADER_TABLE_SIZE", "ENABLE_PUSH", "INITIAL_WINDOW_SIZE", "MAX_HEADER_LIST_SIZE"], supported_signature_algorithms=["ecdsa_secp256r1_sha256", "rsa_pss_rsae_sha256", "rsa_pkcs1_sha256", "ecdsa_secp384r1_sha384", "rsa_pss_rsae_sha384", "rsa_pkcs1_sha384", "rsa_pss_rsae_sha512", "rsa_pkcs1_sha512"], supported_versions=["TLS_1_3", "TLS_1_2"], key_share_curves=["GREASE", "X25519", "secp256r1", "secp384r1"], pseudo_header_order=[":method", ":authority", ":scheme", ":path"], connection_flow=15663105, priority_frames=[])
 
 def get_random_str(length):
     return "".join(random.choice(string.ascii_letters + string.digits) for _ in range(length))
@@ -114,14 +114,8 @@ class Files:
 
 Files.run_tasks()
 
-with open("data/proxies.txt") as f:
-    proxies = f.read().splitlines()
-
 with open("config.json") as f:
     Config = json.load(f)
-
-with open("data/tokens.txt", "r") as f:
-    tokens = f.read().splitlines()
     
 proxy = Config["Proxies"]
 color = Config["Theme"]
@@ -433,15 +427,16 @@ class Raider:
                 "os": "Windows",
                 "browser": "Discord Client",
                 "release_channel": "stable",
-                "client_version": "1.0.9199",
+                "client_version": "1.0.9200",
                 "os_version": "10.0.19045",
                 "system_locale": "pl",
-                "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9199 Chrome/134.0.6998.205 Electron/35.3.0 Safari/537.36",
+                "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9200 Chrome/134.0.6998.205 Electron/35.3.0 Safari/537.36",
                 "browser_version": "35.3.0",
-                "client_build_number": random.randint(416613, 427000),
-                "native_build_number": 65941,
+                "client_build_number": random.randint(419434, 428000),
+                "native_build_number": 66215,
                 "client_launch_id": str(uuid.uuid4()),
                 "client_heartbeat_session_id": str(uuid.uuid4()),
+                "launch_signature": str(uuid.uuid4()),
                 "client_event_source": None,
             }
             properties = base64.b64encode(json.dumps(payload).encode()).decode()
@@ -457,7 +452,7 @@ class Raider:
             "authorization": token,
             "cookie": self.cookies,
             "content-type": "application/json",
-            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9199 Chrome/134.0.6998.205 Electron/35.3.0 Safari/537.366",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9200 Chrome/134.0.6998.205 Electron/35.3.0 Safari/537.36",
             "x-discord-locale": "en-US",
             "x-debug-options": "bugReporterEnabled",
             "x-fingerprint": self.fingerprint,
@@ -669,48 +664,6 @@ class Raider:
         except Exception as e:
             console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
-    def join_voice_channel(self, guild_id, channel_id):
-        ws = websocket.WebSocket()
-
-        def check_for_guild(token):
-            response = session.get(
-                f"https://discord.com/api/v9/guilds/{guild_id}", 
-                headers=self.headers(token)
-            )
-            match response.status_code:
-                case 200:
-                    return True
-                case _:
-                    console.log("Failed", C["red"], "Missing Access")
-
-        def check_for_channel(token):
-            if check_for_guild(token):
-                response = session.get(
-                    f"https://discord.com/api/v9/channels/{channel_id}", 
-                    headers=self.headers(token)
-                )
-
-                match response.status_code:
-                    case 200:
-                        return True
-                    case _:
-                        return False
-
-        def run(token):
-            if check_for_channel(token):
-                console.log("Joined", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", channel_id)
-                self.voice_spammer(token, ws, guild_id, channel_id, True)
-            else:
-                console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", channel_id)
-
-        with open("data/tokens.txt", "r") as f:
-            tokens = f.read().splitlines()
-
-        args = [
-            (token, ) for token in tokens
-        ]
-        Menu().run(run, args)
-
     def voice_spammer(self, token, ws, guild_id, channel_id, close=None):
         try:
             self.onliner(token, ws)
@@ -782,11 +735,8 @@ class Raider:
                 console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
         with open("data/tokens.txt", "r") as f:
-            tokens = f.read().splitlines()
-
-        tokens = [token.replace('"', '') for token in tokens if token]
-        tokens = list(set(tokens))
-
+            tokens = list({line.strip().replace('"', '') for line in f if line.strip()})
+        
         args = [
             (token, ) for token in tokens
         ]
@@ -794,9 +744,6 @@ class Raider:
         
     def reactor_main(self, channel_id, message_id):
         try:
-            with open("data/tokens.txt", "r") as f:
-                tokens = f.read().splitlines()
-
             access_token = []
             emojis = []
 
@@ -1060,9 +1007,6 @@ class Raider:
 
     def accept_rules(self, guild_id):
         try:
-            with open("data/tokens.txt", "r") as f:
-                tokens = f.read().splitlines()
-
             valid = []
                 
             for token in tokens:
@@ -1101,9 +1045,6 @@ class Raider:
             except Exception as e:
                 console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
-        with open("data/tokens.txt", "r") as f:
-            tokens = f.read().splitlines()
-
         args = [
             (token, ) for token in tokens
         ]
@@ -1133,9 +1074,6 @@ class Raider:
                             break
             except Exception as e:
                 console.log("FAILED", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
-
-        with open("data/tokens.txt", "r") as f:
-            tokens = f.read().splitlines()
 
         args = [
             (token, ) for token in tokens
@@ -1276,9 +1214,6 @@ class Raider:
 
     def onboard_bypass(self, guild_id):
         try:
-            with open("data/tokens.txt", "r") as f:
-                tokens = f.read().splitlines()
-
             onboarding_responses_seen = {}
             onboarding_prompts_seen = {}
             onboarding_responses = []
