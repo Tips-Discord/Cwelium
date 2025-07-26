@@ -26,7 +26,7 @@ import tls_client
 import uuid
 import websocket
 
-session = tls_client.Session(client_identifier="chrome_138", random_tls_extension_order=True, ja3_string="771,4865-4866-4867-49195-49196-49200-52393-52392-49171-49172-156-157-47-53,65281-18-8-11-10-35-51-45-23-27-43-5-25,0-29-23-24,0", h2_settings={"HEADER_TABLE_SIZE": 65536, "ENABLE_PUSH": 0, "INITIAL_WINDOW_SIZE": 6291456, "MAX_HEADER_LIST_SIZE": 262144}, h2_settings_order=["HEADER_TABLE_SIZE", "ENABLE_PUSH", "INITIAL_WINDOW_SIZE", "MAX_HEADER_LIST_SIZE"], supported_signature_algorithms=["ecdsa_secp256r1_sha256", "rsa_pss_rsae_sha256", "rsa_pkcs1_sha256", "ecdsa_secp384r1_sha384", "rsa_pss_rsae_sha384", "rsa_pkcs1_sha384", "rsa_pss_rsae_sha512", "rsa_pkcs1_sha512"], supported_versions=["TLS_1_3", "TLS_1_2"], key_share_curves=["GREASE", "X25519", "secp256r1", "secp384r1"], pseudo_header_order=[":method", ":authority", ":scheme", ":path"], connection_flow=15663105, priority_frames=[])
+session = tls_client.Session(client_identifier="chrome_138", random_tls_extension_order=True, ja3_string="771,4865-4866-4867-49195-49196-49200-52393-52392-49171-49172-156-157-47-53,65281-18-35-51-23-45-43-13-5-25-11-27,29-23-24,0", h2_settings={"HEADER_TABLE_SIZE":65536,"ENABLE_PUSH":0,"INITIAL_WINDOW_SIZE":6291456,"MAX_HEADER_LIST_SIZE":262144}, h2_settings_order=["HEADER_TABLE_SIZE","ENABLE_PUSH","INITIAL_WINDOW_SIZE","MAX_HEADER_LIST_SIZE"], supported_signature_algorithms=["ecdsa_secp256r1_sha256","rsa_pss_rsae_sha256","rsa_pkcs1_sha256","ecdsa_secp384r1_sha384","rsa_pss_rsae_sha384","rsa_pkcs1_sha384","rsa_pss_rsae_sha512","rsa_pkcs1_sha512"], supported_versions=["TLS_1_3","TLS_1_2"], key_share_curves=["GREASE","X25519MLKEM768","X25519","secp256r1","secp384r1"], pseudo_header_order=[":method",":authority",":scheme",":path"], connection_flow=15663105, priority_frames=[])
 
 def get_random_str(length):
     return "".join(random.choice(string.ascii_letters + string.digits) for _ in range(length))
@@ -353,7 +353,14 @@ class DiscordSocket(websocket.WebSocketApp):
             ).start()
 
         if decoded["t"] == "READY":
-            self.guilds.update({guild["id"]: {"member_count": guild["member_count"]} for guild in decoded["d"]["guilds"]})
+            self.guilds.update({
+                guild["id"]: {"member_count": guild["member_count"]}
+                for guild in decoded["d"]["guilds"]
+            })
+
+            total_members = self.guilds[self.guild_id]["member_count"]
+
+            console.log("Info", C["yellow"], False, f"Guild has {total_members} members → ETA ~{round(total_members / 150, 1)}s")
 
         if decoded["t"] == "READY_SUPPLEMENTAL":
             self.ranges = Utils.get_ranges(0, 100, self.guilds[self.guild_id]["member_count"])
@@ -431,8 +438,8 @@ class Raider:
                 "system_locale": "pl",
                 "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9200 Chrome/134.0.6998.205 Electron/35.3.0 Safari/537.36",
                 "browser_version": "35.3.0",
-                "client_build_number": random.randint(419434, 428000),
-                "native_build_number": 66215,
+                "client_build_number": random.randint(423077, 426500),
+                "native_build_number": 66535,
                 "client_launch_id": str(uuid.uuid4()),
                 "client_heartbeat_session_id": str(uuid.uuid4()),
                 "launch_signature": str(uuid.uuid4()),
@@ -461,49 +468,95 @@ class Raider:
     def nonce(self):
         return int(time.time() * 1000) - 1420070400000 << 22
 
-    def joiner(self, token, invite):
+    def joiner(self, invite):
         try:
-            payload = {
-                "session_id": uuid.uuid4().hex
+            params = {
+                "inputValue": f"https://discord.gg/{invite}",
+                "with_counts": "true",
+                "with_expiration": "true",
+                "with_permissions": "true",
             }
 
-            response = session.post(
-                f"https://discord.com/api/v9/invites/{invite}",
-                headers=self.headers(token),
-                json=payload
-            )
+            for token in tokens:
+                response = session.get(
+                    f"https://discord.com/api/v9/invites/{invite}",
+                    headers=self.headers(token),
+                    params=params
+                )
 
-            match response.status_code:
-                case 200:
-                    console.log(f"Joined", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"{response.json()['guild']['name']}")
-                case 400:
-                    console.log("Captcha", C["yellow"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"discord.gg/{invite}")
-                case 429:
-                    console.log("Cloudflare", C["magenta"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"discord.gg/{invite}")
-                case _:
-                    console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
+                match response.status_code:
+                    case 200:
+                        invite_info = response.json()
+                        break
+                    case 404:
+                        console.log("Failed", C["red"], "Invalid or expired invite")
+                        input()
+                        Menu().main_menu()
+                        return
+
+            guild_name = invite_info["guild"]["name"]
+            guild_id = invite_info["guild"]["id"]
+            channel_id = invite_info["channel"]["id"]
+            channel_type = invite_info["channel"]["type"]
+
+            join = {
+                "location": "Join Guild",
+                "location_guild_id": guild_id,
+                "location_channel_id": channel_id,
+                "location_channel_type": channel_type
+            }
+            context = base64.b64encode(json.dumps(join).encode()).decode()
+
+            def join_server(token):
+                try:
+                    headers = self.headers(token)
+                    headers["X-Context-Properties"] = context
+
+                    payload = {
+                        "session_id": uuid.uuid4().hex
+                    }
+
+                    resp = session.post(
+                        f"https://discord.com/api/v9/invites/{invite}",
+                        headers=headers,
+                        json=payload
+                    )
+
+                    match resp.status_code:
+                        case 200:
+                            console.log("Joined", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", guild_name)
+                        case 400:
+                            console.log("Captcha", C["yellow"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", guild_name)
+                        case 429:
+                            console.log("Cloudflare", C["magenta"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", guild_name)
+                        case _:
+                            console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", resp.json()["message"])
+                except Exception as e:
+                    console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
+
+            args = [
+                (token,) for token in tokens
+            ]
+            Menu().run(join_server, args)
         except Exception as e:
-            console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
+            console.log("Failed", C["red"], "Failed to get invite info", e)
+            input()
+            Menu().main_menu()
 
     def leaver(self, token, guild):
         try:
             def get_guild_name(guild):
-                in_guild = []
-                for token in tokens:
-                    response = session.get(
-                        f"https://discord.com/api/v9/guilds/{guild}",
-                        headers=self.headers(token)
-                    )
+                response = session.get(
+                    f"https://discord.com/api/v9/guilds/{guild}",
+                    headers=self.headers(token)
+                )
 
-                    match response.status_code:
-                        case 200:
-                            in_guild.append(token)
-                            try:
-                                return response.json().get("name")
-                            except:
-                                return guild
-                if not in_guild:
-                    return guild
+                match response.status_code:
+                    case 200:
+                        try:
+                            return response.json()["name"]
+                        except:
+                            return guild
                 
             self.guild = get_guild_name(guild)
 
@@ -511,28 +564,23 @@ class Raider:
                 "lurking": False,
             }
 
-            while True:
-                response = session.delete(
-                    f"https://discord.com/api/v9/users/@me/guilds/{guild}",
-                    json=payload,
-                    headers=self.headers(token)
-                )
+            response = session.delete(
+                f"https://discord.com/api/v9/users/@me/guilds/{guild}",
+                json=payload,
+                headers=self.headers(token)
+            )
 
-                match response.status_code:
-                    case 204:
-                        console.log("Left", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", self.guild)
-                        break
-                    case 429:
-                        retry_after = response.json()["retry_after"] + random.uniform(0.1, 0.5)
-                        console.log("Ratelimit", C["yellow"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after:.2f}s",)
-                        time.sleep(float(retry_after))
-                    case _:
-                        console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
-                        break
+            match response.status_code:
+                case 204:
+                    console.log("Left", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", self.guild)
+                case 429:
+                    console.log("Cloudflare", C["magenta"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"discord.gg/{invite}")
+                case _:
+                    console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
         except Exception as e:
             console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
-    def spammer(self, token, channel, message=None, guild=None, massping=None, pings=None, random_str=None):
+    def spammer(self, token, channel, message=None, guild=None, massping=None, pings=None, random_str=None, delay=None):
         try:
             while True:
                 if massping:
@@ -558,6 +606,8 @@ class Raider:
                 match response.status_code:
                     case 200:
                         console.log("Sent", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
+                        if delay:
+                            time.sleep(delay)
                     case 429:
                         retry_after = response.json()["retry_after"] + random.uniform(0.1, 0.5)
                         console.log("Ratelimit", C["yellow"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after:.2f}s",)
@@ -592,7 +642,7 @@ class Raider:
                 with open(f"scraped/{guild_id}.json", "w") as f:
                     json.dump(list(members.keys()), f, indent=2)
         except Exception as e:
-            console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
+            console.log("Failed", C["red"], False, e)
 
     def get_random_members(self, guild_id, count):
         try:
@@ -747,7 +797,6 @@ class Raider:
 
             while True:
                 sound = random.choice(sounds)
-                name = sound["name"]
 
                 payload = {
                     "emoji_id": None,
@@ -763,7 +812,7 @@ class Raider:
 
                 match response.status_code:
                     case 204:
-                        console.log("Success", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Played {name}")
+                        console.log("Success", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Played {sound['name']}")
                     case 429:
                         retry_after = response.json()["retry_after"] + random.uniform(0.1, 0.5)
                         console.log("Ratelimit", C["yellow"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after:.2f}s",)
@@ -777,7 +826,7 @@ class Raider:
     def open_dm(self, token, user_id):
         try:
             payload = {
-                "recipients": [user_id]
+                "recipients": [f'{user_id}'],
             }
 
             response = session.post(
@@ -800,16 +849,21 @@ class Raider:
             while True:
                 channel_id = self.open_dm(token, user_id)
 
-                response = session.get(
+                json_data = {
+                    'recipients': None,
+                }
+
+                response = session.post(
                     f"https://discord.com/api/v9/channels/{channel_id}/call",
-                    headers=self.headers(token)
+                    headers=self.headers(token),
+                    json=json_data,
                 )
 
                 match response.status_code:
                     case 200:
                         console.log("Called", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", user_id)
                         ws = websocket.WebSocket()
-                        self.voice_spammer(token, ws, None, channel_id, True)
+                        self.voice_spammer(token, ws, channel_id, channel_id, True)
                     case _:
                         console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
                         return
@@ -874,24 +928,19 @@ class Raider:
                 "bio": bio
             }
 
-            while True:
-                response = session.patch(
-                    "https://discord.com/api/v9/users/@me/profile",
-                    headers=self.headers(token),
-                    json=payload
-                )
+            response = session.patch(
+                "https://discord.com/api/v9/users/@me/profile",
+                headers=self.headers(token),
+                json=payload
+            )
 
-                match response.status_code:
-                    case 200:
-                        console.log("Changed", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", bio)
-                        break
-                    case 429:
-                        retry_after = response.json()["retry_after"] + random.uniform(0.1, 0.5)
-                        console.log("Ratelimit", C["yellow"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after:.2f}s",)
-                        time.sleep(float(retry_after))
-                    case _:
-                        console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
-                        break
+            match response.status_code:
+                case 200:
+                    console.log("Changed", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", bio)
+                case 429:
+                    console.log("Cloudflare", C["magenta"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
+                case _:
+                    console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
         except Exception as e:
             console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
@@ -901,24 +950,17 @@ class Raider:
                 "nick" : nick
             }
 
-            while True:
-                response = session.patch(
-                    f"https://discord.com/api/v9/guilds/{guild}/members/@me", 
-                    headers=self.headers(token),
-                    json=payload
-                )
+            response = session.patch(
+                f"https://discord.com/api/v9/guilds/{guild}/members/@me", 
+                headers=self.headers(token),
+                json=payload
+            )
 
-                match response.status_code:
-                    case 200:
-                        console.log("Success", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
-                        break
-                    case 429:
-                        retry_after = response.json()["retry_after"] + random.uniform(0.1, 0.5)
-                        console.log("Ratelimit", C["yellow"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", f"Ratelimit Exceeded - {retry_after:.2f}s",)
-                        time.sleep(float(retry_after))
-                    case _:
-                        console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
-                        break
+            match response.status_code:
+                case 200:
+                    console.log("Success", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**")
+                case _:
+                    console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", response.json().get("message"))
         except Exception as e:
             console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
@@ -955,11 +997,11 @@ class Raider:
         except Exception as e:
             console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
-    def typier(self, token, channelid):
+    def typier(self, token, channel_id):
         try:
             while True:
                 response = session.post(
-                    f"https://discord.com/api/v9/channels/{channelid}/typing", 
+                    f"https://discord.com/api/v9/channels/{channel_id}/typing", 
                     headers=self.headers(token)
                 )
 
@@ -997,7 +1039,6 @@ class Raider:
             console.log("Failed", C["red"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", e)
 
     def guild_checker(self, guild_id):
-        in_guild = []
         def main_checker(token):
             try:
                 while True:
@@ -1009,7 +1050,6 @@ class Raider:
                     match response.status_code:
                         case 200:
                             console.log("Found", C["green"], f"{Fore.RESET}{token[:25]}.{Fore.LIGHTCYAN_EX}**", guild_id)
-                            in_guild.append(token)
                             break
                         case 429:
                             retry_after = response.json()["retry_after"] + random.uniform(0.1, 0.5)
@@ -1106,7 +1146,6 @@ class Raider:
                 (token, ) for token in tokens
             ]
             Menu().run(run_main, args)
-
         except Exception as e:
             console.log("Failed", C["red"], "Failed to Accept Rules", e)
 
@@ -1253,7 +1292,6 @@ class Raider:
                 (token,) for token in tokens
             ]
             Menu().run(add_reaction, args)
-
         except Exception as e:
             console.log("Failed", C["red"], "Failed to get emojis", e)
             input()
@@ -1283,8 +1321,7 @@ class Raider:
                 input()
                 Menu().main_menu()
             else:
-                data = response.json()
-                message = next((m for m in data if m["id"] == message_id), None)
+                message = next((m for m in response.json() if m["id"] == message_id), None)
 
                 if not message:
                     console.log("Failed", C["red"], "Message not found")
@@ -1475,7 +1512,7 @@ class Menu:
 
     @wrapper
     def caller(self):
-        console.title(f"Cwelium - Caller")
+        console.title(f"Cwelium - Call Spammer")
         user_id = input(console.prompt("User ID"))
         if user_id == "":
             self.main_menu()
@@ -1511,7 +1548,7 @@ class Menu:
     def nick_changer(self):
         console.title(f"Cwelium - Nickname Changer")
         nick = input(console.prompt("Nick"))
-        if nick == "":
+        if nick == "" or len(nick) > 32:
             self.main_menu()
 
         guild = input(console.prompt("Guild ID"))
@@ -1563,10 +1600,7 @@ class Menu:
 
         invite = re.sub(r"(https?://)?(www\.)?(discord\.(gg|com)/(invite/)?|\.gg/)", "", invite)
 
-        args = [
-            (token, invite) for token in tokens
-        ]
-        self.run(self.raider.joiner, args)
+        self.raider.joiner(invite)
 
     @wrapper 
     def leaver(self):
@@ -1583,12 +1617,12 @@ class Menu:
     @wrapper
     def spammer(self):
         console.title(f"Cwelium - Spammer")
-        Link = input(console.prompt(f"Channel LINK"))
-        if Link == "" or not Link.startswith("https://"):
+        link = input(console.prompt(f"Channel LINK"))
+        if link == "" or not link.startswith("https://"):
             self.main_menu()
 
-        guild_id = Link.split("/")[4]
-        channel_id = Link.split("/")[5]
+        guild_id = link.split("/")[4]
+        channel_id = link.split("/")[5]
 
         massping = input(console.prompt("Massping", True))
         random_str = input(console.prompt("Random String", True))
@@ -1597,34 +1631,27 @@ class Menu:
         if message == "":
             self.main_menu()
 
+        delay_input = input(console.prompt("Delay (seconds)"))
+        delay = None
+        if delay_input != "":
+            delay = float(delay_input)
+
+        ping_count = None
         if "y" in massping:
             console.log(f"Scraping users", self.background, False, "this may take a while...")
             self.raider.member_scrape(guild_id, channel_id)
-            count = input(console.prompt("Pings Amount"))
-            if count == "":
+            count_str = input(console.prompt("Pings Amount"))
+            if count_str == "":
                 self.main_menu()
 
-            if "y" in random_str:
-                args = [
-                    (token, channel_id, message, guild_id, True, count, True) for token in tokens
-                ]
-                self.run(self.raider.spammer, args)
-            else:
-                args = [
-                    (token, channel_id, message, guild_id, True, count) for token in tokens
-                ]
-                self.run(self.raider.spammer, args)
-        else:
-            if "y" in random_str:
-                args = [
-                    (token, channel_id, message, guild_id, False, None, True) for token in tokens
-                ]
-                self.run(self.raider.spammer, args)
-            else:
-                args = [
-                    (token, channel_id, message, guild_id, False, None) for token in tokens
-                ]
-                self.run(self.raider.spammer, args)
+            ping_count = int(count_str)
+
+        args = [
+            (token, channel_id, message, guild_id, "y" in massping, ping_count, "y" in random_str, delay)
+            for token in tokens
+        ]
+
+        self.run(self.raider.spammer, args)
 
     def checker(self):
         console.title(f"Cwelium - Checker")
@@ -1644,7 +1671,7 @@ class Menu:
         self.raider.reactor_main(channel_id, message_id)
 
     def button(self):
-        console.title(f"Cwelium - Clicker")
+        console.title(f"Cwelium - Button Click")
         Link = input(console.prompt("Message Link"))
         if Link == "" or not Link.startswith("https://"):
             self.main_menu()
