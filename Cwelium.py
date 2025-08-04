@@ -26,7 +26,7 @@ import tls_client
 import uuid
 import websocket
 
-session = tls_client.Session(client_identifier="chrome_138", random_tls_extension_order=True, ja3_string="771,4865-4866-4867-49195-49196-49200-52393-52392-49171-49172-156-157-47-53,65281-18-35-51-23-45-43-13-5-25-11-27,29-23-24,0", h2_settings={"HEADER_TABLE_SIZE":65536,"ENABLE_PUSH":0,"INITIAL_WINDOW_SIZE":6291456,"MAX_HEADER_LIST_SIZE":262144}, h2_settings_order=["HEADER_TABLE_SIZE","ENABLE_PUSH","INITIAL_WINDOW_SIZE","MAX_HEADER_LIST_SIZE"], supported_signature_algorithms=["ecdsa_secp256r1_sha256","rsa_pss_rsae_sha256","rsa_pkcs1_sha256","ecdsa_secp384r1_sha384","rsa_pss_rsae_sha384","rsa_pkcs1_sha384","rsa_pss_rsae_sha512","rsa_pkcs1_sha512"], supported_versions=["TLS_1_3","TLS_1_2"], key_share_curves=["GREASE","X25519MLKEM768","X25519","secp256r1","secp384r1"], pseudo_header_order=[":method",":authority",":scheme",":path"], connection_flow=15663105, priority_frames=[])
+session = tls_client.Session(client_identifier="chrome_138", random_tls_extension_order=True, ja3_string="771,4865-4866-4867-49195-49196-49200-52393-52392-49171-49172-156-157-47-53,65281-18-35-51-23-27-45-43-5-13-11-25,29-23-24,0", h2_settings={"HEADER_TABLE_SIZE":65536,"ENABLE_PUSH":0,"INITIAL_WINDOW_SIZE":6291456,"MAX_HEADER_LIST_SIZE":262144}, h2_settings_order=["HEADER_TABLE_SIZE","ENABLE_PUSH","INITIAL_WINDOW_SIZE","MAX_HEADER_LIST_SIZE"], supported_signature_algorithms=["ecdsa_secp256r1_sha256","rsa_pss_rsae_sha256","rsa_pkcs1_sha256","ecdsa_secp384r1_sha384","rsa_pss_rsae_sha384","rsa_pkcs1_sha384","rsa_pss_rsae_sha512","rsa_pkcs1_sha512"], supported_versions=["TLS_1_3","TLS_1_2"], key_share_curves=["GREASE","X25519MLKEM768","X25519","secp256r1","secp384r1"], pseudo_header_order=[":method",":authority",":scheme",":path"], connection_flow=15663105, priority_frames=[])
 
 def get_random_str(length):
     return "".join(random.choice(string.ascii_letters + string.digits) for _ in range(length))
@@ -433,13 +433,13 @@ class Raider:
                 "os": "Windows",
                 "browser": "Discord Client",
                 "release_channel": "stable",
-                "client_version": "1.0.9200",
+                "client_version": "1.0.9201",
                 "os_version": "10.0.19045",
                 "system_locale": "pl",
-                "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9200 Chrome/134.0.6998.205 Electron/35.3.0 Safari/537.36",
+                "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9201 Chrome/134.0.6998.205 Electron/35.3.0 Safari/537.36",
                 "browser_version": "35.3.0",
-                "client_build_number": random.randint(423077, 426500),
-                "native_build_number": 66535,
+                "client_build_number": random.randint(424965, 426500),
+                "native_build_number": 66678,
                 "client_launch_id": str(uuid.uuid4()),
                 "client_heartbeat_session_id": str(uuid.uuid4()),
                 "launch_signature": str(uuid.uuid4()),
@@ -458,7 +458,7 @@ class Raider:
             "authorization": token,
             "cookie": self.cookies,
             "content-type": "application/json",
-            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9200 Chrome/134.0.6998.205 Electron/35.3.0 Safari/537.36",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9201 Chrome/134.0.6998.205 Electron/35.3.0 Safari/537.36",
             "x-discord-locale": "en-US",
             "x-debug-options": "bugReporterEnabled",
             "x-fingerprint": self.fingerprint,
