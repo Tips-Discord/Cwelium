@@ -44,6 +44,7 @@ This version keeps **100% of the original functionality** but applies modern Pyt
 | Extensibility                 | Very difficult                              | Easy to add new features / actions              |
 
 ## Code layout (project structure)
+```bash
 Cwelium/
 ├── cwelium/                        # ← actual Python package
 │   ├── init.py
@@ -64,7 +65,7 @@ Cwelium/
 │
 ├── config.json                     # auto-created (proxies on/off, theme color)
 └── README.md                       # ← you're reading this
-
+```
 
 ## Main changes made by ryuka
 
