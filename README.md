@@ -4,7 +4,7 @@
 
 **Original author**: Tips-Discord  
 **Original repo**: https://github.com/Tips-Discord/Cwelium  
-**Refactored & improved by**: ryuka[](https://ryukap.netlify.app/)  
+**Refactored & improved by**: [ryuka](https://ryukap.netlify.app/)  
 **Date of refactor**: January 2026
 
 ## What is Cwelium?
