@@ -262,7 +262,6 @@ class Raider:
         self._run_threads(_change, [(t,) for t in tokens])
 
     # Add other methods similarly: format_tokens, dm_spammer, call_spammer, thread_spammer, etc.
-    # (Due to length constraints I show only a few – the pattern is the same)
 
     def format_tokens(self, tokens: list):
         cleaned = []
@@ -290,4 +289,5 @@ class Raider:
             t.start()
 
         for t in threads:
+
             t.join()
