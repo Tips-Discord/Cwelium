@@ -67,6 +67,9 @@ Cwelium/
 └── README.md                       # ← you're reading this
 ```
 
+## Visual
+<img width="1258" height="717" alt="Screenshot 2026-01-14 221919" src="https://github.com/user-attachments/assets/8e4ce794-e093-47e6-8c78-485222fe5ed3" />
+
 
 ## Installation & Usage
 
