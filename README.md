@@ -30,6 +30,7 @@
 * Friender
 * Call Spammer
 * Mass DM
+* CF solver
 
 </details>
 
