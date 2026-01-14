@@ -67,28 +67,6 @@ Cwelium/
 └── README.md                       # ← you're reading this
 ```
 
-## Main changes made by ryuka
-
-(all changes compared to the original single-file version)
-
-- Split monolithic file into **proper Python package** with 9 focused modules
-- Introduced `__init__.py` → project is now importable as `cwelium`
-- Added proper **relative imports** (`from .console import Render`)
-- Centralized **TLS client session** creation in `main.py`
-- Moved **color constants & config loading** → `config.py`
-- Extracted **console rendering / logging / ASCII** → `console.py`
-- Separated **file & folder initialization + token/proxy loading** → `files.py`
-- Created dedicated **scraper module** with fixed `WebSocketApp` import
-- Centralized **multi-token threading + proxy rotation** in `raider._run_threads()`
-- Added **@console_wrapper** decorator for consistent menu screen clearing
-- Improved **menu.py** with more input validation & cleaner structure
-- Fixed **websocket-client** import mistake (`from websocket import WebSocketApp`)
-- Added better **error messages** and graceful exit handling
-- Removed unused / commented-out code (ThreadPoolExecutor etc.)
-- Standardized **logging format** and color usage
-- Made **token formatting** save back to file automatically
-- Improved **member scraping** logic with safer `.get()` calls
-- Added **docstrings** and some **type hints** for better readability
 
 ## Installation & Usage
 
