@@ -1,75 +1,116 @@
-# Cwelium Raider
+# Cwelium – Refactored Discord Tool
 
-> **PR status:** I will review pull requests when they are opened, but I will not be updating this project right now because I have school. If you want faster attention, open a PR with a clear description and tests.
+**Modernized, modularized, cleaned-up version of the original Cwelium raiding tool**
 
-## 👾 Features
+**Original author**: Tips-Discord  
+**Original repo**: https://github.com/Tips-Discord/Cwelium  
+**Refactored & improved by**: [ryuka](https://ryukap.netlify.app/)  
+**Date of refactor**: January 2026
 
-<details>
-<summary>Click to expand</summary>
+## What is Cwelium?
 
-* Fully request-based Raider
-* HTTP & HTTPS proxy support
-* Multi-threading support
-* Joiner
-* Leaver
-* Spammer
-* Token Checker
-* Reactor
-* Voice Raper
-* Token Formatter
-* Button Click
-* Accept Rules
-* Guild Check
-* Bio Changer
-* Onliner
-* Voice Joiner
-* Change Nickname
-* Thread Spammer
-* Typer
-* Onboarding Bypass
-* Friender
-* Call Spammer
-* Mass DM
-* CF solver
+Cwelium is a multi-functional Discord utility / raiding tool that includes:
 
-</details>
+- Mass joining / leaving servers
+- Channel & DM spamming
+- Voice join / soundboard spam
+- Member scraping
+- Token checking & formatting
+- Reaction / button automation
+- Nickname / bio mass changing
+- Thread / typing spam
+- Onboarding / rules screening bypass
+- Call spamming
 
-## 📝 Licensing
+**Important legal notice**  
+This tool was created for **educational and security research purposes only**.  
+Using it to harm servers, harass users, spam, raid, or violate Discord's ToS is **strictly prohibited** and can result in permanent account termination and/or legal consequences.
 
-*Please read the license carefully; failure to comply may result in legal action.*
+## Why this refactor exists
 
-This program is distributed under the [AGPL v3.0](https://github.com/Tips-Discord/Cwelium/blob/main/LICENSE). Ensure proper credit is given to this project.
+The original Cwelium was written as a **single ~2000+ line file** — very hard to read, maintain, extend or debug.
 
-## 👁 Preview
+This version keeps **100% of the original functionality** but applies modern Python best practices:
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Tips-Discord/Tips-Discord/refs/heads/main/image.png" alt="Cwelium Preview">
-</p>
+| Aspect                        | Original (single file)                     | Refactored version                              |
+|-------------------------------|---------------------------------------------|-------------------------------------------------|
+| File structure                | Everything in one file                      | Modular package (9 files)                       |
+| Code organization             | Global variables, mixed concerns            | Clear separation of concerns                    |
+| Imports                       | Many at top, some repeated                  | Clean, local imports per file                   |
+| Relative imports              | Not used                                    | Proper package-style relative imports           |
+| Threading / proxy logic       | Inline, repeated code                       | Centralized in `raider._run_threads()`          |
+| Error handling                | Inconsistent                                | More consistent logging + try/except blocks     |
+| Readability                   | Low (long functions, no separation)         | High (short methods, docstrings, type hints)    |
+| Extensibility                 | Very difficult                              | Easy to add new features / actions              |
 
-## ❓ Q&A
+## Code layout (project structure)
+```bash
+Cwelium/
+├── cwelium/                        # ← actual Python package
+│   ├── init.py
+│   ├── config.py                   # colors, config loading
+│   ├── console.py                  # ASCII art, logging, prompts, UI
+│   ├── files.py                    # config/folders/files/tokens/proxies handling
+│   ├── utils.py                    # helpers (random string, decorator, member range logic)
+│   ├── scraper.py                  # Discord gateway WebSocket member scraper
+│   ├── raider.py                   # core Discord API actions (join, spam, dm, voice, etc.)
+│   ├── menu.py                     # interactive CLI menu + option handlers
+│   └── main.py                     # entry point – initializes everything & starts menu
+│
+├── data/
+│   ├── tokens.txt                  # one token per line
+│   └── proxies.txt                 # http proxies (optional)
+│
+├── scraped/                        # auto-generated member ID caches
+│
+├── config.json                     # auto-created (proxies on/off, theme color)
+└── README.md                       # ← you're reading this
+```
 
-<details>
-<summary>Click to expand</summary>
+## Visual
+<img width="1258" height="717" alt="Screenshot 2026-01-14 221919" src="https://github.com/user-attachments/assets/8e4ce794-e093-47e6-8c78-485222fe5ed3" />
 
-* **Which version of the Discord API does Cwelium Raider use?**
 
-  * Cwelium Raider utilizes Discord API version 9 (v9).
-* **What themes/colors are available?**
+## Installation & Usage
 
-  * Available colors include green, red, yellow, magenta, blue, cyan, gray, white, pink, light blue, brown, black, aqua, purple, lime, orange, indigo, violet, gold, silver, teal, navy, olive, maroon, coral, salmon, khaki, rose and orchid. 29 in total.
-* **What proxy format should I use?**
+1. Clone / download this repository
+2. Install dependencies
 
-  * Use `username:password@proxy3.example.com:8080` or `example.com:8080`.
-* **What is Cwelium?**
+```bash
+pip install -r requirements.txt
+```
 
-  * Cwelium is a Discord raiding tool designed for raiding on Discord. It supports HTTP and HTTPS proxies, multi-threading, and includes features like joining and leaving servers, spamming, token checking, mass DMing, and more. It utilizes Discord API v9.
+2. Add tokens Put your Discord tokens (one per line) into:
+```bash
+data/tokens.txt
+```
 
-</details>
+3. (Optional) Add proxies
+```bash
+data/proxies.txt
+```
+Format: ip:port or user:pass@ip:port
 
-## ⭐ Star History
+4. Run the tool
+   
+Make sure you run this in the home dir (\Cwelium)
+```bash
+python -m cwelium.main
+```
+Alternative (after adding sys.path hack to main.py):
+```bash
+python main.py
+```
 
-[![Star History Chart](https://api.star-history.com/svg?repos=Tips-Discord/Cwelium\&theme=dark)](https://api.star-history.com/svg?repos=Tips-Discord/Cwelium)
+Use responsibly.
+Stay safe.
+Have fun learning.
 
-## ⚠️ Disclaimer
 
-**DISCLAIMER:** This repository is intended for **EDUCATIONAL PURPOSES ONLY**. The author takes no responsibility for any issues that arise from using this tool. By using this tool, you acknowledge and accept this disclaimer.
+
+
+
+
+
+
+
