@@ -1,4 +1,4 @@
-# Copyright (c) 2024-2025 Cwelium Inc.
+# Copyright (c) 2024-2026 Cwelium Inc.
 # This project is licensed under the Cwelium License, which includes additional
 # terms under the GNU Affero General Public License (AGPL) v3.0.
 #
@@ -1781,3 +1781,4 @@ class Menu:
 
 if __name__ == "__main__":
     Menu().main_menu()
+
